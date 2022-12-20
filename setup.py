@@ -28,6 +28,8 @@ _version_ = "0.2.0"
 setuptools.setup(
     name="vpt",
     version=_version_,
+    long_description="""# Markdown supported!\n\n* Cheer\n* Celebrate\n""",
+    long_description_content_type='text/markdown',
     description="Command line tool for highly parallelized processing of Vizgen data",
     author="Vizgen",
     author_email="techsupport@vizgen.com",

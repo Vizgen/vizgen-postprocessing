@@ -27,3 +27,4 @@ tensorflow==2.9.1
 sphinx
 sphinx-argparse
 sphinx-rtd-theme
+flask
