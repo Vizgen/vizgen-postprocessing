@@ -23,7 +23,7 @@ for i, req in enumerate(install_requires):
 
 packages = setuptools.find_packages(include=['vpt*'])
 
-_version_ = "0.2.0"
+_version_ = "0.2.1"
 
 setuptools.setup(
     name="vpt",
