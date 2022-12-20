@@ -10,7 +10,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: Apache Software License",
     "Topic :: Scientific/Engineering :: Image Processing",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
-    "Programming language :: Python :: 3.9",
+    # "Programming language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10"
 ]
 
