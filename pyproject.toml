@@ -1,0 +1,82 @@
+[tool.poetry]
+name = "vpt"
+version = "0.0.0"
+description = "Command line tool for highly parallelized processing of Vizgen data"
+license = "Apache-2.0"
+authors = ["Vizgen <techsupport@vizgen.com>"]
+maintainers = ["Timothy Wiggin <timothy.wiggin@vizgen.com>"]
+readme = "README.md"
+# homepage = ""
+repository = "https://github.com/Vizgen/vizgen-postprocessing"
+documentation = "https://vizgen.github.io/vizgen-postprocessing/"
+# keywords = ""
+classifiers = ["Development Status :: 5 - Production/Stable",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10"
+]
+packages = [{include = "vpt*", from = "src"}]
+include = ["src/vpt/utils/seg_json_generator/templates/*"]
+
+[tool.poetry.scripts]
+vpt = "vpt.vizgen_postprocess:entry_point"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+boto3 = "1.17"
+cellpose = "1.0.2"
+dask = "2022.9.0"
+distributed = "2022.9.0"
+fsspec = "2021.10.0"
+geojson = "2.5.0"
+geopandas = "0.12.1"
+gcsfs = "2021.10.0"
+h5py = "3.7.0"
+numpy = "1.22.4"
+opencv-python-headless = "4.6.0.66"
+pandas = "1.4.3"
+pyarrow = "8.0.0"
+pyclustering = "0.10.1.2"
+python-dotenv = "0.20.0"
+pyvips = "2.2.1"
+rasterio = "1.3.0"
+s3fs = "2021.10.0"
+scikit-image = "0.19.3"
+scipy = "1.8.1"
+shapely = "2.0"
+stardist = "0.8.3"
+tensorflow = "2.9.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+flake8 = "^6.0.0"
+
+[tool.poetry.group.deploy.dependencies]
+python-semantic-release = "^7.32.2"
+sphinx-argparse = "^0.4.0"
+sphinx-view = "^0.3.1"
+myst-nb = {version = "^0.17.1", python = "^3.9"}
+sphinx-autoapi = "^2.0.0"
+sphinx-rtd-theme = "^1.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variable = "pyproject.toml:version"
+branch = "develop"
+changelog_file = "CHANGELOG.md"
+build_command = "poetry build"
+dist_path = "dist/"
+upload_to_release = true
+upload_to_pypi = false
+remove_dist = false
+patch_without_tag = true

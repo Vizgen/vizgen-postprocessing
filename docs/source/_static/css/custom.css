@@ -1,0 +1,12 @@
+.caption-text, .icon-home {
+    color: #E02873;
+    font-weight: bold;
+    font-size: large;
+}
+.wy-breadcrumbs-aside a:link {
+    color: #E02873;
+}
+
+.wy-side-nav-search .wy-dropdown > a img.logo, .wy-side-nav-search > a img.logo {
+    width: 275px;
+}

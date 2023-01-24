@@ -1,0 +1,10 @@
+* text=auto
+
+*.py text
+*.rst text
+*.bat text
+*.json text
+*.csv -text
+
+*.tif binary
+

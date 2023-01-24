@@ -1,0 +1,209 @@
+name: Main
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10" ]
+    steps:
+      - uses: actions/checkout@v3
+
+      # Print ENV Variables
+      - name: print ENV variables
+        run: printenv
+
+      # Authenticate with Google
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0.8.1
+        with:
+          credentials_json: ${{ secrets.VZGPT_GCS_SERVICE_ACCOUNT_KEY }}
+
+      - name: Configure AWS credentials for pytest
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.VZGPT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.VZGPT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # - name: Load cached Poetry installation
+      #   id: cached-poetry
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.local # the path depends on the OS
+      #     key: poetry-1 # increment to reset cache
+
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.3.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install OS packages
+        run: |
+          sudo apt-get update && \
+          sudo apt-get install -y \
+          libvips42
+          sudo apt list libvips42
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Install project
+        run: poetry install --no-interaction
+
+      - name: Check for syntax errors with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          poetry run flake8 docs src tests --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Test with pytest
+        run: poetry run pytest tests/ --cov=src/ --cov-report=lcov
+
+      - name: Check for code style with flake8
+        run: poetry run flake8 docs src tests --count --max-line-length=127 --statistics
+
+      - name: Upload coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.lcov
+
+  deploy:
+    # Only run this job if the "build" job passes
+    needs: build
+    # Only run this job if new work is pushed to "develop"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-22.04
+    concurrency: release
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10" ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Print ENV Variables
+      - name: print ENV variables
+        run: printenv
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # - name: Load cached Poetry installation
+      #   id: cached-poetry
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.local # the path depends on the OS
+      #     key: poetry-1 # increment to reset cache
+
+      - name: Install Poetry
+        # if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.3.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached deploy venv
+        id: cached-poetry-deploy-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: deploy_venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Semantic Release
+        # if: steps.cached-poetry-deploy-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+
+      - name: Use Python Semantic Release to prepare release
+        id: python-semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            poetry run semantic-release publish
+            echo "VERSION=$(poetry run semantic-release print-version --current)" >> $GITHUB_OUTPUT
+
+      - name: Build documentation
+        run: |
+          mkdir gh-pages
+          touch gh-pages/.nojekyll
+          poetry run make html --directory docs
+          cp -r docs/build/html/* gh-pages/
+
+      - name: Deploy documentation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: gh-pages
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: |
+            vzgdocker/vpt:latest
+            vzgdocker/vpt:${{ steps.python-semantic-release.outputs.VERSION }}
+          build-args: |
+            "VERSION=${{ steps.python-semantic-release.outputs.VERSION }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish to PyPI
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}

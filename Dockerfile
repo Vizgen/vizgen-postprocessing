@@ -4,35 +4,40 @@ SHELL ["/bin/bash", "-c"]
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Install system libraries
 RUN apt-get update && \
     apt-get install -y \
-        python3 \
-        python3-pip \
-        bzip2 \
-        default-jre \
-        wget \
-        unzip \
-        libgl1-mesa-glx \
-        libvips42 \
-        procps && \
+    python3 \
+    python3-pip \
+    bzip2 \
+    default-jre \
+    curl \
+    unzip \
+    libgl1-mesa-glx \
+    libvips42 \
+    procps && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN set -o pipefail && wget -qO- https://get.nextflow.io | bash && \
+# Install Nextflow
+RUN curl -fsSL get.nextflow.io | bash && \
     mv nextflow -t /root && \
     /root/nextflow self-update
 
-RUN set -o pipefail && wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" && \
+# Install aws cli
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip --output awscli-exe-linux-x86_64.zip && \
     unzip awscli-exe-linux-x86_64.zip && \
     ./aws/install && \
     rm awscli-exe-linux-x86_64.zip && \
     rm -rf /aws
 
-ARG VZGPT_VERSION
-RUN pip install wheel
-RUN --mount=type=secret,id=pipconfig,dst=/etc/pip.conf \
-    pip install --no-cache-dir vpt==${VZGPT_VERSION}
+# Install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.3.1
 
-ADD nextflow_pipeline /nextflow_pipeline/
+# Install vpt
+ADD . /vizgen_postprocessing/
+RUN /root/.local/bin/poetry config virtualenvs.create false && \
+    /root/.local/bin/poetry install --directory=/vizgen_postprocessing/ --no-interaction \
+    && rm -rf /root/.cache/pypoetry
 
 CMD /bin/bash
