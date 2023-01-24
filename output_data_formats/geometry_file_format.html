@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry File Format &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Entity-By-Gene Matrix File Format" href="entity_by_gene_matrix_format.html" />
+    <link rel="prev" title="Biological Entities and Segmentation" href="biological_entities_and_segmentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Output Data Formats</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="biological_entities_and_segmentation.html">Biological Entities and Segmentation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Geometry File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_by_gene_matrix_format.html">Entity-By-Gene Matrix File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detected_transcripts_format.html">Detected Transcripts File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entity_metadata_format.html">Entity Metadata File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vzg_file_format.html">VZG File Format</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Output Data Formats</a></li>
+      <li class="breadcrumb-item active">Geometry File Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/output_data_formats/geometry_file_format.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="geometry-file-format">
+<h1>Geometry File Format<a class="headerlink" href="#geometry-file-format" title="Permalink to this headline"></a></h1>
+<p>MERSCOPE data acquisition and analysis is performed in 3D so the partitioning of transcripts into cells
+also needs to be performed in 3D. True 3D geometries are not well supported in standard python geometry
+libraries (e.g. Shapely), so we store the 3D structure of cells (and other Entities)
+as 2D slices of the 3D shape. These geometries are organized in a GeoDataFrame in which each row is
+the geometry of an Entity at a given Z-level.</p>
+<p>In addition to cell geometries, other types of geometric data about an experiment may be stored in this
+format, including data on user-defined spatial Entities. This GeoDataFrame format is intended to be
+extensible to accommodate these new Entity types. In order to conform to the MERSCOPE geometry file format,
+we require the presence of a the following columns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>ID <em>(type: int64)</em></dt><dd><p>A unique row identifier for indexing. ID is not globally unique</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>EntityID <em>(type: int64)</em></dt><dd><p>An integer identifier for a cell or other biological entity identified through spatial analysis. EntityID has the format:
+analysis timestamp, tile index, task index, geometry index. EntityID is guaranteed to be unique to a biological entity
+within an analysis region. The use of the analysis timestamp in the ID makes the EntityID likely to be unique across all
+experiments.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Name <em>(type: string or None)</em></dt><dd><p>A free-text description of the geometry in the row.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Type <em>(type: string)</em></dt><dd><p>The type of the entity referred in in EntityID.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ParentID <em>(type: int64 or None)</em></dt><dd><p>Entities may be related to one another hierarchically. For example, a Cell Entity may contain a Nucleus Entity.
+These relationships are described using Parent / Child terminology. If this Entity has a Parent, its
+EntityID may be stored in this column. If it does not have a defined Parent, the column is None.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ParentType <em>(string or None)</em></dt><dd><p>The type of the Parent, if a Parent EntityID is provided. May not be None if ParentID is defined.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ZLevel <em>(type: float or None)</em></dt><dd><p>The z-position of the geometry, expressed in microns.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ZIndex <em>(type: int or None)</em></dt><dd><p>The z-index of the geometry in the 3d stack, useful for querying into transcripts</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Geometry <em>(type: WKB MultiPolygon)</em></dt><dd><p>A valid WKB format MultiPolygon that describes the Entity at the given z-level. This column is composed of
+MultiPolygon objects in order to support segmentation methods that produce discontinuous geometries within a z-plane.
+Even if the cell region is continuous and can be described with a single Polygon, it will be stored as a
+MultiPolygon for consistency.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="biological_entities_and_segmentation.html" class="btn btn-neutral float-left" title="Biological Entities and Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="entity_by_gene_matrix_format.html" class="btn btn-neutral float-right" title="Entity-By-Gene Matrix File Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

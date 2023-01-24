@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command Line Interface &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Segmentation Options" href="../segmentation_options/index.html" />
+    <link rel="prev" title="Installation" href="../installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command Line Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sub-commands">Sub-commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#run-segmentation">run-segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#prepare-segmentation">prepare-segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat1">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat1">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#run-segmentation-on-tile">run-segmentation-on-tile</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat2">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat2">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-tile-segmentation">compile-tile-segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat3">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat3">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#derive-entity-metadata">derive-entity-metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat4">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat4">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#partition-transcripts">partition-transcripts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat5">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat5">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sum-signals">sum-signals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat6">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat6">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#update-vzg">update-vzg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat7">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat7">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-geometry">convert-geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat8">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat8">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-to-ome">convert-to-ome</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat9">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat9">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-to-rgb-ome">convert-to-rgb-ome</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat10">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat10">Optional arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Command Line Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/command_line_interface/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-interface">
+<span id="id1"></span><h1>Command Line Interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline"></a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">COMMAND</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline"></a></h2>
+<dl class="option-list">
+<dt><kbd></kbd></dt>
+<dd><p>Possible choices: run-segmentation, prepare-segmentation, run-segmentation-on-tile, compile-tile-segmentation, derive-entity-metadata, partition-transcripts, sum-signals, update-vzg, convert-geometry, convert-to-ome, convert-to-rgb-ome</p>
+</dd>
+</dl>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline"></a></h2>
+<dl class="option-list">
+<dt><kbd>--processes</kbd></dt>
+<dd><p>Number of parallel processes to use when executing locally</p>
+</dd>
+<dt><kbd>--aws-profile-name</kbd></dt>
+<dd><p>Named profile for AWS access</p>
+</dd>
+<dt><kbd>--aws-access-key</kbd></dt>
+<dd><p>AWS access key from key / secret pair</p>
+</dd>
+<dt><kbd>--aws-secret-key</kbd></dt>
+<dd><p>AWS secret from key / secret pair</p>
+</dd>
+<dt><kbd>--gcs-service-account-key</kbd></dt>
+<dd><p>Path to a google service account key json file. Not needed if google authentication is performed using gcloud</p>
+</dd>
+<dt><kbd>--verbose</kbd></dt>
+<dd><p>Display progress messages during execution</p>
+</dd>
+<dt><kbd>--profile-execution-time</kbd></dt>
+<dd><p>Path to profiler output file</p>
+</dd>
+<dt><kbd>--log-level</kbd></dt>
+<dd><p>Log level value. Level is specified as a number from 1 - 5, corresponding to debug, info, warning, error, crit</p>
+</dd>
+<dt><kbd>--log-file</kbd></dt>
+<dd><p>Path to log output file. If not provided, logs are written to standard output</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands">
+<h2>Sub-commands<a class="headerlink" href="#Sub-commands" title="Permalink to this headline"></a></h2>
+<section id="run-segmentation">
+<h3>run-segmentation<a class="headerlink" href="#run-segmentation" title="Permalink to this headline"></a></h3>
+<p>Top-level interface for this CLI which invokes the segmentation functionality of the tool. It is intended for users who would like to run the program with minimal additional configuration. Specifically, it executes: prepare-segmentation, run-segmentation-on-tile, and compile-tile-segmentation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">run</span><span class="o">-</span><span class="n">segmentation</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments">
+<h4>Required arguments<a class="headerlink" href="#required-arguments" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--segmentation-algorithm</kbd></dt>
+<dd><p>Path to a json file that fully specifies the segmentation algorithm to use, including algorithm name, any algorithm specific parameters (including path to weights for new model), stains corresponding to each channel in the algorithm.</p>
+</dd>
+<dt><kbd>--input-images</kbd></dt>
+<dd><p>Regular expression containing path that indicates the images to use for the segmentation. The regular expressions can indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). Here, &lt;stain&gt; must match the stains specified in the segmentation algorithm.</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
+</dd>
+<dt><kbd>--output-path</kbd></dt>
+<dd><p>Directory where the segmentation specification json file will be saved as segmentation_specification.json and where the final segmentation results will be saved.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--tile-size</kbd></dt>
+<dd><p>Number of pixels for the width and height of each tile. Each tile is created as a square. Default: 4096.</p>
+</dd>
+<dt><kbd>--tile-overlap</kbd></dt>
+<dd><p>Overlap between adjacent tiles. Default: 10% of tile size.</p>
+</dd>
+<dt><kbd>--max-row-group-size</kbd></dt>
+<dd><p>Maximum number of rows in row groups inside output parquet files. Cannot be less than 1000</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="prepare-segmentation">
+<h3>prepare-segmentation<a class="headerlink" href="#prepare-segmentation" title="Permalink to this headline"></a></h3>
+<p>Generates a segmentation specification json file to be used for cell segmentation tasks. The segmentation specification json includes specification for the algorithm to run, the paths for all images for each stain for each z index, the micron to mosaic pixel transformation matrix, the number of tiles, and the window coordinates for each tile.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">prepare</span><span class="o">-</span><span class="n">segmentation</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat1">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat1" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--segmentation-algorithm</kbd></dt>
+<dd><p>Path to a json file that fully specifies the segmentation algorithm to use, including algorithm name, any algorithm specific parameters (including path to weights for new model), stains corresponding to each channel in the algorithm.</p>
+</dd>
+<dt><kbd>--input-images</kbd></dt>
+<dd><p>Regular expression containing path that indicates the images to use for the segmentation. The regular expressions can indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). Here, &lt;stain&gt; must match the stains specified in the segmentation algorithm.</p>
+</dd>
+<dt><kbd>--output-path</kbd></dt>
+<dd><p>Path where the segmentation specification json file will be saved.</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat1">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat1" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--tile-size</kbd></dt>
+<dd><p>Number of pixels for the width and height of each tile. Each tile is created as a square. Default is 4096.</p>
+</dd>
+<dt><kbd>--tile-overlap</kbd></dt>
+<dd><p>Overlap between adjacent tiles. Default is 10% of tile-size.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="run-segmentation-on-tile">
+<h3>run-segmentation-on-tile<a class="headerlink" href="#run-segmentation-on-tile" title="Permalink to this headline"></a></h3>
+<p>Executes the segmentation algorithm on a specific tile of the mosaic images. This functionality is intended both for visualizing a preview of the segmentation (run only one tile), and for distributing jobs using an orchestration tool such as Nextflow.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">run</span><span class="o">-</span><span class="n">segmentation</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">tile</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat2">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat2" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-segmentation-parameters</kbd></dt>
+<dd><p>Json file generate by --prepare-segmentation that fully specifies the segmentation to run</p>
+</dd>
+<dt><kbd>--tile-index</kbd></dt>
+<dd><p>Index of the tile to run the segmentation on</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat2">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat2" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="compile-tile-segmentation">
+<h3>compile-tile-segmentation<a class="headerlink" href="#compile-tile-segmentation" title="Permalink to this headline"></a></h3>
+<p>Combines the per-tile segmentation outputs into a single, internally-consistent parquet file containing all of the segmentation boundaries found in the experiment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="nb">compile</span><span class="o">-</span><span class="n">tile</span><span class="o">-</span><span class="n">segmentation</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat3">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat3" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-segmentation-parameters</kbd></dt>
+<dd><p>Json file generated by prepare-segmentation that fully specifies the segmentation to run.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat3">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat3" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--max-row-group-size</kbd></dt>
+<dd><p>Maximum number of rows in row groups inside output parquet files. Cannot be less than 1000</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="derive-entity-metadata">
+<h3>derive-entity-metadata<a class="headerlink" href="#derive-entity-metadata" title="Permalink to this headline"></a></h3>
+<p>Uses the segmentation boundaries to calculate the geometric attributes of each Entity. These attributes include the position, volume, and morphological features.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">derive</span><span class="o">-</span><span class="n">entity</span><span class="o">-</span><span class="n">metadata</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat4">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat4" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Path to a micron-space parquet boundary file.</p>
+</dd>
+<dt><kbd>--output-metadata</kbd></dt>
+<dd><p>Path to the output csv file where the entity metadata will be stored.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat4">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat4" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-entity-by-gene</kbd></dt>
+<dd><p>Path to an existing entity by gene csv.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="partition-transcripts">
+<h3>partition-transcripts<a class="headerlink" href="#partition-transcripts" title="Permalink to this headline"></a></h3>
+<p>Uses the segmentation boundaries to determine which Entity, if any, contains each detected transcript. Outputs an Entity by gene matrix, and may optionally output a detected transcript csv with an additional column indicating the containing Entity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">partition</span><span class="o">-</span><span class="n">transcripts</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat5">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat5" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Path to a micron-space parquet boundary file.</p>
+</dd>
+<dt><kbd>--input-transcripts</kbd></dt>
+<dd><p>Path to an existing transcripts csv file.</p>
+</dd>
+<dt><kbd>--output-entity-by-gene</kbd></dt>
+<dd><p>Path to output the Entity by gene matrix csv file.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat5">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat5" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--chunk-size</kbd></dt>
+<dd><p>Number of transcript file lines to be loaded in memory at once. Default: 10,000,000</p>
+</dd>
+<dt><kbd>--output-transcripts</kbd></dt>
+<dd><p>If a filename is provided, a copy of the detected transcripts file will be written with an additional column with the EntityID of the cell or other Entity that contains each transcript (or -1 if the transcript is not contained by any Entity).</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="sum-signals">
+<h3>sum-signals<a class="headerlink" href="#sum-signals" title="Permalink to this headline"></a></h3>
+<p>Uses the segmentation boundaries to find the intensity of each mosaic image in each Entity. Outputs both the summed intensity of the raw images and the summed intensity of high-pass filtered images (reduces the effect of background fluorescence).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="nb">sum</span><span class="o">-</span><span class="n">signals</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat6">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat6" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-images</kbd></dt>
+<dd><p>Path to images containing regular expressions to indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). If only a subset of the mosaic tiffs should be quantified, modify the regular expression accordingly. For example, &quot;mosaic_(?P&lt;stain&gt;DAPI)_z(?P&lt;z&gt;[0-9]+)).tif&quot; would match only DAPI images.</p>
+</dd>
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Path to a micron-space .parquet boundary file.</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
+</dd>
+<dt><kbd>--output-csv</kbd></dt>
+<dd><p>Path to the csv file where the sum intensities will be stored.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat6">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat6" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set true if you want to use non empty directory and agree that files can be overwritten.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="update-vzg">
+<h3>update-vzg<a class="headerlink" href="#update-vzg" title="Permalink to this headline"></a></h3>
+<p>Updates an existing .vzg file with new segmentation boundaries and the corresponding expression matrix. NOTE: This functionality requires enough disk space to unpack the existing .vzg file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">update</span><span class="o">-</span><span class="n">vzg</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat7">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat7" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-vzg</kbd></dt>
+<dd><p>Path to an existing vzg file.</p>
+</dd>
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Path to a micron-space parquet boundary file.</p>
+</dd>
+<dt><kbd>--input-entity-by-gene</kbd></dt>
+<dd><p>Path to the Entity by gene csv file.</p>
+</dd>
+<dt><kbd>--output-vzg</kbd></dt>
+<dd><p>Path where the updated vzg should be saved.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat7">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat7" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-metadata</kbd></dt>
+<dd><p>Path to an existing entity metadata file.</p>
+</dd>
+<dt><kbd>--temp-path</kbd></dt>
+<dd><p>Path for temporary folder for unzipping vzg file.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="convert-geometry">
+<h3>convert-geometry<a class="headerlink" href="#convert-geometry" title="Permalink to this headline"></a></h3>
+<p>Converts entity boundaries produced by a different tool into a vpt compatible parquet file. In the process, each of the input entities is checked for geometric validity, overlap with other geometries, and assigned a globally-unique EntityID to facilitate other processing steps.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">convert</span><span class="o">-</span><span class="n">geometry</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat8">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat8" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Regular expression that matches all input segmentation files (geojson or hdf5) that will be processed.</p>
+</dd>
+<dt><kbd>--output-boundaries</kbd></dt>
+<dd><p>The path to the parquet file where segmentation compatible with vpt will be saved.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat8">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat8" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--convert-to-3D</kbd></dt>
+<dd><p>Pass if segmentation should be converted from 2D to 3D by replication. Only possible for geojson and parquet input formats.</p>
+</dd>
+<dt><kbd>--number-z-planes</kbd></dt>
+<dd><p>The number of z planes that should be produced during the conversion from 2D to 3D. Should be specified only if the &quot;--convert-to-3D&quot; argument is passed</p>
+</dd>
+<dt><kbd>--spacing-z-planes</kbd></dt>
+<dd><p>Step size between z-planes, assuming that z-index 0 is 1 “step” above zero. Should be specified only if the &quot;--convert-to-3D&quot; argument is passed</p>
+</dd>
+<dt><kbd>--output-entity-type</kbd></dt>
+<dd><p>String with entity type name. For example: cell, nuclei. Default: cell</p>
+</dd>
+<dt><kbd>--id-mapping-file</kbd></dt>
+<dd><p>Path to csv file where map from source segmentation entity id to EntityID in result will be saved.</p>
+</dd>
+<dt><kbd>--entity-fusion-strategy</kbd></dt>
+<dd><p>String with entity fusion strategy name. One from list: harmonize, union, larger. Default: harmonize</p>
+</dd>
+<dt><kbd>--max-row-group-size</kbd></dt>
+<dd><p>Maximum number of rows in row groups inside output parquet files. Cannot be less than 1000</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="convert-to-ome">
+<h3>convert-to-ome<a class="headerlink" href="#convert-to-ome" title="Permalink to this headline"></a></h3>
+<p>Transforms the large 16-bit mosaic tiff images produced by the MERSCOPE into a OME pyramidal tiff.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">convert</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">ome</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat9">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat9" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-image</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat9">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat9" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--output-image</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="convert-to-rgb-ome">
+<h3>convert-to-rgb-ome<a class="headerlink" href="#convert-to-rgb-ome" title="Permalink to this headline"></a></h3>
+<p>Converts up to three flat tiff images into a rgb OME-tiff pyramidal images. If a rgb channel input isn’t specified, the channel will be dark (all 0’s).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">convert</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">rgb</span><span class="o">-</span><span class="n">ome</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat10">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat10" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--output-image</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat10">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat10" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-image-red</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file</p>
+</dd>
+<dt><kbd>--input-image-green</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file</p>
+</dd>
+<dt><kbd>--input-image-blue</kbd></dt>
+<dd><p>Either a path to a directory or a path to a specific file</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd></dd>
+</dl>
+</section>
+</section>
+</section>
+<p><p>Run 'vpt COMMAND --help' for more information on a command.</p>
+</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../segmentation_options/index.html" class="btn btn-neutral float-right" title="Segmentation Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

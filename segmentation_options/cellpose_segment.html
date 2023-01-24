@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cellpose Options &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Output Data Formats" href="../output_data_formats/index.html" />
+    <link rel="prev" title="Watershed Options" href="watershed_segment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_task_definition.html">Segmentation Task Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watershed_segment.html">Watershed Options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cellpose Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cellpose-model-properties">Cellpose Model Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cellpose-model-parameters">Cellpose Model Parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
+      <li class="breadcrumb-item active">Cellpose Options</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/segmentation_options/cellpose_segment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cellpose-options">
+<h1>Cellpose Options<a class="headerlink" href="#cellpose-options" title="Permalink to this headline"></a></h1>
+<p>The Cellpose segmentation algorithm uses the Cellpose v.1.0.2. In addition
+to supporting  the default model weights (e.g. cyto2, nuclei), we support custom
+weights that may be more appropriate for a specific tissue type.</p>
+<section id="input-data">
+<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
+<p>The number of channels Cellpose requires is based on the model selected. For the
+nuclei model, only a nuclear channel is necessary (typically DAPI). For the cyto2
+model, both a nuclear and entity fill channel are required.</p>
+</section>
+<section id="cellpose-model-properties">
+<h2>Cellpose Model Properties<a class="headerlink" href="#cellpose-model-properties" title="Permalink to this headline"></a></h2>
+<p>The following model properties are REQUIRED:</p>
+<ul>
+<li><p>model <em>(&quot;cyto2&quot; or &quot;nuclei&quot;)</em></p></li>
+<li><p>model_dimensions <em>(&quot;2D&quot; or &quot;3D&quot;)</em></p>
+<p>&quot;2D&quot; applies the 2D Cellpose model to all z-planes specified in the <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> list seperately and the results are
+combined into a 3D output. &quot;3D&quot; applies the native-3D Cellpose model to all z-planes specified in the <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> list.</p>
+</li>
+</ul>
+<p>The following model properties are OPTIONAL:</p>
+<ul class="simple">
+<li><p>custom_weights <em>(path to a custom Cellpose weights file, local file system only)</em></p></li>
+<li><p>version <em>(any valid string, used for record keeping)</em></p></li>
+</ul>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cyto2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;latest&quot;</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+</section>
+<section id="cellpose-model-parameters">
+<h2>Cellpose Model Parameters<a class="headerlink" href="#cellpose-model-parameters" title="Permalink to this headline"></a></h2>
+<p>The following model parameters are required:</p>
+<ul class="simple">
+<li><p>nuclear_channel <em>(The image channel that represents nuclei)</em></p></li>
+<li><p>entity_fill_channel <em>(The image channel that either fills or outlines the cells)</em></p></li>
+<li><p>diameter <em>(typical cell size, pixels)</em></p></li>
+<li><p>flow_threshold <em>(range: 0 to 1, larger values output more cells)</em></p></li>
+<li><p>mask_threshold <em>(range: -6 to 6, lower values output larger cells)</em></p></li>
+<li><p>minimum_mask_size <em>(minimum cell size, pixels)</em></p></li>
+</ul>
+<p>Detailed descriptions of each parameter are available in the <a class="reference external" href="https://cellpose.readthedocs.io/en/v1.0.2/index.html">Cellpose documentation</a></p>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;nuclear_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;entity_fill_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PolyT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;diameter&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">70</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;flow_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;mask_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;minimum_mask_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="watershed_segment.html" class="btn btn-neutral float-left" title="Watershed Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../output_data_formats/index.html" class="btn btn-neutral float-right" title="Output Data Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

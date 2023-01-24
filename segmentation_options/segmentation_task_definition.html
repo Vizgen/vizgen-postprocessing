@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Segmentation Task Definition &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Task Fusion Definition" href="task_fusion_definition.html" />
+    <link rel="prev" title="Segmentation Algorithm JSON File Structure" href="json_file_format.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Segmentation Task Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-id">task_id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation-family">segmentation_family</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entity-types-detected">entity_types_detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#z-layers">z_layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#properties-and-parameters">Properties and Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#task-input-data">task_input_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#normalization-options">Normalization Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blur-filter-options">Blur Filter Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#downsample-options">Downsample Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#polygon-parameters">polygon_parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watershed_segment.html">Watershed Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose_segment.html">Cellpose Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
+      <li class="breadcrumb-item active">Segmentation Task Definition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/segmentation_options/segmentation_task_definition.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="segmentation-task-definition">
+<h1>Segmentation Task Definition<a class="headerlink" href="#segmentation-task-definition" title="Permalink to this headline"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">segmentation_tasks</span></code> object in the segmentation algorithm file is a list of tasks. Each task has the following structure:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;task_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_family&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellpose&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;entity_types_detected&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="s2">&quot;z_layers&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;task_input_data&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;polygon_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="task-id">
+<h2>task_id<a class="headerlink" href="#task-id" title="Permalink to this headline"></a></h2>
+<p>Each task has an integer index, starting from zero called the <code class="docutils literal notranslate"><span class="pre">task_id</span></code>. The <code class="docutils literal notranslate"><span class="pre">task_id</span></code> is used in the generation of the
+<code class="docutils literal notranslate"><span class="pre">EntityID</span></code> to ensure uniqueness.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Vizgen Post-processing Tool <code class="docutils literal notranslate"><span class="pre">vpt</span></code> only supports <strong>9</strong> tasks in a single segmentation algorithm. If more tasks are
+needed, users are encouraged to run <code class="docutils literal notranslate"><span class="pre">vpt</span></code> multiple times and combine the segmentation outputs <em>post hoc</em>.</p>
+</div>
+</section>
+<section id="segmentation-family">
+<h2>segmentation_family<a class="headerlink" href="#segmentation-family" title="Permalink to this headline"></a></h2>
+<p>Each task has a <code class="docutils literal notranslate"><span class="pre">segmentation_family</span></code>. This variable specifies what type of segmentation will be performed and what
+parameters must be provided. The currently supported families are:</p>
+<ul class="simple">
+<li><p>Watershed</p></li>
+<li><p>Cellpose</p></li>
+</ul>
+</section>
+<section id="entity-types-detected">
+<h2>entity_types_detected<a class="headerlink" href="#entity-types-detected" title="Permalink to this headline"></a></h2>
+<p>A task may detect one or more entities based on <code class="docutils literal notranslate"><span class="pre">entity_types_detected</span></code>. This is useful for running multiple tools for
+detecting an Entity (e.g. Cells) and combining the output. Supported Entity types are &quot;cell&quot; and &quot;nucleus.&quot;</p>
+</section>
+<section id="z-layers">
+<h2>z_layers<a class="headerlink" href="#z-layers" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> variable is a list of which z-index images should be used in this segmentation task. If the type of
+segmentation is 2D and multiple z-indexes are entered, segmentation will be performed on each z-layer sequentially and the
+Entities will be merged into 3D objects at the end of the task. If multiple <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> are selected with 2D segmentation, a
+heuristic will be applied to fill in any gaps between segmented layers. <em>2D segmentation is applied to all z-layers in the
+experiment by default without needing to explicitly specify the behavior.</em></p>
+</section>
+<section id="properties-and-parameters">
+<h2>Properties and Parameters<a class="headerlink" href="#properties-and-parameters" title="Permalink to this headline"></a></h2>
+<p>Both <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code> and <code class="docutils literal notranslate"><span class="pre">segmentation_parameters</span></code> are specific to the <code class="docutils literal notranslate"><span class="pre">segmentation_family</span></code> and are described
+in their own sections.</p>
+</section>
+<section id="task-input-data">
+<h2>task_input_data<a class="headerlink" href="#task-input-data" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code> list is a list of image channels and per-channel pre-processing steps. This tool allows the
+application of intensity normalization, down-sampling, and/or blurring before performing cell segmentation.</p>
+<section id="normalization-options">
+<h3>Normalization Options<a class="headerlink" href="#normalization-options" title="Permalink to this headline"></a></h3>
+<p>Filter <strong>name</strong>: &quot;normalize&quot;</p>
+<p>Types:</p>
+<ul>
+<li><p>default <em>(default if no parameters are specified)</em></p>
+<p>default normalization is min-max range normalization. It does not accept any parameters</p>
+</li>
+<li><p>CLAHE</p>
+<p>Contrast Limited Adaptive Histogram Equalization (CLAHE) is a normalization method for emphasizing <em>local</em> contrast in an
+image at the expense of altering global brightness. CLAHE accepts two parameters:</p>
+<ul class="simple">
+<li><p>clip_limit <em>(range: 0 - 1)</em></p></li>
+<li><p>filter_size <em>(2 element list, units of pixels)</em></p></li>
+</ul>
+<p>For more information, see the <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.exposure.html#skimage.exposure.equalize_adapthist">Scikit Image Documentation</a></p>
+</li>
+</ul>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="mf">100</span><span class="p">,</span>
+<span class="w">                </span><span class="mf">100</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="blur-filter-options">
+<h3>Blur Filter Options<a class="headerlink" href="#blur-filter-options" title="Permalink to this headline"></a></h3>
+<p>Filter <strong>name</strong>: &quot;blur&quot;</p>
+<p>Types:</p>
+<ul class="simple">
+<li><p>average <em>(default if no parameters are specified)</em></p></li>
+<li><p>median</p></li>
+<li><p>gaussian</p></li>
+</ul>
+<p>All blur filter types accept a kernel size parameter in units of pixels and are implemented using OpenCV. If the size is
+not specified it takes the default value <strong>5px</strong>.</p>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;blur&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">21</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="downsample-options">
+<h3>Downsample Options<a class="headerlink" href="#downsample-options" title="Permalink to this headline"></a></h3>
+<p>Filter <strong>name</strong>: &quot;downsample&quot;</p>
+<p>The downsample filter reduces the size of the images during segmentation to decrease processing time. The only parameter
+passed to the downsample filter is the scale factor, <code class="docutils literal notranslate"><span class="pre">scale</span></code> <em>(default value: 2)</em>.</p>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;downsample&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;scale&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="polygon-parameters">
+<h2>polygon_parameters<a class="headerlink" href="#polygon-parameters" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">polygon_parameters</span></code> are used when converting a foreground / background mask into geometric
+shapes describing the outlines of cells. In order to improve computational performance and avoid
+artifacts, smoothing and simplification of Entity geometries is recommended, as is filtering by
+size. All parameters are measured in units of pixels.</p>
+<p>Parameters:</p>
+<ul>
+<li><p>simplification_tol</p>
+<p>The acceptable loss of precision when simplifying cell boundaries. Even a small amount of simplification (2 px) dramatically
+improves processing time.</p>
+</li>
+<li><p>smoothing_radius</p>
+<p>The size of a smoothing operation comparable to morphologically closing and then opening the cell mask using the same
+structuring element.</p>
+</li>
+<li><p>minimum_final_area</p>
+<p>Minimum area of a polygon to retain the cell. Used to filter spurious detections.</p>
+</li>
+</ul>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;polygon_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;simplification_tol&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;smoothing_radius&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;minimum_final_area&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="json_file_format.html" class="btn btn-neutral float-left" title="Segmentation Algorithm JSON File Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="task_fusion_definition.html" class="btn btn-neutral float-right" title="Task Fusion Definition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
