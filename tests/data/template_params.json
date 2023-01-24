@@ -1,0 +1,13 @@
+{
+  "parameters": {
+    "algorithm": {
+      "name": "watershed_m",
+      "arguments": {
+        "stardist_model": "2D_versatile_fluo",
+        "seed_channel": "DAPI",
+        "entity_types_detected": "cell",
+        "entity_fill_channel": "Cellbound1"
+      }
+    }
+  }
+}

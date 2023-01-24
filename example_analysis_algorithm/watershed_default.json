@@ -1,0 +1,69 @@
+{
+  "experiment_properties": {
+    "all_z_indexes": [0, 1, 2, 3, 4, 5, 6],
+    "z_positions_um": [1.5, 3, 4.5, 6, 7.5, 9, 10.5]
+  },
+  "segmentation_tasks": [
+    {
+      "task_id": 0,
+      "segmentation_family": "watershed",
+      "entity_types_detected": [
+        "cell"
+      ],
+      "z_layers": [
+        0, 1, 2, 3, 4, 5, 6
+      ],
+      "segmentation_properties": {
+        "model_dimensions": "2D"
+      },
+      "segmentation_parameters": {
+        "stardist_model": "2D_versatile_fluo",
+        "seed_channel": "DAPI",
+        "entity_fill_channel": "PolyT"
+      },
+      "polygon_parameters": {
+        "simplification_tol": 2,
+        "smoothing_radius": 3,
+        "minimum_final_area": 100
+      },
+      "task_input_data": [
+        {
+          "image_channel": "DAPI",
+          "image_preprocessing": []
+        },
+        {
+          "image_channel": "PolyT",
+          "image_preprocessing": [
+            {
+              "name": "blur",
+              "parameters": {
+                "type": "gaussian",
+                "size": 21
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "segmentation_task_fusion": {
+    "entity_fusion_strategy": "harmonize",
+    "fused_polygon_postprocessing_parameters": {
+      "min_distance_between_entities": 1,
+      "min_final_area": 500
+    }
+  },
+  "output_files": [
+    {
+      "entity_types_output": [
+        "cell"
+      ],
+      "files": {
+        "run_on_tile_dir": "result_tiles",
+        "mosaic_geometry_file": "watershed_mosaic_space.parquet",
+        "micron_geometry_file": "watershed_micron_space.parquet",
+        "cell_metadata_file": "watershed_cell_metadata.csv"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+gene,global_x,global_y,global_z,barcode_id
+AAA,50,50,0,1
+BBB,150,60,0,2
+BBB,244,70,0,2
+CCC,266,-180,0,3
+CDE,0,0,0,4
