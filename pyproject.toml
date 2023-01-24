@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vpt"
-version = "0.0.0"
+version = "1.0.0"
 description = "Command line tool for highly parallelized processing of Vizgen data"
 license = "Apache-2.0"
 authors = ["Vizgen <techsupport@vizgen.com>"]
