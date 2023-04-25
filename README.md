@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![PyPI](https://img.shields.io/pypi/v/vpt)
-[![Coverage Status](https://coveralls.io/repos/github/Vizgen/vizgen-postprocessing/badge.svg?branch=develop&t=EsWr25)](https://coveralls.io/github/Vizgen/vizgen-postprocessing?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/Vizgen/vizgen-postprocessing/badge.svg?branch=develop)](https://coveralls.io/github/Vizgen/vizgen-postprocessing?branch=develop)
 
 # Vizgen Post-processing Tool
 
