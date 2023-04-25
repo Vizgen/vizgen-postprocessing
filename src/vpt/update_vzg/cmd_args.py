@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from dataclasses import dataclass
 import os
 
-from vpt.utils.validate import validate_exists, validate_does_not_exist
+from vpt.utils.validate import validate_exists, validate_does_not_exist, validate_directory_empty
 
 # The maximum number of parallel processes that may be launched by update-vzg
 MAX_PROCESSES = 512
@@ -23,6 +23,7 @@ def validate_args(args: UpdateVzgArgs):
     validate_exists(args.input_vzg)
     validate_exists(args.input_boundaries)
     validate_exists(args.input_entity_by_gene)
+    validate_directory_empty(args.temp_path)
 
     if not args.overwrite:
         validate_does_not_exist(args.output_vzg)
