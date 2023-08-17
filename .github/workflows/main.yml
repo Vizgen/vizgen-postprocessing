@@ -152,13 +152,6 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Load cached deploy venv
-        id: cached-poetry-deploy-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: deploy_venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
       - name: Install Semantic Release
         run: poetry install --no-interaction
 
