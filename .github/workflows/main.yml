@@ -117,8 +117,9 @@ jobs:
           path-to-lcov: coverage.lcov
 
   deploy:
-    # Only run this job if the "build" job passes
-    needs: build
+    needs:
+      - static_analysis
+      - unit_tests
     # Only run this job if new work is pushed to "develop"
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
