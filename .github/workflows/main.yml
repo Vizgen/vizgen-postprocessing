@@ -105,7 +105,7 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Install project
-        run: poetry install --no-interaction
+        run: poetry install --no-interaction --all-extras
 
       - name: Test with pytest
         run: poetry run pytest tests/ --cov=src/ --cov-report=lcov
