@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example: Segmenting a Small Dataset Saved on a Local Hard Drive &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experimental Features" href="../experimental_features/index.html" />
+    <link rel="prev" title="Analysis Vignettes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Analysis Vignettes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#before-beginning-system-set-up">Before Beginning: System Set Up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-install-vpt-in-a-virtual-environment">Step 1: Install vpt in a Virtual Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-identify-cell-boundaries-from-images-cell-segmentation">Step 2: Identify Cell Boundaries from Images (Cell Segmentation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-partition-transcripts-into-cells">Step 2: Partition Transcripts into Cells</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-calculate-cell-metadata">Step 3: Calculate Cell Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-update-the-vzg-file">Step 4: Update the .vzg File</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Analysis Vignettes</a></li>
+      <li class="breadcrumb-item active">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/analysis_vignettes/segmentation_of_a_local_dataset.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-segmenting-a-small-dataset-saved-on-a-local-hard-drive">
+<h1>Example: Segmenting a Small Dataset Saved on a Local Hard Drive<a class="headerlink" href="#example-segmenting-a-small-dataset-saved-on-a-local-hard-drive" title="Permalink to this headline"></a></h1>
+<section id="before-beginning-system-set-up">
+<h2>Before Beginning: System Set Up<a class="headerlink" href="#before-beginning-system-set-up" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Windows 10 laptop computer (i7-1185G7 processor, 16 GB RAM)</p></li>
+<li><p>Using Ubuntu 20.04 through the Windows Subsystem for Linux 2 (wsl2)</p></li>
+<li><p>Python, pip, and venv installed in Ubuntu</p></li>
+<li><p>The data produced by the MERSCOPE™ Image Processing Software was downloaded to the wsl2 home directory <a class="reference external" href="https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip">Download Data Files</a></p></li>
+<li><p>The example segmentation algorithm json files were downloaded from github to the wsl2 home directory <a class="reference external" href="https://github.com/Vizgen/vizgen-postprocessing/tree/develop/example_analysis_algorithm">Download Algorithm Files</a></p></li>
+</ul>
+<p>At the beginning of the analysis, the following data is saved in the home directory:</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@computer:~$ </span>tree
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.</span>
+<span class="go">├── 202305010900_U2OS_small_set_VMSC00000</span>
+<span class="go">│   └── region_0</span>
+<span class="go">│       ├── 202305010900_U2OS_small_set_VMSC00000_region_0.vzg</span>
+<span class="go">│       ├── detected_transcripts.csv</span>
+<span class="go">│       ├── images</span>
+<span class="go">│       │   ├── manifest.json</span>
+<span class="go">│       │   ├── micron_to_mosaic_pixel_transform.csv</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z0.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z1.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z2.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z3.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z4.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z5.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound1_z6.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z0.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z1.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z2.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z3.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z4.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z5.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound2_z6.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z0.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z1.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z2.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z3.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z4.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z5.tif</span>
+<span class="go">│       │   ├── mosaic_Cellbound3_z6.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z0.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z1.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z2.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z3.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z4.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z5.tif</span>
+<span class="go">│       │   ├── mosaic_DAPI_z6.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z0.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z1.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z2.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z3.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z4.tif</span>
+<span class="go">│       │   ├── mosaic_PolyT_z5.tif</span>
+<span class="go">│       │   └── mosaic_PolyT_z6.tif</span>
+<span class="go">└── example_analysis_algorithm</span>
+<span class="go">    ├── cellpose_default_1_ZLevel.json</span>
+<span class="go">    ├── cellpose_default_3_ZLevel.json</span>
+<span class="go">    ├── cellpose_default_3_ZLevel_nuclei_only.json</span>
+<span class="go">    └── watershed_default.json</span>
+
+<span class="go">4 directories, 43 files</span>
+</pre></div>
+</div>
+<p>In this example workflow, all of the analysis output files will be saved to <code class="docutils literal notranslate"><span class="pre">~/analysis_outputs</span></code>.</p>
+</section>
+<section id="step-1-install-vpt-in-a-virtual-environment">
+<h2>Step 1: Install vpt in a Virtual Environment<a class="headerlink" href="#step-1-install-vpt-in-a-virtual-environment" title="Permalink to this headline"></a></h2>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@computer:~$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/.venv/vpt_env
+<span class="gp">user@computer:~$ </span><span class="nb">source</span><span class="w"> </span>.venv/vpt_env/bin/activate
+<span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>pip<span class="w"> </span>install<span class="w"> </span>vpt
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[ pip installation progress trimmed for brevity ]</span>
+
+<span class="go">Successfully installed MarkupSafe-2.1.2 Pillow-9.4.0 PyWavelets-1.4.1 absl-py-1.4.0 affine-2.4.0 aiobotocore-1.4.2</span>
+<span class="go">aiohttp-3.8.4 aioitertools-0.11.0 aiosignal-1.3.1 astunparse-1.6.3 async-timeout-4.0.2 attrs-22.2.0 boto3-1.17.0</span>
+<span class="go">botocore-1.20.106 cachetools-5.3.0 cellpose-1.0.2 certifi-2022.12.7 cffi-1.15.1 charset-normalizer-3.0.1 click-8.1.3</span>
+<span class="go">click-plugins-1.1.1 cligj-0.7.2 cloudpickle-2.2.1 contourpy-1.0.7 csbdeep-0.7.3 cycler-0.11.0 dask-2022.9.0</span>
+<span class="go">decorator-5.1.1 distributed-2022.9.0 fastremap-1.13.4 fiona-1.9.1 flatbuffers-1.12 fonttools-4.38.0 frozenlist-1.3.3</span>
+<span class="go">fsspec-2021.10.0 gast-0.4.0 gcsfs-2021.10.0 geojson-2.5.0 geopandas-0.12.1 google-auth-2.16.1 google-auth-oauthlib-0.4.6</span>
+<span class="go">google-pasta-0.2.0 grpcio-1.51.3 h5py-3.7.0 heapdict-1.0.1 idna-3.4 imageio-2.25.1 jinja2-3.1.2 jmespath-0.10.0</span>
+<span class="go">keras-2.9.0 keras-preprocessing-1.1.2 kiwisolver-1.4.4 libclang-15.0.6.1 llvmlite-0.39.1 locket-1.0.0 markdown-3.4.1</span>
+<span class="go">matplotlib-3.7.0 msgpack-1.0.4 multidict-6.0.4 munch-2.5.0 natsort-8.2.0 networkx-3.0 numba-0.56.4 numpy-1.22.4</span>
+<span class="go">nvidia-cublas-cu11-11.10.3.66 nvidia-cuda-nvrtc-cu11-11.7.99 nvidia-cuda-runtime-cu11-11.7.99 nvidia-cudnn-cu11-8.5.0.96</span>
+<span class="go">oauthlib-3.2.2 opencv-python-headless-4.6.0.66 opt-einsum-3.3.0 packaging-23.0 pandas-1.4.3 partd-1.3.0 protobuf-3.19.6</span>
+<span class="go">psutil-5.9.4 pyarrow-8.0.0 pyasn1-0.4.8 pyasn1-modules-0.2.8 pyclustering-0.10.1.2 pycparser-2.21 pyparsing-3.0.9</span>
+<span class="go">pyproj-3.4.1 python-dateutil-2.8.2 python-dotenv-0.20.0 pytz-2022.7.1 pyvips-2.2.1 pyyaml-6.0 rasterio-1.3.0</span>
+<span class="go">requests-2.28.2 requests-oauthlib-1.3.1 rsa-4.9 s3fs-2021.10.0 s3transfer-0.3.7 scikit-image-0.19.3 scipy-1.8.1</span>
+<span class="go">shapely-2.0.0 six-1.16.0 snuggs-1.4.7 sortedcontainers-2.4.0 stardist-0.8.3 tblib-1.7.0 tensorboard-2.9.1</span>
+<span class="go">tensorboard-data-server-0.6.1 tensorboard-plugin-wit-1.8.1 tensorflow-2.9.1 tensorflow-estimator-2.9.0</span>
+<span class="go">tensorflow-io-gcs-filesystem-0.30.0 termcolor-2.2.0 tifffile-2023.2.3 toolz-0.12.0 torch-1.13.1 tornado-6.1 tqdm-4.64.1</span>
+<span class="go">typing-extensions-4.5.0 urllib3-1.26.14 vpt-1.0.1 werkzeug-2.2.3 wheel-0.38.4 wrapt-1.14.1 yarl-1.8.2 zict-2.2.0</span>
+</pre></div>
+</div>
+<p>After installation, use the help function to confirm that vpt is installed correctly.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--help
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">usage: vpt [OPTIONS] COMMAND [arguments]</span>
+
+<span class="go">Commands:</span>
+
+<span class="go">    run-segmentation    Top-level interface for this CLI which invokes the segmentation functionality of the tool. It is intended for users who would like to run the program with minimal</span>
+<span class="go">                        additional configuration. Specifically, it executes: prepare-segmentation, run-segmentation-on-tile, and compile-tile-segmentation.</span>
+<span class="go">    prepare-segmentation</span>
+<span class="go">                        Generates a segmentation specification json file to be used for cell segmentation tasks. The segmentation specification json includes specification for the algorithm</span>
+<span class="go">                        to run, the paths for all images for each stain for each z index, the micron to mosaic pixel transformation matrix, the number of tiles, and the window coordinates for</span>
+<span class="go">                        each tile.</span>
+<span class="go">    run-segmentation-on-tile</span>
+<span class="go">                        Executes the segmentation algorithm on a specific tile of the mosaic images. This functionality is intended both for visualizing a preview of the segmentation (run</span>
+<span class="go">                        only one tile), and for distributing jobs using an orchestration tool such as Nextflow.</span>
+<span class="go">    compile-tile-segmentation</span>
+<span class="go">                        Combines the per-tile segmentation outputs into a single, internally-consistent parquet file containing all of the segmentation boundaries found in the experiment.</span>
+<span class="go">    derive-entity-metadata</span>
+<span class="go">                        Uses the segmentation boundaries to calculate the geometric attributes of each Entity. These attributes include the position, volume, and morphological features.</span>
+<span class="go">    partition-transcripts</span>
+<span class="go">                        Uses the segmentation boundaries to determine which Entity, if any, contains each detected transcript. Outputs an Entity by gene matrix, and may optionally output a</span>
+<span class="go">                        detected transcript csv with an additional column indicating the containing Entity.</span>
+<span class="go">    sum-signals         Uses the segmentation boundaries to find the intensity of each mosaic image in each Entity. Outputs both the summed intensity of the raw images and the summed</span>
+<span class="go">                        intensity of high-pass filtered images (reduces the effect of background fluorescence).</span>
+<span class="go">    update-vzg          Updates an existing .vzg file with new segmentation boundaries and the corresponding expression matrix. NOTE: This functionality requires enough disk space to unpack</span>
+<span class="go">                        the existing .vzg file.</span>
+<span class="go">    convert-geometry    Converts entity boundaries produced by a different tool into a vpt compatible parquet file. In the process, each of the input entities is checked for geometric</span>
+<span class="go">                        validity, overlap with other geometries, and assigned a globally-unique EntityID to facilitate other processing steps.</span>
+<span class="go">    convert-to-ome      Transforms the large 16-bit mosaic tiff images produced by the MERSCOPE™ into a OME pyramidal tiff.</span>
+<span class="go">    convert-to-rgb-ome  Converts up to three flat tiff images into a rgb OME-tiff pyramidal images. If a rgb channel input isn’t specified, the channel will be dark (all 0’s).</span>
+
+<span class="go">Options:</span>
+<span class="go">--processes PROCESSES</span>
+<span class="go">                        Number of parallel processes to use when executing locally</span>
+<span class="go">--aws-profile-name AWS_PROFILE_NAME</span>
+<span class="go">                        Named profile for AWS access</span>
+<span class="go">--aws-access-key AWS_ACCESS_KEY</span>
+<span class="go">                        AWS access key from key / secret pair</span>
+<span class="go">--aws-secret-key AWS_SECRET_KEY</span>
+<span class="go">                        AWS secret from key / secret pair</span>
+<span class="go">--gcs-service-account-key GCS_SERVICE_ACCOUNT_KEY</span>
+<span class="go">                        Path to a google service account key json file. Not needed if google authentication is performed using gcloud</span>
+<span class="go">--verbose             Display progress messages during execution</span>
+<span class="go">--profile-execution-time PROFILE_EXECUTION_TIME</span>
+<span class="go">                        Path to profiler output file</span>
+<span class="go">--log-level LOG_LEVEL</span>
+<span class="go">                        Log level value. Level is specified as a number from 1 - 5, corresponding to debug, info, warning, error, crit</span>
+<span class="go">--log-file LOG_FILE   Path to log output file. If not provided, logs are written to standard output</span>
+<span class="go">-h, --help            Show this help message and exit</span>
+
+<span class="go">Run &#39;vpt COMMAND --help&#39; for more information on a command.</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-identify-cell-boundaries-from-images-cell-segmentation">
+<h2>Step 2: Identify Cell Boundaries from Images (Cell Segmentation)<a class="headerlink" href="#step-2-identify-cell-boundaries-from-images-cell-segmentation" title="Permalink to this headline"></a></h2>
+<p>Before running cell segmentation, check to see if the number of z-layers in the segmentation algorithm json file matches the
+number of z-layers in the input data.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>head<span class="w"> </span>example_analysis_algorithm/cellpose_default_1_ZLevel.json
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">{</span>
+<span class="go">&quot;experiment_properties&quot;: {</span>
+<span class="go">    &quot;all_z_indexes&quot;: [0, 1, 2, 3, 4, 5, 6],</span>
+<span class="go">    &quot;z_positions_um&quot;: [1.5, 3, 4.5, 6, 7.5, 9, 10.5]</span>
+<span class="go">},</span>
+<span class="go">&quot;segmentation_tasks&quot;: [</span>
+<span class="go">    {</span>
+<span class="go">    &quot;task_id&quot;: 0,</span>
+<span class="go">    &quot;segmentation_family&quot;: &quot;Cellpose&quot;,</span>
+<span class="go">    &quot;entity_types_detected&quot;: [</span>
+</pre></div>
+</div>
+<p>The images are numbered 0 - 6 <em>(see above)</em>, and <code class="docutils literal notranslate"><span class="pre">all_z_indexes</span></code> also ranges from 0 - 6.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the experimental data does not match the segmentation algorithm json file, it is important to edit the json file. The
+<code class="docutils literal notranslate"><span class="pre">run-segmentation</span></code> command will proceed as normal with a mismatched json file, but partitioning transcripts into cells
+and updating the .vzg file will produce errors.</p>
+</div>
+<p>Now that the segmentation algorithm has been confirmed to describe what should be done, it is safe to run segmentation.</p>
+<p>This example shows some optional parameters that were set to optimize memory usage when running on a laptop:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--processes</span> <span class="pre">4</span></code> — Each process running with Cellpose consumes &gt; 2 GB of memory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--tile-size</span> <span class="pre">2400</span></code> — Larger tiles require more memory per process</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--tile-overlap</span> <span class="pre">200</span></code> — The <code class="docutils literal notranslate"><span class="pre">tile-overlap</span></code> is padded outward from each tile, minimizing it reduces image size</p></li>
+</ul>
+<p>For more information about the options and arguments that may be passed to <code class="docutils literal notranslate"><span class="pre">run-segmentation</span></code>, please see the
+<a class="reference internal" href="../command_line_interface/index.html#command-line-interface"><span class="std std-ref">Command Line Interface</span></a> section of the user guide.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>--processes<span class="w"> </span><span class="m">4</span><span class="w"> </span>run-segmentation<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--segmentation-algorithm<span class="w"> </span>example_analysis_algorithm/cellpose_default_1_ZLevel.json<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-images<span class="o">=</span><span class="s2">&quot;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-micron-to-mosaic<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-path<span class="w"> </span>analysis_outputs<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--tile-size<span class="w"> </span><span class="m">2400</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--tile-overlap<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-02-22 13:59:28,176 - . - INFO - run run-segmentation with args:Namespace(segmentation_algorithm=&#39;example_analysis_algorithm/cellpose_default_1_ZLevel.json&#39;, input_images=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&#39;, input_micron_to_mosaic=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv&#39;, output_path=&#39;analysis_outputs&#39;, tile_size=2400, tile_overlap=200, max_row_group_size=17500, overwrite=False)</span>
+<span class="go">2023-02-22 13:59:28,177 - . - INFO - run_segmentation started</span>
+<span class="go">2023-02-22 13:59:28,354 - . - INFO - prepare segmentation started</span>
+<span class="go">2023-02-22 13:59:28,419 - . - INFO - prepare segmentation finished</span>
+<span class="go">2023-02-22 13:59:29,842 - ./task-2 - INFO - Run segmentation on tile 2 started</span>
+<span class="go">2023-02-22 13:59:29,842 - ./task-3 - INFO - Run segmentation on tile 3 started</span>
+<span class="go">2023-02-22 13:59:29,842 - ./task-2 - INFO - Tile 2 [0, 1160, 2800, 2800]</span>
+<span class="go">2023-02-22 13:59:29,843 - ./task-0 - INFO - Run segmentation on tile 0 started</span>
+<span class="go">2023-02-22 13:59:29,843 - ./task-0 - INFO - Tile 0 [0, 0, 2800, 2800]</span>
+<span class="go">2023-02-22 13:59:29,843 - ./task-3 - INFO - Tile 3 [1153, 1160, 2800, 2800]</span>
+<span class="go">2023-02-22 13:59:29,848 - ./task-1 - INFO - Run segmentation on tile 1 started</span>
+<span class="go">2023-02-22 13:59:29,849 - ./task-1 - INFO - Tile 1 [1153, 0, 2800, 2800]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:02&lt;00:00, 9.30MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3.54k/3.54k [00:00&lt;00:00, 17.2MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:04&lt;00:00, 6.57MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:08&lt;00:00, 3.27MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:08&lt;00:00, 3.06MB/s]</span>
+<span class="go">2023-02-22 14:01:08,670 - ./task-3 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:01:08,825 - ./task-3 - INFO - get_polygons_from_mask: z=0, labels:454</span>
+<span class="go">2023-02-22 14:01:11,088 - ./task-1 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:01:11,242 - ./task-1 - INFO - get_polygons_from_mask: z=0, labels:441</span>
+<span class="go">2023-02-22 14:01:12,748 - ./task-2 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:01:12,907 - ./task-2 - INFO - get_polygons_from_mask: z=0, labels:445</span>
+<span class="go">2023-02-22 14:01:14,018 - ./task-0 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:01:14,172 - ./task-0 - INFO - get_polygons_from_mask: z=0, labels:450</span>
+<span class="go">2023-02-22 14:01:20,943 - ./task-3 - INFO - raw segmentation result contains 410 rows</span>
+<span class="go">2023-02-22 14:01:20,943 - ./task-3 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:01:21,220 - ./task-3 - INFO - remove edge polys</span>
+<span class="go">2023-02-22 14:01:22,735 - ./task-1 - INFO - raw segmentation result contains 403 rows</span>
+<span class="go">2023-02-22 14:01:22,736 - ./task-1 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:01:22,946 - ./task-1 - INFO - remove edge polys</span>
+<span class="go">4%|██████▏                                                                                                                                                | 1.03M/25.3M [00:00&lt;00:16, 1.50MB/s]2023-02-22 14:01:25,032 - ./task-2 - INFO - raw segmentation result contains 397 rows</span>
+<span class="go">2023-02-22 14:01:25,033 - ./task-2 - INFO - fuze across z</span>
+<span class="go">10%|███████████████▊                                                                                                                                       | 2.66M/25.3M [00:01&lt;00:09, 2.54MB/s]2023-02-22 14:01:25,609 - ./task-2 - INFO - remove edge polys</span>
+<span class="go">35%|████████████████████████████████████████████████████▋                                                                                                  | 8.84M/25.3M [00:03&lt;00:03, 5.22MB/s]2023-02-22 14:01:27,075 - ./task-0 - INFO - raw segmentation result contains 414 rows</span>
+<span class="go">2023-02-22 14:01:27,075 - ./task-0 - INFO - fuze across z</span>
+<span class="go">11%|████████████████▍                                                                                                                                      | 2.75M/25.3M [00:01&lt;00:09, 2.44MB/s]2023-02-22 14:01:27,534 - ./task-0 - INFO - remove edge polys</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:05&lt;00:00, 4.84MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3.54k/3.54k [00:00&lt;00:00, 15.9MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:06&lt;00:00, 4.06MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:05&lt;00:00, 4.83MB/s]</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25.3M/25.3M [00:06&lt;00:00, 4.18MB/s]</span>
+<span class="go">2023-02-22 14:01:59,720 - ./task-3 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:01:59,890 - ./task-3 - INFO - get_polygons_from_mask: z=0, labels:323</span>
+<span class="go">2023-02-22 14:02:03,450 - ./task-1 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:02:03,512 - ./task-2 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:02:03,585 - ./task-1 - INFO - get_polygons_from_mask: z=0, labels:340</span>
+<span class="go">2023-02-22 14:02:03,662 - ./task-2 - INFO - get_polygons_from_mask: z=0, labels:317</span>
+<span class="go">2023-02-22 14:02:06,188 - ./task-3 - INFO - raw segmentation result contains 320 rows</span>
+<span class="go">2023-02-22 14:02:06,189 - ./task-3 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:02:06,443 - ./task-3 - INFO - remove edge polys</span>
+<span class="go">2023-02-22 14:02:06,865 - ./task-0 - INFO - generate_polygons_from_mask</span>
+<span class="go">2023-02-22 14:02:07,058 - ./task-0 - INFO - get_polygons_from_mask: z=0, labels:333</span>
+<span class="go">2023-02-22 14:02:07,878 - ./task-3 - INFO - fuse_task_polygons</span>
+<span class="go">2023-02-22 14:02:08,174 - ./task-3 - INFO - Found 416 overlaps</span>
+<span class="go">2023-02-22 14:02:10,767 - ./task-2 - INFO - raw segmentation result contains 312 rows</span>
+<span class="go">2023-02-22 14:02:10,767 - ./task-2 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:02:10,774 - ./task-1 - INFO - raw segmentation result contains 336 rows</span>
+<span class="go">2023-02-22 14:02:10,774 - ./task-1 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:02:10,900 - ./task-2 - INFO - remove edge polys</span>
+<span class="go">2023-02-22 14:02:10,938 - ./task-1 - INFO - remove edge polys</span>
+<span class="go">2023-02-22 14:02:11,910 - ./task-2 - INFO - fuse_task_polygons</span>
+<span class="go">2023-02-22 14:02:12,081 - ./task-1 - INFO - fuse_task_polygons</span>
+<span class="go">2023-02-22 14:02:12,126 - ./task-2 - INFO - Found 377 overlaps</span>
+<span class="go">2023-02-22 14:02:12,327 - ./task-1 - INFO - Found 433 overlaps</span>
+<span class="go">2023-02-22 14:02:13,291 - ./task-3 - INFO - After union of large overlaps, found 102 overlaps</span>
+<span class="go">2023-02-22 14:02:14,051 - ./task-0 - INFO - raw segmentation result contains 329 rows</span>
+<span class="go">2023-02-22 14:02:14,052 - ./task-0 - INFO - fuze across z</span>
+<span class="go">2023-02-22 14:02:14,235 - ./task-0 - INFO - remove edge polys</span>
+<span class="go">2023-02-22 14:02:15,060 - ./task-3 - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2023-02-22 14:02:15,250 - ./task-0 - INFO - fuse_task_polygons</span>
+<span class="go">2023-02-22 14:02:15,477 - ./task-0 - INFO - Found 418 overlaps</span>
+<span class="go">2023-02-22 14:02:15,698 - ./task-3 - INFO - Run segmentation on tile 3 finished</span>
+<span class="go">2023-02-22 14:02:16,034 - ./task-2 - INFO - After union of large overlaps, found 85 overlaps</span>
+<span class="go">2023-02-22 14:02:16,477 - ./task-1 - INFO - After union of large overlaps, found 104 overlaps</span>
+<span class="go">2023-02-22 14:02:17,217 - ./task-2 - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2023-02-22 14:02:17,671 - ./task-2 - INFO - Run segmentation on tile 2 finished</span>
+<span class="go">2023-02-22 14:02:17,836 - ./task-1 - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2023-02-22 14:02:18,149 - ./task-1 - INFO - Run segmentation on tile 1 finished</span>
+<span class="go">2023-02-22 14:02:18,657 - ./task-0 - INFO - After union of large overlaps, found 89 overlaps</span>
+<span class="go">2023-02-22 14:02:19,494 - ./task-0 - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2023-02-22 14:02:19,836 - ./task-0 - INFO - Run segmentation on tile 0 finished</span>
+<span class="go">2023-02-22 14:02:21,359 - . - INFO - Compile tile segmentation started</span>
+<span class="go">2023-02-22 14:02:21,361 - . - INFO - Loading segmentation results</span>
+<span class="go">100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:00&lt;00:00, 29.44it/s]</span>
+<span class="go">2023-02-22 14:02:21,499 - . - INFO - Loaded results for 4 tiles</span>
+<span class="go">2023-02-22 14:02:21,510 - . - INFO - Concatenated dataframes</span>
+<span class="go">2023-02-22 14:02:22,153 - . - INFO - Found 2061 overlaps</span>
+<span class="go">100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2061/2061 [00:06&lt;00:00, 305.05it/s]</span>
+<span class="go">2023-02-22 14:02:29,276 - . - INFO - After union of large overlaps, found 437 overlaps</span>
+<span class="go">100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 437/437 [00:04&lt;00:00, 108.20it/s]</span>
+<span class="go">2023-02-22 14:02:33,402 - . - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2023-02-22 14:02:33,562 - . - INFO - Resolved overlapping in the compiled dataframe</span>
+<span class="go">2023-02-22 14:02:33,622 - . - INFO - Saved compiled dataframe in micron space</span>
+<span class="go">2023-02-22 14:02:33,755 - . - INFO - Saved compiled dataframe in mosaic space</span>
+<span class="go">2023-02-22 14:02:33,755 - . - INFO - Compile tile segmentation finished</span>
+<span class="go">2023-02-22 14:02:33,758 - . - INFO - run_segmentation finished</span>
+</pre></div>
+</div>
+<p>After segmentation is complete, new files are present in the output folder, in this case <code class="docutils literal notranslate"><span class="pre">~/analysis_outputs</span></code></p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>tree<span class="w"> </span>analysis_outputs/
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">analysis_outputs/</span>
+<span class="go">├── cellpose_micron_space.parquet</span>
+<span class="go">├── cellpose_mosaic_space.parquet</span>
+<span class="go">├── result_tiles</span>
+<span class="go">│   ├── 0.parquet</span>
+<span class="go">│   ├── 1.parquet</span>
+<span class="go">│   ├── 2.parquet</span>
+<span class="go">│   └── 3.parquet</span>
+<span class="go">└── segmentation_specification.json</span>
+
+<span class="go">1 directory, 7 files</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cellpose_micron_space.parquet</span></code> — The primary output of the segmentation. This table contains the EntityIDs for the
+cells and the geometries in units of microns. This file is used throught the rest of the vpt workflow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cellpose_mosaic_space.parquet</span></code> — A secondary output of the segmentation. This table contains the EntityIDs for the
+cells and the geometries in units of pixels. This file can be helpful for generating plots of cell outlines with the mosaic
+tiff images, but is not used by vpt.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">segmentation_specification.json</span></code> — A full specification of the segmentation process including file paths. Useful for
+reproducing analysis or running specific tiles of the segmentation again.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_tiles</span></code> folder — The tile outputs that were combined into the <code class="docutils literal notranslate"><span class="pre">cellpose_micron_space.parquet</span></code> file. Primarily
+useful for troubleshooting, can be safely discarded after analysis completes successfully.</p></li>
+</ul>
+</section>
+<section id="step-2-partition-transcripts-into-cells">
+<h2>Step 2: Partition Transcripts into Cells<a class="headerlink" href="#step-2-partition-transcripts-into-cells" title="Permalink to this headline"></a></h2>
+<p>Now that the cell boundaries are defined, vpt can use the boundaries to group (or partition) transcripts into cells.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>partition-transcripts<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-transcripts<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/detected_transcripts.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-transcripts<span class="w"> </span>analysis_outputs/detected_transcripts.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-02-22 14:19:17,153 - . - INFO - run partition-transcripts with args:Namespace(input_boundaries=&#39;analysis_outputs/cellpose_micron_space.parquet&#39;, input_transcripts=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/detected_transcripts.csv&#39;, output_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, chunk_size=10000000, output_transcripts=&#39;analysis_outputs/detected_transcripts.csv&#39;, overwrite=False)</span>
+<span class="go">2023-02-22 14:19:17,161 - . - INFO - Partition transcripts started</span>
+<span class="go">/home/user/.venv/vpt_env/lib/python3.10/site-packages/pandas/core/indexes/base.py:6982: FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)</span>
+<span class="go">return Index(sequences[0], name=names)</span>
+<span class="go">2023-02-22 14:19:22,298 - . - INFO - cell by gene matrix saved as analysis_outputs/cell_by_gene.csv</span>
+<span class="go">2023-02-22 14:19:22,298 - . - INFO - detected transcripts saved as analysis_outputs/detected_transcripts.csv</span>
+<span class="go">2023-02-22 14:19:22,298 - . - INFO - Partition transcripts finished</span>
+</pre></div>
+</div>
+<p>After transcript processing is complete, new files are present in the output folder:</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>tree<span class="w"> </span>analysis_outputs/
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">analysis_outputs/</span>
+<span class="go">├── cell_by_gene.csv</span>
+<span class="go">├── cellpose_micron_space.parquet</span>
+<span class="go">├── cellpose_mosaic_space.parquet</span>
+<span class="go">├── detected_transcripts.csv</span>
+<span class="go">├── result_tiles</span>
+<span class="go">│   ├── 0.parquet</span>
+<span class="go">│   ├── 1.parquet</span>
+<span class="go">│   ├── 2.parquet</span>
+<span class="go">│   └── 3.parquet</span>
+<span class="go">└── segmentation_specification.json</span>
+
+<span class="go">1 directory, 9 files</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_by_gene.csv</span></code> — The raw count of transcripts of each targeted gene in each cell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">detected_transcripts.csv</span></code> — A copy of the original <code class="docutils literal notranslate"><span class="pre">detected_transcripts.csv</span></code> file with an added column for EntityID.
+Because the type of the Entity is specified as &quot;cell&quot; in the segmentation algorithm json file, the column name is &quot;cell_id.&quot;</p>
+<p>Printing the first 10 lines of each file demonstrates the difference:</p>
+</li>
+</ul>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>head<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/detected_transcripts.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">,barcode_id,global_x,global_y,global_z,x,y,fov,gene,transcript_id</span>
+<span class="go">63,10,370.95007,5.520504,0.0,1611.833,110.285774,0,AKAP11,ENST00000025301.3</span>
+<span class="go">68,10,355.46716,6.4616404,0.0,1468.4725,119.0,0,AKAP11,ENST00000025301.3</span>
+<span class="go">71,10,371.31482,7.4345083,0.0,1615.2103,128.00804,0,AKAP11,ENST00000025301.3</span>
+<span class="go">77,10,347.71286,8.297641,0.0,1396.6736,136.0,0,AKAP11,ENST00000025301.3</span>
+<span class="go">81,10,389.76013,9.377641,0.0,1786.0,146.0,0,AKAP11,ENST00000025301.3</span>
+<span class="go">86,10,285.00012,10.13364,0.0,816.0,153.0,0,AKAP11,ENST00000025301.3</span>
+<span class="go">90,10,255.08412,11.429641,0.0,539.0,165.0,0,AKAP11,ENST00000025301.3</span>
+<span class="go">91,10,238.5847,11.699728,0.0,386.2277,167.50081,0,AKAP11,ENST00000025301.3</span>
+<span class="go">106,10,220.53308,14.170068,0.0,219.08304,190.37433,0,AKAP11,ENST00000025301.3</span>
+</pre></div>
+</div>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>head<span class="w"> </span>analysis_outputs/detected_transcripts.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">,barcode_id,global_x,global_y,global_z,x,y,fov,gene,transcript_id,cell_id</span>
+<span class="go">63,10,370.95007,5.520504,0.0,1611.833,110.285774,0,AKAP11,ENST00000025301.3,1535046800001100032</span>
+<span class="go">68,10,355.46716,6.4616404,0.0,1468.4725,119.0,0,AKAP11,ENST00000025301.3,1535046800001200009</span>
+<span class="go">71,10,371.31482,7.4345083,0.0,1615.2103,128.00804,0,AKAP11,ENST00000025301.3,1535046800001100032</span>
+<span class="go">77,10,347.71286,8.297641,0.0,1396.6736,136.0,0,AKAP11,ENST00000025301.3,1535046800001100038</span>
+<span class="go">81,10,389.76013,9.377641,0.0,1786.0,146.0,0,AKAP11,ENST00000025301.3,1535046800001100030</span>
+<span class="go">86,10,285.00012,10.13364,0.0,816.0,153.0,0,AKAP11,ENST00000025301.3,1535046800000100004</span>
+<span class="go">90,10,255.08412,11.429641,0.0,539.0,165.0,0,AKAP11,ENST00000025301.3,1535046800000100018</span>
+<span class="go">91,10,238.5847,11.699728,0.0,386.2277,167.50081,0,AKAP11,ENST00000025301.3,1535046800001100034</span>
+<span class="go">106,10,220.53308,14.170068,0.0,219.08304,190.37433,0,AKAP11,ENST00000025301.3,1535046800000100022</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-calculate-cell-metadata">
+<h2>Step 3: Calculate Cell Metadata<a class="headerlink" href="#step-3-calculate-cell-metadata" title="Permalink to this headline"></a></h2>
+<p>One benefit of MERSCOPE™ data is having information about each cell beyond its transcript contents. These data are summarized in a cell
+metadata file and sum signals file.</p>
+<p>The cell metadata file has annotation about the location, size, and shape of each cell that can be used to identify cell
+neighbors, sort cells into cell types, filter low quality cells, etc.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>derive-entity-metadata<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-metadata<span class="w"> </span>analysis_outputs/cell_metadata.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-02-22 14:23:20,889 - . - INFO - run derive-entity-metadata with args:Namespace(input_boundaries=&#39;analysis_outputs/cellpose_micron_space.parquet&#39;, output_metadata=&#39;analysis_outputs/cell_metadata.csv&#39;, input_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, overwrite=False)</span>
+<span class="go">2023-02-22 14:23:20,890 - . - INFO - Derive cell metadata started</span>
+<span class="go">2023-02-22 14:23:21,637 - . - INFO - Derive cell metadata finished</span>
+</pre></div>
+</div>
+<p>The sum signals file has information about the brightness of each mosaic tiff image within each cell. This is most useful
+when combined with the Vizgen MERSCOPE™ Protein Co-Detection Kit to identify cells that express the markers of interest. In
+experiments without protein co-detection, the sum signals output is useful to filter low-quality cells by DAPI or PolyT
+content.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>sum-signals<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-images<span class="o">=</span><span class="s2">&quot;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-micron-to-mosaic<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-csv<span class="w"> </span>analysis_outputs/sum_signals.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-02-22 14:25:41,969 - . - INFO - run sum-signals with args:Namespace(input_images=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&#39;, input_boundaries=&#39;analysis_outputs/cellpose_micron_space.parquet&#39;, input_micron_to_mosaic=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv&#39;, output_csv=&#39;analysis_outputs/sum_signals.csv&#39;, overwrite=False)</span>
+<span class="go">2023-02-22 14:25:42,026 - . - INFO - Sum signals started</span>
+<span class="go">2023-02-22 14:25:42,106 - . - INFO - output structures prepared</span>
+<span class="go">2023-02-22 14:25:42,106 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z5.tif started</span>
+<span class="go">2023-02-22 14:25:43,654 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z3.tif started</span>
+<span class="go">2023-02-22 14:25:45,243 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z2.tif started</span>
+<span class="go">2023-02-22 14:25:46,723 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z3.tif started</span>
+<span class="go">2023-02-22 14:25:48,401 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z5.tif started</span>
+<span class="go">2023-02-22 14:25:49,993 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z6.tif started</span>
+<span class="go">2023-02-22 14:25:51,545 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z0.tif started</span>
+<span class="go">2023-02-22 14:25:53,226 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z0.tif started</span>
+<span class="go">2023-02-22 14:25:54,900 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z4.tif started</span>
+<span class="go">2023-02-22 14:25:56,446 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z2.tif started</span>
+<span class="go">2023-02-22 14:25:57,995 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z0.tif started</span>
+<span class="go">2023-02-22 14:25:59,540 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z1.tif started</span>
+<span class="go">2023-02-22 14:26:01,271 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z2.tif started</span>
+<span class="go">2023-02-22 14:26:02,970 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z4.tif started</span>
+<span class="go">2023-02-22 14:26:04,576 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z2.tif started</span>
+<span class="go">2023-02-22 14:26:06,164 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z5.tif started</span>
+<span class="go">2023-02-22 14:26:07,729 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z6.tif started</span>
+<span class="go">2023-02-22 14:26:09,300 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z4.tif started</span>
+<span class="go">2023-02-22 14:26:10,923 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z3.tif started</span>
+<span class="go">2023-02-22 14:26:12,499 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z6.tif started</span>
+<span class="go">2023-02-22 14:26:14,080 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z1.tif started</span>
+<span class="go">2023-02-22 14:26:15,735 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z1.tif started</span>
+<span class="go">2023-02-22 14:26:17,334 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound1_z4.tif started</span>
+<span class="go">2023-02-22 14:26:18,988 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z6.tif started</span>
+<span class="go">2023-02-22 14:26:20,706 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound3_z1.tif started</span>
+<span class="go">2023-02-22 14:26:22,314 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z4.tif started</span>
+<span class="go">2023-02-22 14:26:23,966 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z5.tif started</span>
+<span class="go">2023-02-22 14:26:25,572 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z0.tif started</span>
+<span class="go">2023-02-22 14:26:27,162 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z1.tif started</span>
+<span class="go">2023-02-22 14:26:28,796 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z3.tif started</span>
+<span class="go">2023-02-22 14:26:30,387 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z6.tif started</span>
+<span class="go">2023-02-22 14:26:32,148 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_PolyT_z2.tif started</span>
+<span class="go">2023-02-22 14:26:33,790 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z5.tif started</span>
+<span class="go">2023-02-22 14:26:35,416 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_DAPI_z0.tif started</span>
+<span class="go">2023-02-22 14:26:37,033 - . - INFO - sum_signals.calculate for /home/user/202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_Cellbound2_z3.tif started</span>
+<span class="go">0%|                                                                                                                                                                     | 0/35 [00:00&lt;?, ?it/s]2023-02-22 14:26:38,838 - . - INFO - all jobs finished</span>
+<span class="go">100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00&lt;00:00, 1307.91it/s]</span>
+<span class="go">2023-02-22 14:26:38,865 - . - INFO - results combined</span>
+<span class="go">2023-02-22 14:26:38,873 - . - INFO - Sum signals finished</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-update-the-vzg-file">
+<h2>Step 4: Update the .vzg File<a class="headerlink" href="#step-4-update-the-vzg-file" title="Permalink to this headline"></a></h2>
+<p>In order to examine the new cell boundaries in the Vizgen MERSCOPE™ Vizualizer, vpt is able to open and modify an existing
+.vzg file.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span><span class="w"> </span>update-vzg<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-vzg<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/202305010900_U2OS_small_set_VMSC00000_region_0.vzg<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span><span class="w"> </span>--input-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-metadata<span class="w"> </span>analysis_outputs/cell_metadata.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-vzg<span class="w"> </span>analysis_outputs/202305010900_U2OS_small_set_VMSC00000_region_0_CellPose_PolyT.vzg
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-02-22 14:30:49,640 - . - INFO - run update-vzg with args:Namespace(input_vzg=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/202305010900_U2OS_small_set_VMSC00000_region_0.vzg&#39;, input_boundaries=&#39;analysis_outputs/cellpose_micron_space.parquet&#39;, input_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, output_vzg=&#39;analysis_outputs/202305010900_U2OS_small_set_VMSC00000_region_0_CellPose_PolyT.vzg&#39;, input_metadata=&#39;analysis_outputs/cell_metadata.csv&#39;, temp_path=&#39;/home/wiggin/vzg_build_temp&#39;, overwrite=False)</span>
+<span class="go">202305010900_U2OS_small_set_VMSC00000/region_0/202305010900_U2OS_small_set_VMSC00000_region_0.vzg unpacked!</span>
+<span class="go">2023-02-22 14:30:50,294 - . - INFO - Running cell assembly in 2 processes</span>
+<span class="go">Done fov 0</span>
+<span class="go">2023-02-22 14:31:12,175 - . - INFO - Cells binaries generation completed</span>
+<span class="go">Start calculating expression matrices</span>
+<span class="go">Start calculating coloring arrays</span>
+<span class="go">Finish calculating</span>
+<span class="go">2023-02-22 14:31:12,413 - . - INFO - Assembler data binaries generation complected</span>
+<span class="go">new vzg file created</span>
+<span class="go">temp files deleted</span>
+<span class="go">2023-02-22 14:31:15,982 - . - INFO - Update VZG completed</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Updating the .vzg file requires enough hard drive space to decompress and compress the file. For large experiments this
+may be a significant amount of data (&gt;50 GiB), so ensure that the vpt compute environment has sufficient disk space.</p>
+</div>
+<p>Once the vzg file is updated, it is possible to explore the data in the Vizgen MERSCOPE™ Vizualizer as usual</p>
+<a class="reference internal image-reference" href="../_images/cellpose_segmented_small_dataset.png"><img alt="An image of cells in the Vizgen MERSCOPE™ Vizualizer" src="../_images/cellpose_segmented_small_dataset.png" style="width: 900px;" /></a>
+<p>To download a copy of the Vizgen MERSCOPE™ Vizualizer, visit: <a class="reference external" href="https://portal.vizgen.com/">https://portal.vizgen.com/</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Analysis Vignettes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../experimental_features/index.html" class="btn btn-neutral float-right" title="Experimental Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

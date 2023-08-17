@@ -28,12 +28,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html">
-            <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -107,6 +111,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
 </ul>
 
         </div>
@@ -122,7 +128,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Command Line Interface</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/command_line_interface/index.rst.txt" rel="nofollow"> View page source</a>
@@ -193,7 +199,26 @@
 <dd><p>Path to a json file that fully specifies the segmentation algorithm to use, including algorithm name, any algorithm specific parameters (including path to weights for new model), stains corresponding to each channel in the algorithm.</p>
 </dd>
 <dt><kbd>--input-images</kbd></dt>
-<dd><p>Regular expression containing path that indicates the images to use for the segmentation. The regular expressions can indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). Here, &lt;stain&gt; must match the stains specified in the segmentation algorithm.</p>
+<dd><p>Input images can be specified in one of three ways:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The path to a directory of tiff files if the files are named by the MERSCOPE convention.</dt><dd><p>Example: /path/to/files/</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The path to a directory of tiff files including a python formatting string specifying the file name.</dt><dd><p>Example: /path/to/files/image_{stain}_z{z}.tif</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A regular expression matching the tiff files to be used</dt><dd><p>Example: /path/to/files/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If a formatting string or regular expression are used, it must return values for <code class="docutils literal notranslate"><span class="pre">stain</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> (as in the
+examples above).</p>
 </dd>
 <dt><kbd>--input-micron-to-mosaic</kbd></dt>
 <dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
@@ -234,7 +259,26 @@
 <dd><p>Path to a json file that fully specifies the segmentation algorithm to use, including algorithm name, any algorithm specific parameters (including path to weights for new model), stains corresponding to each channel in the algorithm.</p>
 </dd>
 <dt><kbd>--input-images</kbd></dt>
-<dd><p>Regular expression containing path that indicates the images to use for the segmentation. The regular expressions can indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). Here, &lt;stain&gt; must match the stains specified in the segmentation algorithm.</p>
+<dd><p>Input images can be specified in one of three ways:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The path to a directory of tiff files if the files are named by the MERSCOPE convention.</dt><dd><p>Example: /path/to/files/</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The path to a directory of tiff files including a python formatting string specifying the file name.</dt><dd><p>Example: /path/to/files/image_{stain}_z{z}.tif</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A regular expression matching the tiff files to be used</dt><dd><p>Example: /path/to/files/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If a formatting string or regular expression are used, it must return values for <code class="docutils literal notranslate"><span class="pre">stain</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> (as in the
+examples above).</p>
 </dd>
 <dt><kbd>--output-path</kbd></dt>
 <dd><p>Path where the segmentation specification json file will be saved.</p>
@@ -385,7 +429,26 @@
 <h4>Required arguments<a class="headerlink" href="#required-arguments_repeat6" title="Permalink to this headline"></a></h4>
 <dl class="option-list">
 <dt><kbd>--input-images</kbd></dt>
-<dd><p>Path to images containing regular expressions to indicate the z index (indicated by (?P&lt;z&gt;[0-9]+)) and/or multiple stains (indicated by (?P&lt;stain&gt;[w|-]+)). If only a subset of the mosaic tiffs should be quantified, modify the regular expression accordingly. For example, &quot;mosaic_(?P&lt;stain&gt;DAPI)_z(?P&lt;z&gt;[0-9]+)).tif&quot; would match only DAPI images.</p>
+<dd><p>Input images can be specified in one of three ways:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The path to a directory of tiff files if the files are named by the MERSCOPE convention.</dt><dd><p>Example: /path/to/files/</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The path to a directory of tiff files including a python formatting string specifying the file name.</dt><dd><p>Example: /path/to/files/image_{stain}_z{z}.tif</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A regular expression matching the tiff files to be used</dt><dd><p>Example: /path/to/files/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If a formatting string or regular expression are used, it must return values for <code class="docutils literal notranslate"><span class="pre">stain</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> (as in the
+examples above).</p>
 </dd>
 <dt><kbd>--input-boundaries</kbd></dt>
 <dd><p>Path to a micron-space .parquet boundary file.</p>
@@ -436,6 +499,9 @@
 <dt><kbd>--input-metadata</kbd></dt>
 <dd><p>Path to an existing entity metadata file.</p>
 </dd>
+<dt><kbd>--input-entity-type</kbd></dt>
+<dd><p>Entity type name for detections in input boundaries file.</p>
+</dd>
 <dt><kbd>--temp-path</kbd></dt>
 <dd><p>Path for temporary folder for unzipping vzg file.</p>
 </dd>
@@ -467,6 +533,9 @@
 <dl class="option-list">
 <dt><kbd>--convert-to-3D</kbd></dt>
 <dd><p>Pass if segmentation should be converted from 2D to 3D by replication. Only possible for geojson and parquet input formats.</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the transformation matrix.</p>
 </dd>
 <dt><kbd>--number-z-planes</kbd></dt>
 <dd><p>The number of z planes that should be produced during the conversion from 2D to 3D. Should be specified only if the &quot;--convert-to-3D&quot; argument is passed</p>

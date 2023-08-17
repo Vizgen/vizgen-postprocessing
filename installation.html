@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command Line Interface" href="command_line_interface/index.html" />
-    <link rel="prev" title="Welcome to Vizgen Post-processing Tool&#39;s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to Vizgen Post-processing Tool documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -28,12 +28,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html">
-            <img src="_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -45,6 +49,8 @@
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface/index.html">Command Line Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="segmentation_options/index.html">Segmentation Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experimental_features/index.html">Experimental Features</a></li>
 </ul>
 
         </div>
@@ -60,7 +66,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Installation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
@@ -74,7 +80,7 @@
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
 <dl>
-<dt>Docker Image</dt><dd><p>In order to support a completely reproducible analysis environment, we provide a Docker image of the Vizgen
+<dt>Docker Image</dt><dd><p>In order to support a completely reproducible analysis environment, Vizgen provides a Docker image of the Vizgen
 Post-processing Tool <code class="docutils literal notranslate"><span class="pre">vpt</span></code> that can be deployed locally, in a high-performance compute (HPC) environment, or in the
 cloud. The docker image contains <code class="docutils literal notranslate"><span class="pre">vpt</span></code> and all dependencies, as well as:</p>
 <ul class="simple">
@@ -89,7 +95,7 @@ cloud. The docker image contains <code class="docutils literal notranslate"><spa
 </div>
 </dd>
 <dt>Python Package Index</dt><dd><p>The Vizgen Post-processing Tool <code class="docutils literal notranslate"><span class="pre">vpt</span></code> is available as a Python package. The package may be installed using pip:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt<span class="o">[</span>all<span class="o">]</span>
 </pre></div>
 </div>
 <p>The functionality of <code class="docutils literal notranslate"><span class="pre">vpt</span></code> requires the following system libraries:</p>
@@ -105,11 +111,11 @@ distribution.</p>
 using poetry:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Vizgen/vizgen-postprocessing
 <span class="nb">cd</span><span class="w"> </span>vizgen-postprocessing
-poetry<span class="w"> </span>install
+poetry<span class="w"> </span>install<span class="w"> </span>--all-extras
 </pre></div>
 </div>
 </dd>
-<dt>Post-Install Verification</dt><dd><p>After installation, you may verify that <code class="docutils literal notranslate"><span class="pre">vpt</span></code> is properly configured by running:</p>
+<dt>Post-Install Verification</dt><dd><p>After installation, users can verify that <code class="docutils literal notranslate"><span class="pre">vpt</span></code> is properly configured by running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vpt<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -126,7 +132,7 @@ example:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Vizgen Post-processing Tool&#39;s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Vizgen Post-processing Tool documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="command_line_interface/index.html" class="btn btn-neutral float-right" title="Command Line Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

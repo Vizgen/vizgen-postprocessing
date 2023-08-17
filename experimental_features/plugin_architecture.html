@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building a Third-Party Plugin &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multiple Entities" href="multiple_entities.html" />
+    <link rel="prev" title="Experimental Features" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Experimental Features</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building a Third-Party Plugin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#naming-and-structure">Naming and Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vignette">Vignette</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html">Multiple Entities</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Experimental Features</a></li>
+      <li class="breadcrumb-item active">Building a Third-Party Plugin</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/experimental_features/plugin_architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="building-a-third-party-plugin">
+<h1>Building a Third-Party Plugin<a class="headerlink" href="#building-a-third-party-plugin" title="Permalink to this headline"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">vpt</span></code> plugin architecture allows users to run custom cell segmentation algorithms on their data. This plug-and-play
+structure gives users the ability to have full customization over the segmentation model and parameters they wish to employ,
+so long as it fits the plugin specification and existing workflow. The user can always choose to utilize the previously
+supported segmentation techniques, Cellpose and Watershed.</p>
+<p>Currently, Vizgen provides two pre-built plugins for use in segmentation:</p>
+<ul class="simple">
+<li><p>vpt-plugin-cellpose</p></li>
+<li><p>vpt-plugin-watershed</p></li>
+</ul>
+<p>These packages, <code class="docutils literal notranslate"><span class="pre">vpt-plugin-cellpose</span></code> and <code class="docutils literal notranslate"><span class="pre">vpt-plugin-watershed</span></code>, use the Cellpose and Watershed techniques respectively.
+Reiterating the Installation section, the packages can be installed individually or together using <code class="docutils literal notranslate"><span class="pre">vpt[all]</span></code>.</p>
+<dl>
+<dt>For Cellpose:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt<span class="o">[</span>cellpose<span class="o">]</span>
+</pre></div>
+</div>
+</dd>
+<dt>For Watershed:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt<span class="o">[</span>watershed<span class="o">]</span>
+</pre></div>
+</div>
+</dd>
+<dt>For all:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt<span class="o">[</span>all<span class="o">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="naming-and-structure">
+<h2>Naming and Structure<a class="headerlink" href="#naming-and-structure" title="Permalink to this headline"></a></h2>
+<p>The <strong>segmentation family</strong> is defined in the <a class="reference internal" href="../segmentation_options/segmentation_task_definition.html#segmentation-task-definition"><span class="std std-ref">Segmentation Task Definition</span></a> section. With the plugin architecture,
+packages should be named as such, vpt-plugin-&lt;<strong>segmentation family</strong>&gt;. Examples of this include the two aforementioned
+packages available from Vizgen, <code class="docutils literal notranslate"><span class="pre">vpt-plugin-cellpose</span></code> and <code class="docutils literal notranslate"><span class="pre">vpt-plugin-watershed</span></code>. Similarly, modules
+in the root folder of the plugin need to be of the form, vpt_plugin_&lt;<strong>segmentation family</strong>&gt;.</p>
+<p>After VPT has found the appropriately named module, vpt_plugin_&lt;<strong>segmentation family</strong>&gt;, it will import a sub-module
+named <code class="docutils literal notranslate"><span class="pre">segment.py</span></code> which must exist within the vpt_plugin_&lt;<strong>segmentation family</strong>&gt; module. In this file is where a
+user will import <code class="docutils literal notranslate"><span class="pre">SegmentationBase</span></code> from vpt-core and run mask prediction.</p>
+<p>Within the <code class="docutils literal notranslate"><span class="pre">segment.py</span></code> module, there needs to exist a <code class="docutils literal notranslate"><span class="pre">SegmentationMethod</span></code> class that will inherit the <code class="docutils literal notranslate"><span class="pre">SegmentationBase</span></code> class
+from <code class="docutils literal notranslate"><span class="pre">vpt-core</span></code>. The <code class="docutils literal notranslate"><span class="pre">SegmentationMethod</span></code> class will use the segmentation method of the users choice to run prediciton and generate
+a segmentation mask. From the generated masks, the user needs to return geometries according to the specification of the
+<code class="docutils literal notranslate"><span class="pre">SegmentationResult</span></code> class in <code class="docutils literal notranslate"><span class="pre">vpt-core</span></code>. The user may choose to customize this task or use <code class="docutils literal notranslate"><span class="pre">vpt-core</span></code> function,
+<code class="docutils literal notranslate"><span class="pre">generate_polygons_from_mask()</span></code>, to complete the task. Below is an example of this from the Cellpose plugin.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">vpt_core.io.image</span> <span class="kn">import</span> <span class="n">ImageSet</span>
+<span class="kn">from</span> <span class="nn">vpt_core.segmentation.polygon_utils</span> <span class="kn">import</span> <span class="n">generate_polygons_from_mask</span>
+<span class="kn">from</span> <span class="nn">vpt_core.segmentation.seg_result</span> <span class="kn">import</span> <span class="n">SegmentationResult</span>
+<span class="kn">from</span> <span class="nn">vpt_core.segmentation.segmentation_base</span> <span class="kn">import</span> <span class="n">SegmentationBase</span>
+<span class="kn">from</span> <span class="nn">vpt_plugin_cellpose</span> <span class="kn">import</span> <span class="n">predict</span><span class="p">,</span> <span class="n">CellposeSegProperties</span><span class="p">,</span> <span class="n">CellposeSegParameters</span>
+
+<span class="k">class</span> <span class="nc">SegmentationMethod</span><span class="p">(</span><span class="n">SegmentationBase</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">run_segmentation</span><span class="p">(</span>
+        <span class="n">segmentation_properties</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">segmentation_parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">polygon_parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageSet</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transcripts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SegmentationResult</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SegmentationResult</span><span class="p">]]:</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">CellposeSegProperties</span><span class="p">(</span><span class="o">**</span><span class="n">segmentation_properties</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">CellposeSegParameters</span><span class="p">(</span><span class="o">**</span><span class="n">segmentation_parameters</span><span class="p">)</span>
+
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">predict</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">generate_polygons_from_mask</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span class="n">polygon_parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_segmentation()</span></code> method within the <code class="docutils literal notranslate"><span class="pre">SegmentationMethod</span></code> class runs the prediction specified in the predict module.
+The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method and hence <code class="docutils literal notranslate"><span class="pre">run_segmentation()</span></code> method takes as input images digested from the segmentation task definition.
+The 'images' is an instance of the <code class="docutils literal notranslate"><span class="pre">ImageSet</span></code> class in <code class="docutils literal notranslate"><span class="pre">vpt-core</span></code> which contains information about the images as well as
+methods to return the images contained within as a stack for when the model needs to be run on a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> as in the
+<code class="docutils literal notranslate"><span class="pre">run()</span></code> method in the <code class="docutils literal notranslate"><span class="pre">predict</span></code> module.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_segmentation()</span></code> method within the <code class="docutils literal notranslate"><span class="pre">SegmentationMethod</span></code> class returns a <code class="docutils literal notranslate"><span class="pre">SegmentationResult</span></code> object that contains cell
+geometries. Upon this object’s creation in <code class="docutils literal notranslate"><span class="pre">generate_polygons_from_mask()</span></code>, this object translates fields of information
+about each cell and consolidates them into a <code class="docutils literal notranslate"><span class="pre">geopandas</span></code> GeoDataFrame that is later saved and can be accessed to visualize
+the predicted cell geometries.</p>
+</section>
+<section id="vignette">
+<h2>Vignette<a class="headerlink" href="#vignette" title="Permalink to this headline"></a></h2>
+<p>As an example, below is a snippet of the <code class="docutils literal notranslate"><span class="pre">predict</span></code> module. The code block in the above <strong>Naming and Structure</strong> section
+shows how this module is imported and used. This module contains the actual Cellpose model and its parameter control.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">cellpose</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="kn">from</span> <span class="nn">vpt_core.io.image</span> <span class="kn">import</span> <span class="n">ImageSet</span>
+<span class="kn">from</span> <span class="nn">vpt_plugin_cellpose</span> <span class="kn">import</span> <span class="n">CellposeSegProperties</span><span class="p">,</span> <span class="n">CellposeSegParameters</span>
+
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageSet</span><span class="p">,</span> <span class="n">properties</span><span class="p">:</span> <span class="n">CellposeSegProperties</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">CellposeSegParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;.*the `scipy.ndimage.filters` namespace is deprecated.*&quot;</span><span class="p">)</span>
+
+    <span class="n">is_valid_channels</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">nuclear_channel</span> <span class="ow">and</span> <span class="n">parameters</span><span class="o">.</span><span class="n">entity_fill_channel</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">images</span><span class="o">.</span><span class="n">as_stack</span><span class="p">([</span><span class="n">parameters</span><span class="o">.</span><span class="n">nuclear_channel</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">entity_fill_channel</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">is_valid_channels</span>
+        <span class="k">else</span> <span class="n">images</span><span class="o">.</span><span class="n">as_stack</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">empty_z_levels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_plane</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">channel_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z_plane</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">z_plane</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">channel_i</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">empty_z_levels</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">empty_z_levels</span><span class="p">)</span> <span class="o">==</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">properties</span><span class="o">.</span><span class="n">custom_weights</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CellposeModel</span><span class="p">(</span><span class="n">gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">properties</span><span class="o">.</span><span class="n">custom_weights</span><span class="p">,</span> <span class="n">net_avg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Cellpose</span><span class="p">(</span><span class="n">gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model_type</span><span class="o">=</span><span class="n">properties</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">net_avg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">to_segment_z</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">empty_z_levels</span><span class="p">))</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span>
+        <span class="n">image</span><span class="p">[</span><span class="n">to_segment_z</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">z_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">channel_axis</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">diameter</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span>
+        <span class="n">flow_threshold</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">flow_threshold</span><span class="p">,</span>
+        <span class="n">mask_threshold</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">mask_threshold</span><span class="p">,</span>
+        <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">min_size</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">minimum_mask_size</span><span class="p">,</span>
+        <span class="n">tile</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">do_3D</span><span class="o">=</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">model_dimensions</span> <span class="o">==</span> <span class="s2">&quot;3D&quot;</span><span class="p">),</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">to_segment_z</span><span class="p">),)</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">empty_z_levels</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Experimental Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multiple_entities.html" class="btn btn-neutral float-right" title="Multiple Entities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

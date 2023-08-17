@@ -1,3 +1,5 @@
+.. _Segmentation Task Definition:
+
 Segmentation Task Definition
 =========================================================
 

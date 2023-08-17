@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biological Entities and Segmentation &mdash; Vizgen Post-processing Tool  documentation</title>
+  <title>Analysis Vignettes &mdash; Vizgen Post-processing Tool  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Geometry File Format" href="geometry_file_format.html" />
-    <link rel="prev" title="Output Data Formats" href="index.html" /> 
+    <link rel="next" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" href="segmentation_of_a_local_dataset.html" />
+    <link rel="prev" title="VZG File Format" href="../output_data_formats/vzg_file_format.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,16 +48,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Output Data Formats</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Biological Entities and Segmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry_file_format.html">Geometry File Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="entity_by_gene_matrix_format.html">Entity-By-Gene Matrix File Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="detected_transcripts_format.html">Detected Transcripts File Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="entity_metadata_format.html">Entity Metadata File Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vzg_file_format.html">VZG File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis Vignettes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
 </ul>
 
@@ -75,10 +70,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Output Data Formats</a></li>
-      <li class="breadcrumb-item active">Biological Entities and Segmentation</li>
+      <li class="breadcrumb-item active">Analysis Vignettes</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/output_data_formats/biological_entities_and_segmentation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/analysis_vignettes/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -86,23 +80,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="biological-entities-and-segmentation">
-<h1>Biological Entities and Segmentation<a class="headerlink" href="#biological-entities-and-segmentation" title="Permalink to this headline"></a></h1>
-<p>The fundamental output of a MERFISH experiment is a list of the spatial locations of RNA molecules. In order to use this list
-of positions to understand biology, the RNA molecules need to be pooled together spatially. The goal of image segmentation for
-MERSCOPE data is to pool together RNA molecules that are in the same biological compartment or &quot;Entity.&quot;</p>
-<p>The Vizgen Post-processing Tool is concerned with membrane-bound biological entities that can be identified using fluorescent
-stains. In the flow of data through this tool, we preserve Entity-type information using column names and file names. While
-the most commonly identified Entity for most users is a cell, this user guide will refer to &quot;Entities&quot; whenever the specific
-entity type is not relevant to the processing step.</p>
+  <section id="analysis-vignettes">
+<h1>Analysis Vignettes<a class="headerlink" href="#analysis-vignettes" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="segmentation_of_a_local_dataset.html">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#before-beginning-system-set-up">Before Beginning: System Set Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#step-1-install-vpt-in-a-virtual-environment">Step 1: Install vpt in a Virtual Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#step-2-identify-cell-boundaries-from-images-cell-segmentation">Step 2: Identify Cell Boundaries from Images (Cell Segmentation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#step-2-partition-transcripts-into-cells">Step 2: Partition Transcripts into Cells</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#step-3-calculate-cell-metadata">Step 3: Calculate Cell Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html#step-4-update-the-vzg-file">Step 4: Update the .vzg File</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Output Data Formats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="geometry_file_format.html" class="btn btn-neutral float-right" title="Geometry File Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../output_data_formats/vzg_file_format.html" class="btn btn-neutral float-left" title="VZG File Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="segmentation_of_a_local_dataset.html" class="btn btn-neutral float-right" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

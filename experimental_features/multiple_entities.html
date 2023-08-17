@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiple Entities &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Building a Third-Party Plugin" href="plugin_architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Experimental Features</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plugin_architecture.html">Building a Third-Party Plugin</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multiple Entities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resolution-strategies">Resolution Strategies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#definitions">Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-usage-and-outputs">Example Usage and Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Experimental Features</a></li>
+      <li class="breadcrumb-item active">Multiple Entities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/experimental_features/multiple_entities.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multiple-entities">
+<span id="id1"></span><h1>Multiple Entities<a class="headerlink" href="#multiple-entities" title="Permalink to this headline"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">vpt</span></code>, an &quot;entity&quot; refers to a cellular or sub-cellular structure for which we can identify a boundary polygon, such as a
+cell or a nucleus. <code class="docutils literal notranslate"><span class="pre">vpt</span></code> is expanding its capabilities to handle multiple entity types during both segmentation and the
+creation of entity relationships. As an example, a user may construct their own segmentation task that outputs both cells and
+nuclei, and this experimental version of <code class="docutils literal notranslate"><span class="pre">vpt</span></code> is able to establish relationships between pairs of cell and nucleus outputs.
+The rules for connecting entities of different types (e.g. cells and nuclei) are called &quot;constraints,&quot; and can be customized
+by the user in the Segmentation Algorithm JSON file (see <a class="reference internal" href="../segmentation_options/segmentation_task_definition.html#segmentation-task-definition"><span class="std std-ref">Segmentation Task Definition</span></a>). A more detailed example of
+entity relationship constraints can be found in the <a class="reference internal" href="#multiple-entities"><span class="std std-ref">Multiple Entities</span></a> section.</p>
+<p>The multiple entities that exist in this experimental version of <code class="docutils literal notranslate"><span class="pre">vpt</span></code> can assume different relationships under certain
+user-defined constraints. Each entity can stand alone with no relationship to any other type of other, be the &quot;parent&quot; to
+another entity, or the &quot;child&quot; of another entity. Taking cells and nuclei as an example, a common approach might be to enforce
+that every nucleus (or child) must have a cell (parent) that encompasses it. Because we are establishing relationships that may
+not already exist in the raw segmentation output, each constraint has a resolution strategy in the event that it is violated.
+The relationship constraints and resolution strategies that currently exist are as follows.</p>
+</section>
+<section id="constraints">
+<h2>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">maximum_child_count</span></code>: Each parent entity is checked for children. If the number of children is greater than the input value, a problem is detected for that parent entity.</p>
+<blockquote>
+<div><p><strong>Valid resolution strategies:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_parent</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minimum_child_count</span></code>: Each parent entity is checked for children. If the number of children is smaller than the input value, a problem is detected for that parent entity.</p>
+<blockquote>
+<div><p><strong>Valid resolution strategies:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_parent</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_child</span></code> <em>(only applied in segment-on-tile step)</em></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">child_must_have_parent</span></code>: Each child entity is checked for a parent. If no parent is assigned, a problem is detected for that child entity.</p>
+<blockquote>
+<div><p><strong>Valid resolution strategies:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create_parent</span></code> <em>(only applied in segment-on-tile step)</em></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_must_cover_child</span></code>: Each child entity is to see if the parent entity completely covers the child (shapely predicate operation). If the child is not covered, a problem is detected for the child entity.</p>
+<blockquote>
+<div><p><strong>Valid resolution strategies:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shrink_child</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">child_intersect_one_parent</span></code>: Each child entity is to see if it intersects a parent entity other than the one that it is assigned to. If the child intersects a second parent entity, a problem is detected for the child entity.</p>
+<blockquote>
+<div><p><strong>Valid resolution strategies:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shrink_child</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="resolution-strategies">
+<h2>Resolution Strategies<a class="headerlink" href="#resolution-strategies" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_parent</span></code>: Delete the parent entity from the DataFrame</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code>: Remove one or more child entities from the DataFrame</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_child</span></code>: Create a child entity that is a copy of the parent entity in the child DataFrame. Assign parent when adding entity.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_parent</span></code>: Create a parent entity that is a copy of the child entity in the parent DataFrame. Assign parent when adding entity.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shrink_child</span></code>: Use the parent entity to crop the child entity so that it fits completely within the parent.</p></li>
+</ul>
+</section>
+<section id="definitions">
+<h2>Definitions<a class="headerlink" href="#definitions" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 8%" />
+<col style="width: 31%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Values</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">parent_type</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Any string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">child_type</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Any string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">child_coverage_threshold</span></code></p></td>
+<td><p>float</p></td>
+<td><p>0.5 - 1</p></td>
+<td><p>Fraction of child entity
+volume that must be
+covered by parent
+volume. Values less than
+0.5 are not allowed
+because they may lead to
+ambiguous assignments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constraints</span></code></p></td>
+<td><p>list</p></td>
+<td></td>
+<td><p>List of constraints to apply
+to entities</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contraints.constraint</span></code></p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">maximum_child_count</span></code>
+<code class="docutils literal notranslate"><span class="pre">minimum_child_count</span></code>
+<code class="docutils literal notranslate"><span class="pre">child_must_have_parent</span></code>
+<code class="docutils literal notranslate"><span class="pre">parent_must_cover_child</span></code>
+<code class="docutils literal notranslate"><span class="pre">child_intersect_one_parent</span></code></p></td>
+<td><p>The name of a constraint
+function to use to detect
+problems in the parent
+and child DataFrames</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contraints.value</span></code></p></td>
+<td><p>Any</p></td>
+<td><p>Any or null</p></td>
+<td><p>The parameter passed to
+the constraint function to
+detect conflicts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contraints.resolution</span></code></p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">remove_child</span></code>
+<code class="docutils literal notranslate"><span class="pre">remove_parent</span></code>
+<code class="docutils literal notranslate"><span class="pre">create_parent</span></code>
+<code class="docutils literal notranslate"><span class="pre">create_child</span></code>
+<code class="docutils literal notranslate"><span class="pre">shrink_child</span></code></p></td>
+<td><p>The conflict resolution
+method to resolve the
+problem detected by the
+constraint</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-usage-and-outputs">
+<h2>Example Usage and Outputs<a class="headerlink" href="#example-usage-and-outputs" title="Permalink to this headline"></a></h2>
+<p>The multiple entity types, relationships, constraints, resolution strategies and parameters all need to be specified and
+configured in the Segmentation Algorithm JSON file according to the valid operations and values previously mentioned. Specifically,
+the <code class="docutils literal notranslate"><span class="pre">entity_type_relationships</span></code> object in the segmentation algorithm file needs to be defined. An example of how to
+complete this is shown here:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+<span class="s2">&quot;entity_type_relationships&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;parent_type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;child_type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nuclei&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;child_coverage_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;constraints&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;maximum_child_count&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;remove_child&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;minimum_child_count&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;create_child&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;child_must_have_parent&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;create_parent&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;parent_must_cover_child&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shrink_child&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;child_intersect_one_parent&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shrink_child&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;constraint&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;maximum_child_count&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;resolution&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;remove_child&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The output <code class="docutils literal notranslate"><span class="pre">SegmentationResult</span></code> object has a dataframe attribute that is a <code class="docutils literal notranslate"><span class="pre">geopandas</span></code> GeoDataFrame containing all of the
+multiple entity type relationships, which in turn gets saved as a Parquet file. A loaded example of this is provided here:</p>
+<img alt="../_images/example_df.png" src="../_images/example_df.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Because the ParentID column of the <code class="docutils literal notranslate"><span class="pre">SegmentationResult</span></code> dataframe can contain integers and NoneTypes, to preserve the
+Int64 data type if the IDs, the boundary Parquet file should be read using the <code class="docutils literal notranslate"><span class="pre">read_parquet()</span></code> funtion within
+the <code class="docutils literal notranslate"><span class="pre">vpt_core.io.input_tools</span></code> module. Using <code class="docutils literal notranslate"><span class="pre">read_parquet()</span></code> within <code class="docutils literal notranslate"><span class="pre">geopandas</span></code> will truncate the number of unique
+IDs.</p>
+</div>
+<p>Once the user has created the micron-space parquet boundary file and entity by gene csv file for each entity type, they
+can run <code class="docutils literal notranslate"><span class="pre">update-vzg</span></code> to create a new vzg file with multiple entities embedded within. The user can now explore their data
+with multiple entity types in mind as seen here:</p>
+<img alt="../_images/example_vizualizer.png" src="../_images/example_vizualizer.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plugin_architecture.html" class="btn btn-neutral float-left" title="Building a Third-Party Plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

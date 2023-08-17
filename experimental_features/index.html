@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview &mdash; Vizgen Post-processing Tool  documentation</title>
+  <title>Experimental Features &mdash; Vizgen Post-processing Tool  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Segmentation Algorithm JSON File Structure" href="json_file_format.html" />
-    <link rel="prev" title="Segmentation Options" href="index.html" /> 
+    <link rel="next" title="Building a Third-Party Plugin" href="plugin_architecture.html" />
+    <link rel="prev" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" href="../analysis_vignettes/segmentation_of_a_local_dataset.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,18 +47,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="segmentation_task_definition.html">Segmentation Task Definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="watershed_segment.html">Watershed Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cellpose_segment.html">Cellpose Options</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Experimental Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugin_architecture.html">Building a Third-Party Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html">Multiple Entities</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -75,10 +71,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
-      <li class="breadcrumb-item active">Overview</li>
+      <li class="breadcrumb-item active">Experimental Features</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/segmentation_options/overview.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/experimental_features/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -86,31 +81,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
-<p>The Vizgen Post-processing Tool <code class="docutils literal notranslate"><span class="pre">vpt</span></code> accepts two types of inputs to specify
-how to run segmentation:</p>
-<ul class="simple">
-<li><p>Command line arguments</p></li>
-<li><p>Segmentation algorithm .json file parameters</p></li>
+  <section id="experimental-features">
+<h1>Experimental Features<a class="headerlink" href="#experimental-features" title="Permalink to this headline"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Vizgen would like to note that the experimental features of <code class="docutils literal notranslate"><span class="pre">vpt</span></code> are a work in progress and are not yet fully vetted.
+The functionality under development may be useful, but may also be unstable and subject to change. Vizgen is actively
+refining and improving these features and your feedback is invaluable in this process. Please exercise caution when using
+these features in critical tasks or production environments.</p>
+<p>To access these experiemental features, set environment variable <code class="docutils literal notranslate"><span class="pre">VPT_EXPERIMENTAL</span></code> to “true” or “1” and the
+functionality will be available.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plugin_architecture.html">Building a Third-Party Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugin_architecture.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_architecture.html#naming-and-structure">Naming and Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_architecture.html#vignette">Vignette</a></li>
 </ul>
-<p>Command line arguments generally relate to properties of the computing platform running <code class="docutils literal notranslate"><span class="pre">vpt</span></code> and are expected to vary with
-each experiment. For example, the location of files and optimal number of parallel processes depend on the  computer running
-<code class="docutils literal notranslate"><span class="pre">vpt</span></code> and are set with command line arguments. These arguments are described in the <a class="reference internal" href="../command_line_interface/index.html#command-line-interface"><span class="std std-ref">Command Line Interface</span></a> section.</p>
-<p>In contrast, the segmentation algorithm .json file describes a series of steps to perform on the input data that are
-independent of the computing environment. Using the same segmentation algorithm on a series of experiments ensures that they
-are processed identically and reproducibly.</p>
-<p>In addition to this documentation, several working example segmentation algorithm json files are provided that can serve
-either as a ready-made segmentation definition, or as a template for a custom workflow. These files are available on the
-<code class="docutils literal notranslate"><span class="pre">vpt</span></code> GitHub Repository (<a class="reference external" href="https://github.com/Vizgen/vizgen-postprocess">https://github.com/Vizgen/vizgen-postprocess</a>) or in the Docker Image.</p>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_entities.html">Multiple Entities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html#constraints">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html#resolution-strategies">Resolution Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html#definitions">Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_entities.html#example-usage-and-outputs">Example Usage and Outputs</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Segmentation Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="json_file_format.html" class="btn btn-neutral float-right" title="Segmentation Algorithm JSON File Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../analysis_vignettes/segmentation_of_a_local_dataset.html" class="btn btn-neutral float-left" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plugin_architecture.html" class="btn btn-neutral float-right" title="Building a Third-Party Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
