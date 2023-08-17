@@ -1,31 +1,37 @@
 import argparse
 import contextlib
 import os
+from typing import List, Optional
 
-from vpt.convert_to_ome.rgb_cmd_args import get_parser, ConvertToRGBOmeArgs, validate_args
-from vpt.convert_to_ome.tiffutils import read_image, add_ome_metadata, save_as_pyramidal_image, \
-    extract_channel_from_filename
-from vpt.filesystem import initialize_filesystem
+import pyvips  # noqa
+from vpt_core.io.vzgfs import initialize_filesystem
 
-import pyvips # noqa
+from vpt.convert_to_ome.rgb_cmd_args import ConvertToRGBOmeArgs, get_parser, validate_args
+from vpt.convert_to_ome.tiffutils import (
+    add_ome_metadata,
+    extract_channel_from_filename,
+    read_image,
+    save_as_pyramidal_image,
+)
 
-env_path_list = os.environ['PATH'].split(';')
-vips = [x for x in env_path_list if os.path.exists(os.path.join(x, 'vips.exe'))]
+env_path_list = os.environ["PATH"].split(";")
+vips = [x for x in env_path_list if os.path.exists(os.path.join(x, "vips.exe"))]
 if len(vips) > 0:
-    os.environ['PATH'] = vips[0] + ";" + os.environ['PATH']
+    os.environ["PATH"] = vips[0] + ";" + os.environ["PATH"]
 
 
-def convert_to_ome_rgb(args: argparse.Namespace):
-    args = ConvertToRGBOmeArgs(args.input_image_red, args.input_image_green,
-                               args.input_image_blue, args.output_image, args.overwrite)
-    validate_args(args)
+def convert_to_ome_rgb(args: argparse.Namespace) -> None:
+    convert_args = ConvertToRGBOmeArgs(
+        args.input_image_red, args.input_image_green, args.input_image_blue, args.output_image, args.overwrite
+    )
+    validate_args(convert_args)
 
-    inputs = []
-    channel_names = []
+    inputs: List = []
+    channel_names: List[Optional[str]] = []
 
     with contextlib.ExitStack() as stack:
         images = []
-        for input_path in args.input_path_red, args.input_path_green, args.input_path_blue:
+        for input_path in convert_args.input_path_red, convert_args.input_path_green, convert_args.input_path_blue:
             if input_path is None:
                 inputs.append(None)
                 channel_names.append(None)
@@ -49,9 +55,9 @@ def convert_to_ome_rgb(args: argparse.Namespace):
 
         add_ome_metadata(rgb, image_width, image_height, image_type, 3, channel_names)
 
-        save_as_pyramidal_image(rgb, args.output_path)
+        save_as_pyramidal_image(rgb, convert_args.output_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     initialize_filesystem()
     convert_to_ome_rgb(get_parser().parse_args())

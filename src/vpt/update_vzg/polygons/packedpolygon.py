@@ -1,9 +1,13 @@
-import numpy as np
 from enum import Enum
+
+import numpy as np
+
+from vpt.update_vzg.byte_utils import extend_with_u32
 
 
 class LodLevel(Enum):
     """Enum class of levels of details (lods) type depended on vertex count."""
+
     Max = 0
     Middle = 1
     Min = 2
@@ -12,15 +16,10 @@ class LodLevel(Enum):
 
 class PackedPolygon:
     """Abstract class for getting packed polygons."""
-    BASE_SIZE = {
-        LodLevel.Max: 12,
-        LodLevel.Middle: 8
-    }
 
-    BYTE_ON_POINT = {
-        LodLevel.Max: 3,
-        LodLevel.Middle: 2
-    }
+    BASE_SIZE = {LodLevel.Max: 12, LodLevel.Middle: 8}
+
+    BYTE_ON_POINT = {LodLevel.Max: 3, LodLevel.Middle: 2}
     DELTA_PACK_FACTOR = np.uint32(1 << 12)
 
     CENTER_POINT_PACK_FACTOR = np.uint32(1 << 20)
@@ -43,10 +42,11 @@ class PackedPolygon:
             delta_x = max(min(1 - 1 / (1 << 12), delta_x), 0)
             delta_y = max(min(1 - 1 / (1 << 12), delta_y), 0)
 
-            offsets[point_idx - start_idx] = \
-                np.uint32(np.uint32(delta_x * (1 << 12)) << 12) + np.uint32(delta_y * (1 << 12))
+            offsets[point_idx - start_idx] = np.uint32(np.uint32(delta_x * (1 << 12)) << 12) + np.uint32(
+                delta_y * (1 << 12)
+            )
 
-        packed_byte_array.extend(np.uint32((offsets[0] << 8) + (offsets[1] >> 16)))
-        packed_byte_array.extend(np.uint32((offsets[1] << 16) + (offsets[2] >> 8)))
-        packed_byte_array.extend(np.uint32((offsets[2] << 24) + offsets[3]))
+        extend_with_u32(packed_byte_array, (offsets[0] << 8) + (offsets[1] >> 16))
+        extend_with_u32(packed_byte_array, (offsets[1] << 16) + (offsets[2] >> 8))
+        extend_with_u32(packed_byte_array, (offsets[2] << 24) + offsets[3])
         return packed_byte_array

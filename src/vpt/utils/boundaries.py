@@ -1,12 +1,13 @@
-from vpt.utils.cellsreader import CellsReader
-
 import warnings
+
 from shapely.errors import ShapelyDeprecationWarning
+
+from vpt.utils.cellsreader import CellsReader
 
 
 class Boundaries:
     def __init__(self, cellsReader: CellsReader):
-        warnings.filterwarnings('ignore', category=ShapelyDeprecationWarning)
+        warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
         self.cellsReader = cellsReader
 
     def get_z_planes_count(self) -> int:

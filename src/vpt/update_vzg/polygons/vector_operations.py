@@ -1,5 +1,5 @@
-from typing import Tuple
 import math
+from typing import Tuple
 
 import numpy as np
 
@@ -17,7 +17,7 @@ def segments_intersects(A, B, C, D):
     return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
 
 
-def find_bisector(AB, BC) -> np.array:
+def find_bisector(AB, BC) -> np.ndarray:
     """Finds bisector of angle, obtained by two vectors: AB and BC.
     Returns:
         (np.array) bisector unitary vector.
@@ -33,11 +33,10 @@ def pseudo_scalar(vectorA, vectorB):
 
 def point_in_sector(pointVec, leftSectorDir, rightSectorDir) -> bool:
     """Determines if pointVec is between leftSectorDir and rightSectorDir."""
-    return pseudo_scalar(pointVec, leftSectorDir) >= 0 and \
-           pseudo_scalar(pointVec, rightSectorDir) <= 0 # noqa
+    return pseudo_scalar(pointVec, leftSectorDir) >= 0 and pseudo_scalar(pointVec, rightSectorDir) <= 0  # noqa
 
 
-def ray_segment_intersect(pointO, ray, pointA, pointB) -> np.array:
+def ray_segment_intersect(pointO, ray, pointA, pointB) -> np.ndarray:
     """Determines if ray started from  pointO intersects segment with points
     pointA and pointB.
     """
@@ -69,8 +68,7 @@ def point_line_side(point, A, B) -> int:
         +1: if point is left-side to AB
         -1: if point is right-side to AB
     """
-    return np.sign((B[0] - A[0]) * (point[1] - A[1]) - (B[1] - A[1])
-                   * (point[0] - A[0]))
+    return np.sign((B[0] - A[0]) * (point[1] - A[1]) - (B[1] - A[1]) * (point[0] - A[0]))
 
 
 def dot_2d(a, b):
@@ -78,8 +76,7 @@ def dot_2d(a, b):
     return a[0] * b[0] + a[1] * b[1]
 
 
-def segment_outline_intersect(origins, badPointIdx, partedPointIdx,
-                              pointsIdx, firstPart=True) -> bool:
+def segment_outline_intersect(origins, badPointIdx, partedPointIdx, pointsIdx, firstPart=True) -> bool:
     """Checks if segment with points origins[pointsIdx[badPointIdx]] and
     origins[pointsIdx[partedPointIdx]] intersects with polygon outline.
     Args:
@@ -104,9 +101,9 @@ def segment_outline_intersect(origins, badPointIdx, partedPointIdx,
 
     pointIdx = startIdx
     while pointIdx != endIdx:
-        if segments_intersects(badPoint, partedPoint,
-                               origins[pointsIdx[pointIdx]],
-                               origins[pointsIdx[(pointIdx + 1) % n]]):
+        if segments_intersects(
+            badPoint, partedPoint, origins[pointsIdx[pointIdx]], origins[pointsIdx[(pointIdx + 1) % n]]
+        ):
             return True
 
         pointIdx = (pointIdx + 1) % n
@@ -134,9 +131,7 @@ def rotate_point(x, y, xCenter, yCenter, angle) -> Tuple[float, float]:
     Returns:
          rotated point.
     """
-    p_x = xCenter + (x - xCenter) * math.cos(angle) - (
-            y - yCenter) * math.sin(angle)
-    p_y = yCenter + (y - yCenter) * math.cos(angle) + (
-            x - xCenter) * math.sin(angle)
+    p_x = xCenter + (x - xCenter) * math.cos(angle) - (y - yCenter) * math.sin(angle)
+    p_y = yCenter + (y - yCenter) * math.cos(angle) + (x - xCenter) * math.sin(angle)
 
     return p_x, p_y

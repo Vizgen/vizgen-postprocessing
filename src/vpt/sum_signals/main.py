@@ -7,24 +7,28 @@ import pandas as pd
 import rasterio
 from rasterio.features import rasterize
 from scipy import ndimage
-from shapely.affinity import translate, affine_transform
+from shapely.affinity import affine_transform, translate
 from shapely.geometry.base import BaseGeometry
+from vpt_core import log
+from vpt_core.io.regex_tools import parse_images_str
+from vpt_core.io.vzgfs import (
+    filesystem_path_split,
+    get_rasterio_environment,
+    initialize_filesystem,
+    rasterio_open,
+    io_with_retries,
+)
+from vpt_core.log import show_progress
+from vpt_core.segmentation.seg_result import SegmentationResult
 
-import vpt.log as log
+from vpt.app.context import current_context, parallel_run
 from vpt.app.task import Task
-from vpt.app.context import parallel_run, current_context
-from vpt.filesystem.vzgfs import get_rasterio_environment, filesystem_path_split, vzg_open, initialize_filesystem, \
-    rasterio_open
-from vpt.log import show_progress
-from vpt.sum_signals.cmd_args import parse_args, SumSignalsArgs, validate_args
+from vpt.sum_signals.cmd_args import SumSignalsArgs, parse_args, validate_args
 from vpt.sum_signals.validate import validate_z_layers_number
-from vpt.utils.input_utils import read_micron_to_mosaic_transform, read_geodataframe
-from vpt.utils.regex_tools import parse_regex
+from vpt.utils.input_utils import read_geodataframe, read_micron_to_mosaic_transform, read_parquet_by_groups
 
 
-def get_cell_brightness_in_image(
-        image_path: str,
-        entities: Iterable[Tuple[int, BaseGeometry]]) -> tuple:
+def get_cell_brightness_in_image(image_path: str, entities: Iterable[Tuple[int, BaseGeometry]]) -> tuple:
     cell_raw_brightness = []
     cell_filtered_brightness = []
     indexes = []
@@ -40,7 +44,7 @@ def get_cell_brightness_in_image(
                     cell.bounds[0],
                     cell.bounds[1],
                     cell.bounds[2] - cell.bounds[0] + 1,
-                    cell.bounds[3] - cell.bounds[1] + 1
+                    cell.bounds[3] - cell.bounds[1] + 1,
                 ]
 
                 # Read the image area and convert to 2D numpy array
@@ -59,10 +63,12 @@ def get_cell_brightness_in_image(
 
                 # Create the mask
                 bounding_box = [int(x) for x in selector_poly.bounds]
-                if (min(bounding_box[:2]) < 0 or
-                        bounding_box[2] >= image_data.shape[1] or
-                        bounding_box[3] >= image_data.shape[0]):
-                    raise ValueError(f'Cell is beyond image boundaries: {cell}')
+                if (
+                    min(bounding_box[:2]) < 0
+                    or bounding_box[2] >= image_data.shape[1]
+                    or bounding_box[3] >= image_data.shape[0]
+                ):
+                    raise ValueError(f"Cell is beyond image boundaries: {cell}")
 
                 mask_shape = (bounding_box[3] + 1, bounding_box[2] + 1)
                 cell_mask = rasterize([selector_poly], out_shape=mask_shape, all_touched=True)
@@ -72,21 +78,19 @@ def get_cell_brightness_in_image(
                 cell_filtered_brightness.append(np.sum(high_pass_image * cell_mask))
                 indexes.append(cell_id)
 
-    return (pd.Series(cell_raw_brightness, index=indexes),
-            pd.Series(cell_filtered_brightness, index=indexes))
+    return (pd.Series(cell_raw_brightness, index=indexes), pd.Series(cell_filtered_brightness, index=indexes))
 
 
 def calculate(args):
     img, fn_boundaries, transform = args.img, args.boundaries, args.transform
     log.info(f"sum_signals.calculate for {img.full_path} started")
-    boundaries = read_geodataframe(fn_boundaries)
-    idx = boundaries['ZIndex'] == img.z_layer
 
     def iterator() -> Iterable[Tuple[int, BaseGeometry]]:
-        for _, row in boundaries.loc[idx].iterrows():
-            entity_id = row['EntityID']
-            geom = row['Geometry']
-            yield (entity_id, affine_transform(geom, transform))
+        for parquet_data in read_parquet_by_groups(fn_boundaries):
+            for _, row in parquet_data.loc[parquet_data[SegmentationResult.z_index_field] == img.z_layer].iterrows():
+                entity_id = row[SegmentationResult.cell_id_field]
+                geom = row[SegmentationResult.geometry_field]
+                yield entity_id, affine_transform(geom, transform)
 
     res = get_cell_brightness_in_image(img.full_path, iterator())
     return img.channel, res
@@ -95,7 +99,7 @@ def calculate(args):
 def validate_and_prepare_ids(images, fn_boundary):
     boundaries = read_geodataframe(fn_boundary)
     validate_z_layers_number(images, boundaries)
-    return boundaries['EntityID'].unique()
+    return boundaries["EntityID"].unique()
 
 
 def get_cell_brightnesses(images, fn_boundary, transform):
@@ -107,7 +111,8 @@ def get_cell_brightnesses(images, fn_boundary, transform):
     results_raw, results_high_pass = defaultdict(default_value), defaultdict(default_value)
     log.info("output structures prepared")
     results = parallel_run(
-        [Task(calculate, argparse.Namespace(img=img, boundaries=fn_boundary, transform=transform)) for img in images])
+        [Task(calculate, argparse.Namespace(img=img, boundaries=fn_boundary, transform=transform)) for img in images]
+    )
 
     def combine_results(jobs, progress=False):
         if progress:
@@ -142,25 +147,24 @@ def save_df(df, path: str):
     except ValueError:
         pass
 
-    with vzg_open(path, 'w') as f:
-        df.to_csv(f)
+    io_with_retries(path, "w", df.to_csv)
 
 
 def sum_signals(args: argparse.Namespace):
-    args = SumSignalsArgs(**vars(args))
-    validate_args(args)
+    sum_signals_args = SumSignalsArgs(**vars(args))
+    validate_args(sum_signals_args)
     log.info("Sum signals started")
-    regex_info = parse_regex(args.input_images)
+    regex_info = parse_images_str(sum_signals_args.input_images)
 
-    m2m = np.array(read_micron_to_mosaic_transform(args.input_micron_to_mosaic))
+    m2m = np.array(read_micron_to_mosaic_transform(sum_signals_args.input_micron_to_mosaic))
     tform_flat = [*m2m[:2, :2].flatten(), *m2m[:2, 2].flatten()]
 
-    df = get_cell_brightnesses(regex_info.images, args.input_boundaries, tform_flat)
+    df = get_cell_brightnesses(regex_info.images, sum_signals_args.input_boundaries, tform_flat)
 
-    save_df(df, args.output_csv)
+    save_df(df, sum_signals_args.output_csv)
     log.info("Sum signals finished")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     initialize_filesystem()
     sum_signals(parse_args())

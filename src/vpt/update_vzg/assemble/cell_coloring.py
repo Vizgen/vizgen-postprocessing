@@ -1,8 +1,9 @@
 from copy import deepcopy
 from typing import List
+
 import numpy as np
 
-from vpt.update_vzg.assemble.expression_matrix import GeneExprMatrix, ExpressionMetric
+from vpt.update_vzg.assemble.expression_matrix import ExpressionMetric, GeneExprMatrix
 
 
 def create_bytearray(array_l, array_type=np.float32) -> bytearray:
@@ -23,8 +24,8 @@ class CellColoring:
         for i in range(ExpressionMetric.ItemsCount.value):
             self._cellsMetricsList.append(np.zeros(matrix.lines_cells, np.float32))
             self._metricExtr.append(np.zeros(2, np.float32))
-            self._metricExtr[i][0] = float('inf')
-            self._metricExtr[i][1] = float('-inf')
+            self._metricExtr[i][0] = float("inf")
+            self._metricExtr[i][1] = float("-inf")
 
         self._outputNameBtrDict: dict = {}
 
@@ -55,17 +56,16 @@ class CellColoring:
             self._cellsMetricsList[ExpressionMetric.Normalized.value][i] = np.sum(row_transcripts)
 
         self._outputNameBtrDict: dict = {
-            'genes_mean': create_bytearray(self._matrix.average_genes),
-            'genes_sigma': create_bytearray(sigma_genes),
-            'normalized_genes_mean': create_bytearray(
-                self._normalized_matrix.average_genes),
-            'normalized_genes_sigma': create_bytearray(normalized_sigma_genes)
+            "genes_mean": create_bytearray(self._matrix.average_genes),
+            "genes_sigma": create_bytearray(sigma_genes),
+            "normalized_genes_mean": create_bytearray(self._normalized_matrix.average_genes),
+            "normalized_genes_sigma": create_bytearray(normalized_sigma_genes),
         }
 
     def calculate_coloring_arrays(self):
         file_names = {
-            ExpressionMetric.Count: 'cell_count',
-            ExpressionMetric.Normalized: 'cell_normalized',
+            ExpressionMetric.Count: "cell_count",
+            ExpressionMetric.Normalized: "cell_normalized",
         }
 
         self._make_cell_lists()
@@ -84,5 +84,5 @@ class CellColoring:
             statisticsVariablesBtr.extend(self._metricExtr[metric.value][0])
             statisticsVariablesBtr.extend(self._metricExtr[metric.value][1])
 
-        self._outputNameBtrDict['statistics_variables'] = statisticsVariablesBtr
+        self._outputNameBtrDict["statistics_variables"] = statisticsVariablesBtr
         return self._outputNameBtrDict

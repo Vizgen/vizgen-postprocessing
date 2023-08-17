@@ -1,11 +1,15 @@
-from typing import List
+import os
+from typing import List, Optional, Union
 
 import numpy as np
 import pandas as pd
 from shapely import geometry
 
+from vpt.utils.cellsreader import CellsReader, cell_reader_factory
+from vpt_core import log
+
 from vpt.utils.boundaries import Boundaries
-import vpt.log as log
+from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
 
 
 def polygons_generator(geometries):
@@ -28,10 +32,21 @@ def anisotropy_calculation(multi_poly):
     return anisotropy
 
 
+def create_input_metadata(build_folder: str, input_boundaries: str, feature_name: str):
+    log.info("There is no cell metadata on input, start creating")
+    initialize_filesystem()
+    input_metadata = os.path.join(build_folder, f"{feature_name}_metadata.csv")
+    cells_reader: CellsReader = cell_reader_factory(input_boundaries)
+    cell_bounds = Boundaries(cells_reader)
+    metadata_table = create_metadata_table(cell_bounds, cells_reader.get_z_depth_per_level())
+
+    io_with_retries(input_metadata, "w", lambda f: metadata_table.to_csv(f, sep=","))
+    log.info("Cell metadata file created")
+    return input_metadata
+
+
 def create_metadata_table(
-        bnds: Boundaries,
-        zDepthList: List or np.ndarray,
-        barcodesCountPerCell: np.ndarray or None = None
+    bnds: Boundaries, zDepthList: Union[List, np.ndarray], barcodesCountPerCell: Optional[np.ndarray] = None
 ) -> pd.DataFrame:
     cell_metadata = []
     min_x, min_y, max_x, max_y, center_x, center_y = 0, 0, 0, 0, 0, 0
@@ -80,7 +95,7 @@ def create_metadata_table(
                 "anisotropy": np.nan,
                 "transcript_count": np.nan,
                 "perimeter_area_ratio": np.nan,
-                "solidity": np.nan
+                "solidity": np.nan,
             }
             cell_metadata.append(meta)
             continue
@@ -112,28 +127,30 @@ def create_metadata_table(
             "anisotropy": anisotropy,
             "transcript_count": barcodeCount,
             "perimeter_area_ratio": paRatio / polysCount,
-            "solidity": solidity
+            "solidity": solidity,
         }
         cell_metadata.append(meta)
 
     if cell_metadata:
         output = pd.DataFrame(cell_metadata)
     else:
-        output = pd.DataFrame(columns=[
-            "fov",
-            "EntityID",
-            "volume",
-            "center_x",
-            "center_y",
-            "min_x",
-            "min_y",
-            "max_x",
-            "max_y",
-            "anisotropy",
-            "transcript_count",
-            "perimeter_area_ratio",
-            "solidity"
-        ])
+        output = pd.DataFrame(
+            columns=[
+                "fov",
+                "EntityID",
+                "volume",
+                "center_x",
+                "center_y",
+                "min_x",
+                "min_y",
+                "max_x",
+                "max_y",
+                "anisotropy",
+                "transcript_count",
+                "perimeter_area_ratio",
+                "solidity",
+            ]
+        )
 
     output.set_index("EntityID", inplace=True)
     output = output.sort_index()

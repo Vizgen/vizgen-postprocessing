@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any, Iterable, Callable
 
 from vpt.cmd_args import get_cmd_entrypoint
 
 
 @dataclass
 class Task:
-    proc: callable
+    proc: Callable
     args: Any
 
 

@@ -4,12 +4,12 @@ import pstats
 from pathlib import Path
 from typing import Optional
 
-from vpt import log
-from vpt.filesystem import vzg_open
+from vpt_core import log
+from vpt_core.io.vzgfs import io_with_retries
 
-main_profiler = None
-all_stat = None
-profiler_output = None
+main_profiler: Optional[cProfile.Profile] = None
+all_stat: Optional[pstats.Stats] = None
+profiler_output: Optional[str] = None
 
 
 def initialize_profiler(profile_file: Optional[str]):
@@ -17,6 +17,9 @@ def initialize_profiler(profile_file: Optional[str]):
     if profile_file:
         main_profiler = cProfile.Profile()
         profiler_output = profile_file
+    else:
+        main_profiler = None
+        profiler_output = None
 
 
 def append_stat(statistic_container):
@@ -43,8 +46,7 @@ def export_data():
         stats = pstats.Stats(main_profiler)
         if all_stat:
             stats.add(all_stat)
-        with vzg_open(profiler_output, 'wb') as f:
-            marshal.dump(stats.stats, f)
+        io_with_retries(profiler_output, "wb", lambda f: marshal.dump(stats.stats, f))
 
 
 def append_with_file(fname: str, remove: bool = True):
