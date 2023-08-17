@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2023-08-17)
+
+### Feature
+
+* Plugin Architecture ([#19](https://github.com/Vizgen/vizgen-postprocessing/issues/19)) ([`fc93bc9`](https://github.com/Vizgen/vizgen-postprocessing/commit/fc93bc9097353ffbf6b7b36733cc221a00107d83))
+
 ## v1.0.2 (2023-04-25)
 ### Fix
 * Bug fix for update-vzg temp directory ([#10](https://github.com/Vizgen/vizgen-postprocessing/issues/10)) ([`3284779`](https://github.com/Vizgen/vizgen-postprocessing/commit/3284779f51c579d4ca5201cb2cdb0ba472b2ef38))
