@@ -1,30 +1,33 @@
+import copy
 from pathlib import Path
-from typing import List, Callable, Dict, Iterable, Optional
+from typing import Callable, Dict, Iterable, List, Optional
 
-import vpt.log as log
+from vpt_core import log
+from vpt_core.io.vzgfs import initialize_filesystem
+
+from vpt import profiler
 from vpt.app.empty import Empty
 from vpt.app.task import Task
-from vpt.filesystem import initialize_filesystem
-from vpt import profiler
-import copy
 
 _contexts = []
 
 
 class Context:
     name: str
-    dask_args: Dict
-    fs_args: Dict
-    log_args: Dict
-    prof_args: Dict
+    dask_args: Optional[Dict]
+    fs_args: Optional[Dict]
+    log_args: Optional[Dict]
+    prof_args: Optional[Dict]
 
-    def __init__(self,
-                 name: str = None,
-                 dask_args: Dict = None,
-                 fs_args: Dict = None,
-                 log_args: Dict = None,
-                 prof_args: Dict = None):
-        self.name = name if name else '.'
+    def __init__(
+        self,
+        name=None,
+        dask_args=None,
+        fs_args=None,
+        log_args=None,
+        prof_args=None,
+    ):
+        self.name = name if name else "."
         self.dask_args = dask_args
         self.fs_args = fs_args
         self.prof_args = prof_args
@@ -43,11 +46,12 @@ class Context:
             profiler.initialize_profiler(**self.prof_args)
             profiler.enable()
         _contexts.append(self)
+        log.log_system_info()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_val is not None:
-            log.exception(f"exception of type {exc_type} thrown: {exc_val}")
+            log.error(f"exception of type {exc_type} thrown: {exc_val}")
 
         log.release_logger()
         profiler.disable()
@@ -62,20 +66,22 @@ class Context:
                 profiler.append_with_file(sub_prof)
 
     def arguments(self) -> Dict:
-        return {'name': self.name,
-                'dask_args': self.dask_args,
-                'fs_args': self.fs_args,
-                'log_args': self.log_args,
-                'prof_args': self.prof_args}
+        return {
+            "name": self.name,
+            "dask_args": self.dask_args,
+            "fs_args": self.fs_args,
+            "log_args": self.log_args,
+            "prof_args": self.prof_args,
+        }
 
     @staticmethod
     def _get_profile_name(args: Dict) -> Optional[str]:
-        pa = args.get('prof_args', None)
-        return pa['profile_file'] if pa else None
+        pa = args.get("prof_args", None)
+        return pa["profile_file"] if pa else None
 
     @staticmethod
     def _set_profile_name(args: Dict, name: str):
-        args['prof_args']['profile_file'] = name
+        args["prof_args"]["profile_file"] = name
 
     @staticmethod
     def modify_context_as_sub(cnt_args: Dict, ind: int) -> Dict:
@@ -88,20 +94,21 @@ class Context:
         return ret
 
     def is_distributed(self) -> bool:
-        return self.dask_args is not None and self.dask_args.get('address', None)
+        return self.dask_args is not None and self.dask_args.get("address", None)
 
     def dask_client(self):
         from dask.distributed import Client
-        return Client(self.dask_args['address'])
+
+        return Client(self.dask_args["address"])
 
     def run(self, proc: Callable, *args):
-
         if not self.is_distributed():
             proc(*args)
         else:
-            def remote_run(ctx: Dict, proc: Callable, *args):
+
+            def remote_run(ctx: Dict, func: Callable, *func_args):
                 with Context(**ctx):
-                    proc(*args)
+                    func(*func_args)
 
             with self.dask_client() as c:
                 _ = c.submit(remote_run, self.arguments(), proc, *args).result()
@@ -109,10 +116,10 @@ class Context:
 
     def get_workers_count(self) -> int:
         if self.dask_args is not None:
-            if self.dask_args.get('address', None):
-                return len(self.dask_client().scheduler_info()['workers'])
+            if self.dask_args.get("address", None):
+                return len(self.dask_client().scheduler_info()["workers"])
             else:
-                return self.dask_args.get('workers', 1)
+                return self.dask_args.get("workers", 1)
         else:
             return 1
 
@@ -121,15 +128,18 @@ class Context:
             return Empty()
         else:
             from dask.distributed import LocalCluster
+
             return LocalCluster(
                 n_workers=self.get_workers_count(),
                 threads_per_worker=1,
-                dashboard_address=None)
+                dashboard_address=None,
+            )
 
     def get_client(self, cluster):
         if self.is_distributed():
             return self.dask_client()
         from dask.distributed import Client
+
         return Client(cluster)
 
     def parallel_run(self, tasks: Iterable[Task]) -> List:
@@ -143,9 +153,9 @@ class Context:
             with self.get_cluster() as cluster:
                 with self.get_client(cluster):
                     cnt_args = self.arguments()
-                    children = [{'task': t,
-                                 'cnt_args': Context.modify_context_as_sub(cnt_args, i)
-                                 } for i, t in enumerate(tasks)]
+                    children: List[Dict] = [
+                        {"task": t, "cnt_args": Context.modify_context_as_sub(cnt_args, i)} for i, t in enumerate(tasks)
+                    ]
                     mp_bag = db.from_sequence(children)
 
                     def _context_wrapper(task: Task, cnt_args):
@@ -157,7 +167,7 @@ class Context:
                     if log.is_verbose():
                         progress(mp_bag)
                     result = mp_bag.compute()
-                    self.update_with_children([x['cnt_args'] for x in children])
+                    self.update_with_children([x["cnt_args"] for x in children])
 
                     return result
 

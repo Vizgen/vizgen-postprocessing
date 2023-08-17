@@ -1,22 +1,28 @@
 import numpy as np
 
-from vpt.update_vzg.polygons.polystructers import PointsIndices, IndexedPolygon
-from vpt.update_vzg.polygons.vector_operations import pseudo_scalar, point_line_side, \
-    ray_segment_intersect, dot_2d, find_bisector, segment_outline_intersect, point_in_sector
+from vpt.update_vzg.polygons.polystructers import IndexedPolygon, PointsIndices
+from vpt.update_vzg.polygons.vector_operations import (
+    dot_2d,
+    find_bisector,
+    point_in_sector,
+    point_line_side,
+    pseudo_scalar,
+    ray_segment_intersect,
+    segment_outline_intersect,
+)
 
 
 class PolyPartition:
-    """Class for part original polygon into fan polygons. """
-    def __init__(self, originPoints: np.array):
+    """Class for part original polygon into fan polygons."""
+
+    def __init__(self, originPoints: np.ndarray):
         """Args:
-            originPoints: List[np.array] - list of 2-dims (numpy array) points
+        originPoints: List[np.array] - list of 2-dims (numpy array) points
         """
         self._originPoints = originPoints.copy()
         self._originPointsLen = len(self._originPoints)
 
-    def _find_concave_point(
-            self, pointsIdx: list, startPointIdx=0) -> list:
-
+    def _find_concave_point(self, pointsIdx: list, startPointIdx=0) -> list:
         origins = self._originPoints
         concavePointsIdxList = []
         n = len(pointsIdx)
@@ -27,8 +33,7 @@ class PolyPartition:
 
             # check for "bad" (concave) point
             if pseudo_scalar(pointA - pointB, pointC - pointB) > 0:
-                concavePointsIdxList.append(
-                    (pointIdx + startPointIdx) % n)
+                concavePointsIdxList.append((pointIdx + startPointIdx) % n)
 
             pointA = pointB
 
@@ -42,7 +47,7 @@ class PolyPartition:
         n = len(pointsIdx)
         B = self._originPoints[pointsIdx[supportPointIdx]]
         BB = B + ABCBisector
-        minDistance = float('inf')
+        minDistance = float("inf")
         segmentAIdx, segmentBIdx = -1, -1
         minDistPointIdx = -1
         minDistBetweenPoints = 10e10
@@ -56,15 +61,13 @@ class PolyPartition:
             lineSideLeftPoint = point_line_side(F, B, leftPoint)
             lineSideRightPoint = point_line_side(F, B, rightPoint)
 
-            if (not (lineSideLeftPoint >= 0 and lineSideRightPoint <= 0)) \
-                    and i != n - 3:
+            if (not (lineSideLeftPoint >= 0 and lineSideRightPoint <= 0)) and i != n - 3:
                 distBetweenPoints = np.linalg.norm(B - F)
                 if minDistBetweenPoints > distBetweenPoints:
                     minDistBetweenPoints = distBetweenPoints
                     minDistPointIdx = indF
 
-            if point_line_side(E, B, BB) <= 0 and \
-                    point_line_side(F, B, BB) >= 0:
+            if point_line_side(E, B, BB) <= 0 and point_line_side(F, B, BB) >= 0:
                 p = ray_segment_intersect(B, ABCBisector, E, F)
                 vp = p - B
                 if dot_2d(vp, ABCBisector) > 0:
@@ -90,49 +93,42 @@ class PolyPartition:
         ABCBisector = find_bisector(ABVec, CBVec)
 
         # find intersects segment
-        segmentAIdx, segmentBIdx, minDistPointIdx = \
-            self._find_intersect_segment(pointsIdx, ind, ABCBisector)
+        segmentAIdx, segmentBIdx, minDistPointIdx = self._find_intersect_segment(pointsIdx, ind, ABCBisector)
         if segmentAIdx < 0 or segmentBIdx < 0 or minDistPointIdx < 0:
             raise IndexError
 
         intersectAVec = origins[pointsIdx[segmentAIdx]] - pointB
-        if point_in_sector(intersectAVec, CBVec, ABVec) \
-                and not segment_outline_intersect(origins, ind, segmentAIdx, pointsIdx, False):
-
+        if point_in_sector(intersectAVec, CBVec, ABVec) and not segment_outline_intersect(
+            origins, ind, segmentAIdx, pointsIdx, False
+        ):
             # create new polygons
-            leftPoly, rightPoly = \
-                pointsIndices.polygon_partition(ind, segmentAIdx)
+            leftPoly, rightPoly = pointsIndices.polygon_partition(ind, segmentAIdx)
         else:
             intersectBVec = origins[pointsIdx[segmentBIdx]] - pointB
-            if point_in_sector(intersectBVec, CBVec, ABVec) \
-                    and not segment_outline_intersect(origins, ind, segmentBIdx, pointsIdx):
+            if point_in_sector(intersectBVec, CBVec, ABVec) and not segment_outline_intersect(
+                origins, ind, segmentBIdx, pointsIdx
+            ):
                 # create new polygons
-                leftPoly, rightPoly = \
-                    pointsIndices.polygon_partition(ind, segmentBIdx)
+                leftPoly, rightPoly = pointsIndices.polygon_partition(ind, segmentBIdx)
             else:
                 # create new polygons
-                leftPoly, rightPoly = \
-                    pointsIndices.polygon_partition(ind, minDistPointIdx)
+                leftPoly, rightPoly = pointsIndices.polygon_partition(ind, minDistPointIdx)
 
         return leftPoly, rightPoly
 
     def _get_single_result_from_list(self, pointsIdx: PointsIndices):
         concavePointsIdx = self._find_concave_point(pointsIdx.polyIndices)
         if len(concavePointsIdx) == 0:
-            return concavePointsIdx, IndexedPolygon(
-                'convex', pointsIdx.polyIndices, pointsIdx.includePoints, -1)
+            return concavePointsIdx, IndexedPolygon("convex", pointsIdx.polyIndices, pointsIdx.includePoints, -1)
 
         if len(concavePointsIdx) == 1:
             return concavePointsIdx, IndexedPolygon(
-                'fan', pointsIdx.polyIndices, pointsIdx.includePoints,
-                concavePointsIdx[0])
+                "fan", pointsIdx.polyIndices, pointsIdx.includePoints, concavePointsIdx[0]
+            )
 
         for ci in concavePointsIdx:
-            if self._is_all_edges_visible(
-                    self._originPoints[pointsIdx.polyIndices[ci]],
-                    pointsIdx.polyIndices):
-                return concavePointsIdx, IndexedPolygon(
-                    'fan', pointsIdx.polyIndices, pointsIdx.includePoints, ci)
+            if self._is_all_edges_visible(self._originPoints[pointsIdx.polyIndices[ci]], pointsIdx.polyIndices):
+                return concavePointsIdx, IndexedPolygon("fan", pointsIdx.polyIndices, pointsIdx.includePoints, ci)
 
         return concavePointsIdx, None
 
@@ -167,28 +163,27 @@ class PolyPartition:
             self.split_polygon(r, out, depth + 1)
 
     def _merge_results(self, p1, p2, i1, i2):
-        polyIndices = p1.polyIndices[:i1] + p2.polyIndices[i2 + 1:] \
-                      + p2.polyIndices[:i2] + p1.polyIndices[i1 + 1:]
+        polyIndices = p1.polyIndices[:i1] + p2.polyIndices[i2 + 1 :] + p2.polyIndices[:i2] + p1.polyIndices[i1 + 1 :]
 
         includeIndices1 = p1.includeIndices.copy()
         includeIndices2 = p2.includeIndices.copy()
         includeIndices1[i1] = True
         includeIndices2[i2] = True
 
-        includePoints = includeIndices1[:i1] + includeIndices2[i2 + 1:] + includeIndices2[:i2] + includeIndices1[i1 + 1:]
+        includePoints = (
+            includeIndices1[:i1] + includeIndices2[i2 + 1 :] + includeIndices2[:i2] + includeIndices1[i1 + 1 :]
+        )
 
         pointsIdx = PointsIndices(polyIndices, includePoints)
 
         if p1.type == "convex" and p2.type == "convex":
-            return IndexedPolygon(
-                'fan', pointsIdx.polyIndices, pointsIdx.includePoints, i1)
+            return IndexedPolygon("fan", pointsIdx.polyIndices, pointsIdx.includePoints, i1)
         (_, ret) = self._get_single_result_from_list(pointsIdx)
         return ret
 
     def merge_postproces(self, results: list):
         """Merge fan polygons into bigger fan polygons if it is possible."""
-        concavePoints = self._find_concave_point(
-            list(range(len(self._originPoints))))
+        concavePoints = self._find_concave_point(list(range(len(self._originPoints))))
 
         for cindex in concavePoints:
             candidates = []
@@ -202,29 +197,27 @@ class PolyPartition:
                 fpointsIdx = results[candidates[fi][0]].polyIndices
                 findex = candidates[fi][1]
                 for si in range(fi + 1, len(candidates)):
-                    if candidates[si][0] in merged or\
-                            candidates[fi][0] in merged:
+                    if candidates[si][0] in merged or candidates[fi][0] in merged:
                         continue
 
                     spointsIdx = results[candidates[si][0]].polyIndices
                     sindex = candidates[si][1]
                     mresult = None
-                    if fpointsIdx[(findex - 1) % len(fpointsIdx)] == \
-                            spointsIdx[(sindex + 1) % len(spointsIdx)]:
+                    if fpointsIdx[(findex - 1) % len(fpointsIdx)] == spointsIdx[(sindex + 1) % len(spointsIdx)]:
                         mresult = self._merge_results(
                             results[candidates[fi][0]],
                             results[candidates[si][0]],
                             (findex - 1) % len(fpointsIdx),
-                            sindex)
+                            sindex,
+                        )
 
-                    elif fpointsIdx[(findex + 1) % len(fpointsIdx)] == \
-                            spointsIdx[(sindex - 1) % len(spointsIdx)]:
-
+                    elif fpointsIdx[(findex + 1) % len(fpointsIdx)] == spointsIdx[(sindex - 1) % len(spointsIdx)]:
                         mresult = self._merge_results(
                             results[candidates[fi][0]],
                             results[candidates[si][0]],
                             findex,
-                            (sindex - 1) % len(spointsIdx))
+                            (sindex - 1) % len(spointsIdx),
+                        )
                     if mresult is not None:
                         merged.append(candidates[fi][0])
                         merged.append(candidates[si][0])
@@ -250,8 +243,7 @@ class PolyPartition:
         return True
 
     def _get_star_center(self, pointsIdx):
-        bbox = PolyPartition._get_bbox(list(self._originPoints[i] for i in
-                                            pointsIdx))
+        bbox = PolyPartition._get_bbox(list(self._originPoints[i] for i in pointsIdx))
         center = (bbox[0] + bbox[1]) * 0.5
         n = len(pointsIdx)
         if n < 4 or self._is_all_edges_visible(center, pointsIdx):

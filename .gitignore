@@ -46,10 +46,12 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+coverage.lcov
 *.cover
 *.py,cover
 .hypothesis/
 .pytest_cache/
+tests/vpt/data/output/
 
 # Translations
 *.mo
@@ -129,4 +131,7 @@ dmypy.json
 .pyre/
 
 # vscode settings
-.vscode 
+.vscode
+
+# idea settings
+.idea

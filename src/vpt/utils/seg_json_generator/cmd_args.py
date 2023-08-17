@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from dataclasses import dataclass
 
-from vpt.utils.validate import validate_exists, validate_does_not_exist
+from vpt.utils.validate import validate_does_not_exist, validate_exists
 
 
 @dataclass(frozen=True)
@@ -20,12 +20,19 @@ def validate_args(args: GenerateJsonArgs):
 def get_parser() -> ArgumentParser:
     parser = ArgumentParser()
 
-    parser.add_argument('--input-analysis-spec', type=str, required=True,
-                        help='Path to a json with analysis arguments for template segmentation specification')
-    parser.add_argument('--output-path', type=str, required=True,
-                        help='Path to the json file where the generated segmentation specification will be stored')
-    parser.add_argument('--overwrite', action='store_true', default=False, required=False,
-                        help='')
+    parser.add_argument(
+        "--input-analysis-spec",
+        type=str,
+        required=True,
+        help="Path to a json with analysis arguments for template segmentation specification",
+    )
+    parser.add_argument(
+        "--output-path",
+        type=str,
+        required=True,
+        help="Path to the json file where the generated segmentation specification will be stored",
+    )
+    parser.add_argument("--overwrite", action="store_true", default=False, required=False, help="")
     return parser
 
 

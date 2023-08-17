@@ -1,7 +1,9 @@
 from typing import List, Tuple
 
 import numpy as np
+from vpt_core import log
 
+from vpt.update_vzg.byte_utils import extend_with_u32, extend_with_f32
 from vpt.update_vzg.polygons.packedpolygon import PackedPolygon
 from vpt.update_vzg.polygons.polystructers import IndexedPolygon
 
@@ -22,6 +24,7 @@ class PackedFanPolygon(PackedPolygon):
         flag_k is used when rendering the polygon contour
         idx_k is the index of the point of the fan number k
     """
+
     Golden_Size = 25.6
 
     Points_Count = (37, 17, 9)
@@ -49,8 +52,7 @@ class PackedFanPolygon(PackedPolygon):
 
         return 2, PackedFanPolygon.Golden_Size * 3
 
-    def get_packed_bytes(self, polyList: List[IndexedPolygon],
-                         cellSize, cellId, expBbox) -> bytes:
+    def get_packed_bytes(self, polyList: List[IndexedPolygon], cellSize, cellId, expBbox) -> bytes:
         """Transfer polygons (points and indices) into packed block.
         Args:
             polyList: List of IndexedPolygon.
@@ -63,12 +65,11 @@ class PackedFanPolygon(PackedPolygon):
         packedPolyBtr = bytearray()
 
         sizeFactor, sizeNorm = self.define_cell_size_factor(cellSize)
-        packedPolyBtr.extend(np.uint32(
-            np.uint32(np.uint32(sizeFactor) << 24) + np.uint32(cellId)))
+        extend_with_u32(packedPolyBtr, np.uint32(np.uint32(sizeFactor) << 24) + np.uint32(cellId))
 
         p0 = self._points[0]
-        packedPolyBtr.extend(np.float32(p0[0]))
-        packedPolyBtr.extend(np.float32(p0[1]))
+        extend_with_f32(packedPolyBtr, p0[0])
+        extend_with_f32(packedPolyBtr, p0[1])
 
         # pack deltas
         normScale = (expBbox[0] / sizeNorm, expBbox[1] / sizeNorm)
@@ -81,7 +82,7 @@ class PackedFanPolygon(PackedPolygon):
         self._pack_indices(polyList, packedPolyBtr)
 
         if len(packedPolyBtr) != self.Bytes_Count[self._lodLevel.value]:
-            print('Packing error: wrong byte count', len(packedPolyBtr), self._lodLevel)
+            log.warning("Packing error: wrong byte count", len(packedPolyBtr), self._lodLevel)
             return bytes()
 
         return bytes(packedPolyBtr)
@@ -94,22 +95,21 @@ class PackedFanPolygon(PackedPolygon):
         for poly in polyList:  # type: IndexedPolygon
             polyIdx = poly.polyIndices
             includeIdx = poly.includeIndices
-            if poly.type == 'fan' and poly.ind != 0:
+            if poly.type == "fan" and poly.ind != 0:
                 shift = len(poly.polyIndices) - poly.ind
                 polyIdx = polyIdx[-shift:] + polyIdx[:-shift]
                 includeIdx = includeIdx[-shift:] + includeIdx[:-shift]
 
             for i, pIdx in enumerate(polyIdx):
-                indices[idx] = np.uint8(np.uint8(includeIdx[i]) << 7) +\
-                               np.uint8(pIdx)
+                indices[idx] = np.uint8(np.uint8(includeIdx[i]) << 7) + np.uint8(pIdx)
                 idx += 1
 
         for i in range(0, maxIndex // 4, 1):
             packedPolyBtr.extend(
-                np.uint32(indices[i * 4] << 24) +
-                np.uint32(indices[i * 4 + 1] << 16) +
-                np.uint32(indices[i * 4 + 2] << 8) +
-                np.uint32(indices[i * 4 + 3])
+                np.uint32(indices[i * 4] << 24)
+                + np.uint32(indices[i * 4 + 1] << 16)
+                + np.uint32(indices[i * 4 + 2] << 8)
+                + np.uint32(indices[i * 4 + 3])
             )
             bytePacked += 4
 
@@ -117,14 +117,14 @@ class PackedFanPolygon(PackedPolygon):
     def _pack_poly_count(polyList: List[IndexedPolygon], packedPolyBtr):
         fansCount = np.zeros(12, dtype=np.uint8)
         for i, poly in enumerate(polyList):
-            fansCount[i] = (np.uint8(len(poly.polyIndices)))
+            fansCount[i] = np.uint8(len(poly.polyIndices))
 
         for i in range(3):
             packedPolyBtr.extend(
-                np.uint32(fansCount[i * 4] << 24) +
-                np.uint32(fansCount[i * 4 + 1] << 16) +
-                np.uint32(fansCount[i * 4 + 2] << 8) +
-                np.uint32(fansCount[i * 4 + 3])
+                np.uint32(fansCount[i * 4] << 24)
+                + np.uint32(fansCount[i * 4 + 1] << 16)
+                + np.uint32(fansCount[i * 4 + 2] << 8)
+                + np.uint32(fansCount[i * 4 + 3])
             )
 
     def _pack_deltas(self, packedPolyBtr, normScale):
@@ -134,13 +134,10 @@ class PackedFanPolygon(PackedPolygon):
         lastPointsCount = (pointsCount - 1) % 4
         multipled4Points = pointsCount - 1 - lastPointsCount
         for pointInd in range(1, multipled4Points, 4):
-            packedPolyBtr.extend(
-                self._pack4_points(pointInd, self._points[0], normScale))
+            packedPolyBtr.extend(self._pack4_points(pointInd, self._points[0], normScale))
 
         if lastPointsCount != 0:
-            packedPolyBtr.extend(
-                self._pack4_points(multipled4Points + 1, self._points[0],
-                                   normScale, lastPointsCount))
+            packedPolyBtr.extend(self._pack4_points(multipled4Points + 1, self._points[0], normScale, lastPointsCount))
             multipled4Points += 4
 
         for _ in range(multipled4Points, maxPoint - 1, 4):

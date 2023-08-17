@@ -2,7 +2,7 @@ Installation
 =========================================================
 
 Docker Image
-    In order to support a completely reproducible analysis environment, we provide a Docker image of the Vizgen 
+    In order to support a completely reproducible analysis environment, Vizgen provides a Docker image of the Vizgen 
     Post-processing Tool ``vpt`` that can be deployed locally, in a high-performance compute (HPC) environment, or in the 
     cloud. The docker image contains ``vpt`` and all dependencies, as well as:
 
@@ -22,7 +22,7 @@ Python Package Index
 
     .. code-block:: bash
 
-        pip install vpt
+        pip install vpt[all]
 
     The functionality of ``vpt`` requires the following system libraries:
 
@@ -41,11 +41,11 @@ Poetry
 
         git clone https://github.com/Vizgen/vizgen-postprocessing
         cd vizgen-postprocessing
-        poetry install 
+        poetry install --all-extras
 
 
 Post-Install Verification
-    After installation, you may verify that ``vpt`` is properly configured by running:
+    After installation, users can verify that ``vpt`` is properly configured by running:
     
     .. code-block:: bash
 

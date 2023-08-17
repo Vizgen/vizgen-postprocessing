@@ -1,9 +1,10 @@
 from enum import Enum
-from typing import Union
+from typing import Tuple
 
 import numpy as np
 import pandas
 
+from vpt.update_vzg.byte_utils import extend_with_u32
 from vpt.update_vzg.cell_metadata import CellMetadata
 
 
@@ -42,7 +43,6 @@ class GeneExprMatrix:
         self.average_genes = np.mean(self.data, 0)
 
     def _load_matrix_data(self, exprMatrix):
-
         exprMatrix = exprMatrix.sort_index()
         self.data = exprMatrix.to_numpy()
         self.lines_cells = len(self.data)
@@ -65,7 +65,7 @@ class GeneExprMatrix:
             cell_volume = volume_np[cell_number]
             self.data[cell_number] = origin_data[cell_number] / cell_volume
 
-    def generate_sparse_gene_expr_matrix_data(self) -> Union[bytearray, bytearray]:
+    def generate_sparse_gene_expr_matrix_data(self) -> Tuple[bytearray, bytearray]:
         """
             Original matrix is rather sparse, so we need to store data efficiently, this function generate 3 arrays,
         that determine information that we use from original matrix (example from scheme 1):
@@ -86,25 +86,23 @@ class GeneExprMatrix:
         writen_element_id = 0
         for cell_line in range(self.lines_cells):
             first_gene = True
-            genesCountList.append(
-                str(cell_line) + ' ' + str(np.sum(self.data[cell_line])) + '\n')
+            genesCountList.append(str(cell_line) + " " + str(np.sum(self.data[cell_line])) + "\n")
             for gene_number in range(self.columns_genes):
                 transcripts_count = self.data[cell_line][gene_number]
                 if transcripts_count != 0:
                     if first_gene:
-                        transcripts_gene_indices_btr.extend(np.uint32(writen_element_id))
+                        extend_with_u32(transcripts_gene_indices_btr, writen_element_id)
                         first_gene = False
-                        geneIndexList.append(str(writen_element_id) + '\n')
+                        geneIndexList.append(str(writen_element_id) + "\n")
 
-                    transcripts_gene_number_btr.extend(np.uint32(transcripts_count))
-                    transcripts_gene_number_btr.extend(np.uint32(gene_number))
-                    genesArrayList.append(
-                        str(transcripts_count) + ' ' + str(gene_number) + '\n')
+                    extend_with_u32(transcripts_gene_number_btr, transcripts_count)
+                    extend_with_u32(transcripts_gene_number_btr, gene_number)
+                    genesArrayList.append(str(transcripts_count) + " " + str(gene_number) + "\n")
                     writen_element_id += 1
 
             if first_gene:
-                transcripts_gene_indices_btr.extend(np.uint32(writen_element_id))
-                geneIndexList.append(str(writen_element_id) + '\n')
+                extend_with_u32(transcripts_gene_indices_btr, writen_element_id)
+                geneIndexList.append(str(writen_element_id) + "\n")
 
         return transcripts_gene_number_btr, transcripts_gene_indices_btr
 

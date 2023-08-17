@@ -1,8 +1,8 @@
 import json
 from dataclasses import dataclass
-from typing import List, Dict, Set
+from typing import Dict, List, Set
 
-from vpt.filesystem.vzgfs import vzg_open
+from vpt_core.io.vzgfs import io_with_retries
 
 
 @dataclass(frozen=True)
@@ -24,9 +24,9 @@ class AlgInfo:
 def get_stain_set(alg_raw: Dict) -> Set[str]:
     stains = set()
 
-    for task in alg_raw['segmentation_tasks']:
-        for data_instance in task['task_input_data']:
-            stains.add(data_instance['image_channel'])
+    for task in alg_raw["segmentation_tasks"]:
+        for data_instance in task["task_input_data"]:
+            stains.add(data_instance["image_channel"])
 
     return stains
 
@@ -34,19 +34,18 @@ def get_stain_set(alg_raw: Dict) -> Set[str]:
 def get_z_layers_set(alg_raw: Dict) -> Set[int]:
     layers = set()
 
-    for task in alg_raw['segmentation_tasks']:
-        layers |= set(task['z_layers'])
+    for task in alg_raw["segmentation_tasks"]:
+        layers |= set(task["z_layers"])
 
     return layers
 
 
 def get_output_files(alg_raw: Dict) -> List[OutputFiles]:
-    return [OutputFiles(**files['files']) for files in alg_raw['output_files']]
+    return [OutputFiles(**files["files"]) for files in alg_raw["output_files"]]
 
 
-def read_algorithm_json(path: str) -> Dict:
-    with vzg_open(path, 'r') as f:
-        data = json.load(f)
+def read_json(path: str) -> Dict:
+    data = io_with_retries(uri=path, mode="r", callback=json.load)
     return data
 
 

@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from shapely import geometry
 
 
 class Feature:
-    def __init__(self, rawCellId: str, rawPolysGeometryList: List[List[geometry.shape]]):
-        self.shapes: List[geometry.shape or None] = rawPolysGeometryList
+    def __init__(self, rawCellId: str, rawPolysGeometryList: List[geometry.shape]):
+        self.shapes: List[Optional[geometry.shape]] = rawPolysGeometryList
         self.id = rawCellId
 
     def get_feature_id(self):
@@ -26,3 +26,8 @@ class Feature:
             else:
                 output.append(geometry.Polygon(((0, 0), (0, 0), (0, 0))))
         return output
+
+    def __eq__(self, other):
+        if isinstance(other, Feature):
+            return other.id == self.id and other.shapes == self.shapes
+        return False

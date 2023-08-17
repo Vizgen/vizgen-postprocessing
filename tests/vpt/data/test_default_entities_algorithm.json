@@ -1,0 +1,77 @@
+{
+  "experiment_properties": {
+    "all_z_indexes": [
+      0,
+      1,
+      2
+    ],
+    "z_positions_um": [
+      0,
+      0.1,
+      0.2
+    ]
+  },
+  "segmentation_tasks": [
+    {
+      "task_id": 0,
+      "segmentation_family": "test",
+      "entity_types_detected": [
+        "cell",
+        "nuclei"
+      ],
+      "z_layers": [
+        0,
+        1,
+        2
+      ],
+      "segmentation_properties": {
+        "model_dimensions": "3D"
+      },
+      "segmentation_parameters": {},
+      "polygon_parameters": {
+        "simplification_tol": 2,
+        "smoothing_radius": 3,
+        "minimum_final_area": 100
+      },
+      "task_input_data": [
+        {
+          "image_channel": "DAPI",
+          "image_preprocessing": []
+        },
+        {
+          "image_channel": "Cellbound2",
+          "image_preprocessing": [
+            {
+              "name": "blur",
+              "parameters": {
+                "type": "gaussian",
+                "size": 21
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "segmentation_task_fusion": {
+    "entity_fusion_strategy": "harmonize",
+    "fused_polygon_postprocessing_parameters": {
+      "min_distance_between_entities": 1,
+      "min_final_area": 500
+    }
+  },
+  "output_files": [
+    {
+      "entity_types_output": [
+        "cell",
+        "nuclei"
+      ],
+      "files": {
+        "run_on_tile_dir": "test",
+        "mosaic_geometry_file": "mosaic_space.parquet",
+        "micron_geometry_file": "micron_space.parquet",
+        "cell_metadata_file": "cell_metadata.csv"
+      }
+    }
+  ]
+}

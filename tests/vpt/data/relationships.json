@@ -1,0 +1,22 @@
+{
+  "parent_type": "parent",
+  "child_type": "child",
+  "child_coverage_threshold": 0.9,
+  "constraints": [
+    {
+      "constraint": "maximum_child_count",
+      "value": 1,
+      "resolution": "remove_child"
+    },
+    {
+      "constraint": "minimum_child_count",
+      "value": 1,
+      "resolution": "remove_parent"
+    },
+    {
+      "constraint": "parent_must_cover_child",
+      "value": null,
+      "resolution": "shrink_child"
+    }
+  ]
+}

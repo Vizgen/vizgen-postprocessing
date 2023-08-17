@@ -1,8 +1,7 @@
-from typing import Tuple
 from collections import namedtuple
+from typing import Tuple
 
-IndexedPolygon = namedtuple(
-    'IndexedPolygon', 'type polyIndices includeIndices ind')
+IndexedPolygon = namedtuple("IndexedPolygon", "type polyIndices includeIndices ind")
 
 
 class PointsIndices:
@@ -16,7 +15,7 @@ class PointsIndices:
         else:
             self.includePoints = [True] * len(polyIndices)
 
-    def polygon_partition(self, startIdx, endIdx) -> Tuple['PointsIndices', 'PointsIndices']:
+    def polygon_partition(self, startIdx, endIdx) -> Tuple["PointsIndices", "PointsIndices"]:
         """Parts this polygon into 2 new polygons.
         Args:
             startIdx: index in this polygon that will be 0-index in the
@@ -49,5 +48,6 @@ class PointsIndices:
         leftPolyIndices.append(self.polyIndices[startIdx])
         leftPolyIncludes.append(False)
 
-        return PointsIndices(leftPolyIndices, leftPolyIncludes), \
-               PointsIndices(rightPolyIndices, rightPolyIncludes) # noqa
+        return PointsIndices(leftPolyIndices, leftPolyIncludes), PointsIndices(
+            rightPolyIndices, rightPolyIncludes
+        )  # noqa

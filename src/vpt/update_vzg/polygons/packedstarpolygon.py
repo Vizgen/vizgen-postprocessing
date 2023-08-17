@@ -1,7 +1,9 @@
 from typing import Tuple
+
 import numpy as np
 
-from vpt.update_vzg.polygons.packedpolygon import PackedPolygon, LodLevel
+from vpt.update_vzg.byte_utils import extend_with_u32
+from vpt.update_vzg.polygons.packedpolygon import LodLevel, PackedPolygon
 
 
 class PackedStarPolygon(PackedPolygon):
@@ -18,11 +20,7 @@ class PackedStarPolygon(PackedPolygon):
         dXk, dYk is the displacement from the center to the point k (k > 0).
     """
 
-    LOD_POINTS = [
-        [17, 33, 57],
-        [8, 16, 32],
-        [0, 0, 0]
-    ]
+    LOD_POINTS = [[17, 33, 57], [8, 16, 32], [0, 0, 0]]
 
     def __init__(self, points, gridSize: Tuple[float, float], lodLevel=LodLevel.Max):
         super().__init__(points)
@@ -38,34 +36,28 @@ class PackedStarPolygon(PackedPolygon):
         packedPolyBtr = bytearray()
 
         polyType, packedPointCount = self._define_packed_points(pointsCount)
-        packedPolyBtr.extend(np.uint32(
-            np.uint32(np.uint32(pointsCount - 1) << 24) + np.uint32(cellId)))
+        extend_with_u32(packedPolyBtr, np.uint32(np.uint32(pointsCount - 1) << 24) + np.uint32(cellId))
 
         centerPoint = self._points.mean(0)
 
         firstPointDeltaX = (self._points[0][0] - centerPoint[0]) * self._gridSize[0] * 0.5 + 0.5
         firstPointDeltaY = (self._points[0][1] - centerPoint[1]) * self._gridSize[1] * 0.5 + 0.5
 
-        bitsCenterX = np.uint32(np.uint32(centerPoint[0] *
-                                          self.CENTER_POINT_PACK_FACTOR) << 12)
+        bitsCenterX = np.uint32(np.uint32(centerPoint[0] * self.CENTER_POINT_PACK_FACTOR) << 12)
         bitsFirstPointDeltaX = np.uint32(firstPointDeltaX * (1 << 12))
-        packedPolyBtr.extend(np.uint32(bitsCenterX + bitsFirstPointDeltaX))
+        extend_with_u32(packedPolyBtr, bitsCenterX + bitsFirstPointDeltaX)
 
-        bitsCenterY = np.uint32(np.uint32(centerPoint[1] *
-                                          self.CENTER_POINT_PACK_FACTOR) << 12)
+        bitsCenterY = np.uint32(np.uint32(centerPoint[1] * self.CENTER_POINT_PACK_FACTOR) << 12)
         bitsFirstPointDeltaY = np.uint32(firstPointDeltaY * (1 << 12))
-        packedPolyBtr.extend(np.uint32(bitsCenterY + bitsFirstPointDeltaY))
+        extend_with_u32(packedPolyBtr, bitsCenterY + bitsFirstPointDeltaY)
 
         lastPointsCount = (pointsCount - 1) % 4
         multipled4Points = pointsCount - 1 - lastPointsCount
         for pointInd in range(1, multipled4Points, 4):
-            packedPolyBtr.extend(
-                self._pack4_points(pointInd, centerPoint, self._gridSize))
+            packedPolyBtr.extend(self._pack4_points(pointInd, centerPoint, self._gridSize))
 
         if lastPointsCount != 0:
-            packedPolyBtr.extend(self._pack4_points(
-                multipled4Points + 1, centerPoint, self._gridSize,
-                lastPointsCount))
+            packedPolyBtr.extend(self._pack4_points(multipled4Points + 1, centerPoint, self._gridSize, lastPointsCount))
             multipled4Points += 4
 
         for _ in range(multipled4Points, packedPointCount - 1, 4):
@@ -88,22 +80,18 @@ class PackedStarPolygon(PackedPolygon):
         pointsCount = len(self._points)
         packedPolyBtr = bytearray()
 
-        packedPolyBtr.extend(np.uint32(
-            np.uint32(np.uint32(pointsCount - 1) << 24) + np.uint32(cellId)))
+        packedPolyBtr.extend(np.uint32(np.uint32(np.uint32(pointsCount - 1) << 24) + np.uint32(cellId)))
 
         polyType, packedPointCount = self._define_packed_points(pointsCount)
         centerPoint = self._points.mean(0)
-        packedPolyBtr.extend(
-            np.uint16(self._unsigned_float_to_n_bits(centerPoint[0], 16)))
-        packedPolyBtr.extend(
-            np.uint16(self._unsigned_float_to_n_bits(centerPoint[1], 16)))
+        packedPolyBtr.extend(np.uint16(self._unsigned_float_to_n_bits(centerPoint[0], 16)))
+        packedPolyBtr.extend(np.uint16(self._unsigned_float_to_n_bits(centerPoint[1], 16)))
 
         blocks8Count = 0
         for startPointIdx in range(0, pointsCount, 8):
             pointDelta = pointsCount - startPointIdx
             packSize = 8 if pointDelta > 8 else pointDelta
-            self._pack8_points(
-                startPointIdx, centerPoint, packedPolyBtr, packSize)
+            self._pack8_points(startPointIdx, centerPoint, packedPolyBtr, packSize)
             blocks8Count += 1
 
         for _ in range(packedPointCount - blocks8Count * 8):
@@ -123,14 +111,11 @@ class PackedStarPolygon(PackedPolygon):
         """
         packSize = PackedStarPolygon.LOD_POINTS[level.value][packSizeType]
         if level == LodLevel.Max:
-            return PackedPolygon.BASE_SIZE[level] + \
-                   PackedPolygon.BYTE_ON_POINT[level] * (packSize - 1)
+            return PackedPolygon.BASE_SIZE[level] + PackedPolygon.BYTE_ON_POINT[level] * (packSize - 1)
         else:  # level == LodLevel.Middle
-            return PackedPolygon.BASE_SIZE[level] \
-                   + PackedPolygon.BYTE_ON_POINT[level] * packSize
+            return PackedPolygon.BASE_SIZE[level] + PackedPolygon.BYTE_ON_POINT[level] * packSize
 
-    def _pack8_points(self, startInd, centerPoint, packedPolyBtr,
-                      pointsCount=8):
+    def _pack8_points(self, startInd, centerPoint, packedPolyBtr, pointsCount=8):
         offsets = np.zeros(8, dtype=np.uint32)
         for pointIdx in range(pointsCount):
             deltaX = (self._points[startInd + pointIdx][0] - centerPoint[0]) * self._gridSize[0] * 0.5 + 0.5
