@@ -1,4 +1,4 @@
-Welcome to Vizgen Post-processing Tool's documentation!
+Welcome to Vizgen Post-processing Tool documentation!
 =========================================================
 
 .. toctree::
@@ -9,3 +9,5 @@ Welcome to Vizgen Post-processing Tool's documentation!
    command_line_interface/index
    segmentation_options/index
    output_data_formats/index
+   analysis_vignettes/index
+   experimental_features/index

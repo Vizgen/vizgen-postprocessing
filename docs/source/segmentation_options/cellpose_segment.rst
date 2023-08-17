@@ -1,9 +1,10 @@
 Cellpose Options
 =========================================================
 
-The Cellpose segmentation algorithm uses the Cellpose v.1.0.2. In addition 
-to supporting  the default model weights (e.g. cyto2, nuclei), we support custom 
+The Cellpose segmentation algorithm uses the Cellpose v.1.0.2 [citation]_. In addition 
+to supporting  the default model weights (e.g. cyto2, nuclei), ``vpt`` supports custom 
 weights that may be more appropriate for a specific tissue type.
+
 
 Input Data
 """"""""""""
@@ -65,3 +66,5 @@ Usage:
         "mask_threshold": -5.5,
         "minimum_mask_size": 500
     }
+
+.. [citation] Stringer, C., Wang, T., Michaelos, M., & Pachitariu, M. (2021). Cellpose: a generalist algorithm for cellular segmentation. *Nature methods*, 18(1), 100-106.
