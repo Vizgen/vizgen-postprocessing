@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.1 (2023-08-18)
+
+### Fix
+
+* Restore build version docker tag ([`fd26bb7`](https://github.com/Vizgen/vizgen-postprocessing/commit/fd26bb753b73d9fd4d09e09cde2825c3d00b7b30))
+
 ## v1.1.0 (2023-08-17)
 
 ### Feature
