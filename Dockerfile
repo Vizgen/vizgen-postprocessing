@@ -32,7 +32,7 @@ RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip --output awscl
     rm -rf /aws
 
 # Install poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.3.1
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
 
 # Install vpt
 ADD . /vizgen_postprocessing/
