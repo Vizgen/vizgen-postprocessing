@@ -58,24 +58,30 @@ def get_cell_brightness_in_image(image_path: str, entities: Iterable[Tuple[int, 
                 high_pass_image = high_pass_input - inverse_filtered_fft.real
                 high_pass_image = np.maximum(high_pass_image, 0)
 
-                # Create a polygon at the origin to use to mask an image
-                selector_poly = translate(cell, xoff=-cell.bounds[0], yoff=-cell.bounds[1])
+                try:
+                    # Create a polygon at the origin to use to mask an image
+                    selector_poly = translate(cell, xoff=-cell.bounds[0], yoff=-cell.bounds[1])
 
-                # Create the mask
-                bounding_box = [int(x) for x in selector_poly.bounds]
-                if (
-                    min(bounding_box[:2]) < 0
-                    or bounding_box[2] >= image_data.shape[1]
-                    or bounding_box[3] >= image_data.shape[0]
-                ):
-                    raise ValueError(f"Cell is beyond image boundaries: {cell}")
+                    # Create the mask
+                    bounding_box = [int(x) for x in selector_poly.bounds]
+                    if (
+                        min(bounding_box[:2]) < 0
+                        or bounding_box[2] >= image_data.shape[1]
+                        or bounding_box[3] >= image_data.shape[0]
+                    ):
+                        raise ValueError(f"Cell is beyond image boundaries: {cell}")
 
-                mask_shape = (bounding_box[3] + 1, bounding_box[2] + 1)
-                cell_mask = rasterize([selector_poly], out_shape=mask_shape, all_touched=True)
+                    mask_shape = (bounding_box[3] + 1, bounding_box[2] + 1)
+                    cell_mask = rasterize([selector_poly], out_shape=mask_shape, all_touched=True)
+                    temp_raw = np.sum(image_data * cell_mask)
+                    temp_filt = np.sum(high_pass_image * cell_mask)
+                except ValueError:
+                    log.warning(f"Could not apply cell mask for Entity {cell_id} in image {image_path}")
+                    temp_raw = np.sum(image_data)
+                    temp_filt = np.sum(high_pass_image)
 
-                # Add the signal from this z-plane to the overall brightness
-                cell_raw_brightness.append(np.sum(image_data * cell_mask))
-                cell_filtered_brightness.append(np.sum(high_pass_image * cell_mask))
+                cell_raw_brightness.append(temp_raw)
+                cell_filtered_brightness.append(temp_filt)
                 indexes.append(cell_id)
 
     return (pd.Series(cell_raw_brightness, index=indexes), pd.Series(cell_filtered_brightness, index=indexes))

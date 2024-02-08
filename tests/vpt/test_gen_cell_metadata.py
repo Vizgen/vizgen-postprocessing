@@ -37,6 +37,12 @@ def test_create_metatable():
     assert len(tbl.index) == 10
 
 
+def test_metadata_solidity():
+    cellsReader = cell_reader_factory(str(DATA_ROOT / "sample2.geojson"))
+    tbl = create_metadata_table(Boundaries(cellsReader), cellsReader.get_z_depth_per_level())
+    assert all(tbl["solidity"] > 0) and all(tbl["solidity"] <= 1)
+
+
 def test_gen_cell_x_gene():
     cellsReader: CellsReader = cell_reader_factory(str(gj_file))
     bnds = Boundaries(cellsReader)

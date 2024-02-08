@@ -36,9 +36,10 @@ def process_chunk(chunk_df, shapely_list, z_planes_count, cell_id_list, needs_ne
                 transcripts_list.append(one_gene_z)
 
         if needs_new_dt:
-            unhandled_transcripts = one_gene.loc[(one_gene["global_z"] >= z_planes_count) + (one_gene["global_z"] < 0)]
+            unhandled_transcripts = one_gene.loc[(one_gene["global_z"] >= z_planes_count) | (one_gene["global_z"] < 0)]
             unhandled_transcripts.assign(cell_id=-1)
-            transcripts_list.append(unhandled_transcripts)
+            if len(unhandled_transcripts) > 0:
+                transcripts_list.append(unhandled_transcripts)
 
         if one_gene_partition_list:
             one_gene_partition = np.concatenate(one_gene_partition_list, axis=1)
@@ -50,7 +51,13 @@ def process_chunk(chunk_df, shapely_list, z_planes_count, cell_id_list, needs_ne
 
     cell_x_gene = pd.DataFrame(index=range(len(cell_id_list))).join(gene_df_list).fillna(0)
     cell_x_gene["cell"] = pd.to_numeric(cell_id_list)
-    return cell_x_gene, transcripts_list
+
+    if len(transcripts_list) > 0:
+        transcripts_df = pd.concat(transcripts_list).loc[chunk_df.index]
+    else:
+        transcripts_df = pd.DataFrame(columns=list(chunk_df.columns) + ["cell_id"])
+
+    return cell_x_gene, transcripts_df
 
 
 def construct_cell_x_gene(
@@ -61,7 +68,7 @@ def construct_cell_x_gene(
 
     first_chunk = True
     for chunk_df in transcripts:
-        chunk_cell_by_gene, transcripts_list = process_chunk(
+        chunk_cell_by_gene, transcripts_df = process_chunk(
             chunk_df, geometry_list, z_planes_count, cell_id_list, output_transcripts is not None
         )
 
@@ -72,11 +79,12 @@ def construct_cell_x_gene(
         barcode_id_name_df = pd.concat([barcode_id_name_df, chunk_df[["barcode_id", "gene"]]]).drop_duplicates(
             subset="barcode_id"
         )
-        if output_transcripts is None or len(transcripts_list) == 0:
+
+        if output_transcripts is None:
             continue
 
-        transcripts_df = pd.concat(transcripts_list).loc[chunk_df.index]
         transcripts_df = transcripts_df.rename(columns={transcripts_df.columns[0]: ""})
+
         if first_chunk:
             io_with_retries(
                 output_transcripts, "w", lambda f: transcripts_df.to_csv(f, mode="w", index=False, header=True)

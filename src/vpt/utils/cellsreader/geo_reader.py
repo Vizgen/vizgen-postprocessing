@@ -10,9 +10,12 @@ from vpt.utils.raw_cell import Feature
 
 
 class CellsGeoReader(CellsReader):
-    def __init__(self, data_path: str):
-        data: gpd.GeoDataFrame = io_with_retries(data_path, "rb", gpd.read_file)
-        data = data.rename(columns={"geometry": "Geometry"})
+    def __init__(self, data_path: str = "", data: gpd.GeoDataFrame = None):
+        if (not data_path and data is None) or (data_path and data is not None):
+            raise ValueError("CellsGeoReader requires one argument: path to dataframe or dataframe itself")
+        if data_path:
+            data = io_with_retries(data_path, "rb", gpd.read_file)
+            data = data.rename(columns={"geometry": "Geometry"})
 
         self._initialize_with_data(data)
 

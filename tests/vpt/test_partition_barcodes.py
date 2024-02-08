@@ -1,5 +1,6 @@
 import os
 from argparse import Namespace
+from functools import partial
 
 import numpy
 import pandas as pd
@@ -65,6 +66,25 @@ def test_func_partition_barcodes_new_transcripts(temp_dir: TempDir):
 
         assert len(original_transcripts) == len(new_transcripts)
         assert len(numpy.unique(new_transcripts.loc[:, "cell_id"].values)) > 1
+    finally:
+        temp_dir.clear_dir()
+
+
+@pytest.mark.parametrize("temp_dir", [LocalTempDir()], ids=str)
+def test_func_partition_barcodes_zero_transcripts(temp_dir: TempDir):
+    try:
+        args = get_arguments(temp_dir)
+
+        # substitute the input transcripts with an empty dataframe
+        unused_transcripts = io_with_retries(args.input_transcripts, "r", pd.read_csv)
+        io_with_retries(args.input_transcripts, "w", partial(unused_transcripts.loc[[]].to_csv, index=False))
+
+        main_partition_transcripts(args)
+
+        original_transcripts = io_with_retries(args.input_transcripts, "r", pd.read_csv)
+        new_transcripts = io_with_retries(args.output_transcripts, "r", pd.read_csv)
+
+        assert len(original_transcripts) == len(new_transcripts)
     finally:
         temp_dir.clear_dir()
 

@@ -30,20 +30,34 @@ vpt = "vpt.vizgen_postprocess:entry_point"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-dask = "2022.9.0"
-distributed = "2022.9.0"
-geopandas = "0.12.1"
-h5py = "3.7.0"
-numpy = "1.22.4"
-pandas = "1.4.3"
-pyarrow = "8.0.0"
-python-dotenv = "0.20.0"
-pyvips = "2.2.1"
-rasterio = "1.3.0"
-scipy = "1.8.1"
-shapely = "^2.0.0"
-tensorflow-io-gcs-filesystem = "0.30.0"
-vpt_core = ">=1.0.0"
+boto3 = "1.17"
+dask = ">=2023.2.0"
+distributed = ">=2023.2.0"
+fsspec = "2021.10.0"
+geopandas = ">=0.13.2"
+gcsfs = "2021.10.0"
+h5py = ">=3.7.0"
+ipykernel = "*"
+kaleido = [
+    { version = "0.1post1", platform = "win32" },
+    { version = "0.1.0", platform = "linux" },
+    { version = "0.1.0", platform = "darwin" },
+]
+leidenalg = "^0.10.1"
+numpy = ">=1.24.3"
+pandas = ">=2.0.3"
+plotly = "^5.17.0"
+pretty-html-table = "^0.9.16"
+pyarrow = ">=8.0.0 <14.0.0"
+python-dotenv = ">=0.20.0"
+pyvips = ">=2.2.1"
+rasterio = ">=1.3.0, <1.3.6"
+s3fs = "2021.10.0"
+scanpy = "1.9.3"
+scipy = ">=1.8.1"
+shapely = ">=2.0.0"
+torch = "2.0.0"
+vpt_core = ">=1.1.0"
 vpt_plugin_cellpose = { version = ">=1.0.0", optional = true }
 vpt_plugin_watershed = { version = ">=1.0.0", optional = true }
 

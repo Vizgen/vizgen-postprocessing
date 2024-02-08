@@ -131,7 +131,7 @@ def create_relationships(
     cell_field = SegmentationResult.cell_id_field
 
     def _shift_entity_ids(old_id: int, shift: int, min_id_to_update: int):
-        return old_id + shift if old_id >= min_id_to_update else old_id
+        return old_id + shift if not pd.isna(old_id) and old_id >= min_id_to_update else old_id
 
     # update the ids of newly created elements which might overlap with the set of ids of the partly compiled dataframe
     for partly_res in partly_compiled:
@@ -219,6 +219,8 @@ def compile_tile_segmentation(args):
         compiled, affected_rows_set, params.entity_type_relationships, params.polygon_parameters
     )
     for result in results:
+        if not result.df[result.parent_id_field].isna().all():
+            result.df[result.parent_id_field] = result.df[result.parent_id_field].astype("Int64")
         save_compiled_results(
             result, etype_to_paths[result.entity_type], params.micron_to_mosaic_matrix, args.max_row_group_size
         )

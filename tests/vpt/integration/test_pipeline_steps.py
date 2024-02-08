@@ -180,6 +180,7 @@ def test_run_segmentation_watershed_two_entities_4t(output_folder: Path):
         )
     )
     assert check_results(output_folder)
+    relations_validation(output_folder, "cell", "nuclei")
 
 
 def test_run_segmentation_watershed_cell_4t_4p(output_folder: Path):
@@ -332,6 +333,7 @@ def test_run_segmentation_cp_two_entities_4t(output_folder: Path):
         )
     )
     assert check_results(output_folder)
+    relations_validation(output_folder, "cell", "nuclei")
 
 
 def test_run_segmentation_cp_two_entities_demo_data(output_folder: Path):
@@ -356,3 +358,4 @@ def test_run_segmentation_cp_two_entities_demo_data(output_folder: Path):
         )
     )
     assert check_results(output_folder)
+    relations_validation(output_folder, "cell", "nuclei")

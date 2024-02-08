@@ -11,6 +11,10 @@ from vpt.convert_to_ome import run_ome as convert_to_ome
 from vpt.convert_to_ome import run_ome_rgb as convert_to_rgb_ome
 from vpt.derive_cell_metadata import get_parser as get_derive_cell_metadata_parser
 from vpt.derive_cell_metadata import run as derive_cell_metadata
+from vpt.extract_image_patch import get_parser as get_extract_image_patch_parser
+from vpt.extract_image_patch import run as extract_image_patch
+from vpt.generate_segmentation_metrics import get_parser as get_generate_segmentation_metrics_parser
+from vpt.generate_segmentation_metrics import run as generate_segmentation_metrics
 from vpt.partition_transcripts import get_parser as get_partition_transcripts_parser
 from vpt.partition_transcripts import run as partition_transcripts
 from vpt.prepare_segmentation import get_parser as get_prepare_seg_parser
@@ -180,6 +184,24 @@ def get_postprocess_parser() -> ArgumentParser:
         description=get_convert_to_rgb_ome_parser().description,
     )
 
+    subparsers.add_parser(
+        "extract-image-patch",
+        parents=[get_extract_image_patch_parser()],
+        add_help=False,
+        help=get_extract_image_patch_parser().description,
+        usage="vpt [OPTIONS] extract-image-patch [arguments]",
+        description=get_extract_image_patch_parser().description,
+    )
+
+    subparsers.add_parser(
+        "generate-segmentation-metrics",
+        parents=[get_generate_segmentation_metrics_parser()],
+        add_help=False,
+        help=get_generate_segmentation_metrics_parser().description,
+        usage="vpt [OPTIONS] generate-segmentation-metrics [arguments]",
+        description=get_generate_segmentation_metrics_parser().description,
+    )
+
     return parser
 
 
@@ -196,6 +218,8 @@ def get_cmd_entrypoint(cmd: str) -> Callable[[Namespace], None]:
         "sum-signals": run_sum_signals,
         "partition-transcripts": partition_transcripts,
         "convert-geometry": convert_geometry,
+        "extract-image-patch": extract_image_patch,
+        "generate-segmentation-metrics": generate_segmentation_metrics,
     }
 
     if cmd not in subparsers.keys():

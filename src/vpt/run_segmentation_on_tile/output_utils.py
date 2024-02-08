@@ -92,6 +92,11 @@ def save_to_parquet(
         fs, output_dir_inside_fs = filesystem_path_split(output_dir)
         fs.mkdirs(output_dir_inside_fs, exist_ok=True)
         for entity_results in dir_results:
+            if not entity_results.df[entity_results.parent_id_field].isna().all():
+                entity_results.df[entity_results.parent_id_field] = entity_results.df[
+                    entity_results.parent_id_field
+                ].astype("Int64")
+
             io_with_retries(
                 uri=f"{output_dir}/{make_entity_output_filename(tile_id, entity_results.entity_type)}",
                 mode="wb",
