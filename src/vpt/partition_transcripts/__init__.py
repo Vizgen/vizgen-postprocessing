@@ -1,8 +1,12 @@
 import argparse
+import warnings
+
+import pandas as pd
 
 import vpt.partition_transcripts.cmd_args as cmd_args
 
 get_parser = cmd_args.get_parser
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 
 def run(args: argparse.Namespace):

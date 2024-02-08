@@ -71,41 +71,50 @@ Resolution Strategies
 Definitions
 ---------------------------
 
-+------------------------------+--------+-------------------------------+-------------------------------+
-| Key                          | Type   | Values                        | Meaning                       |
-+==============================+========+===============================+===============================+
-| ``parent_type``              | string | Any string                    |                               |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``child_type``               | string | Any string                    |                               |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``child_coverage_threshold`` | float  | 0.5 - 1                       | Fraction of child entity      |
-|                              |        |                               | volume that must be           |
-|                              |        |                               | covered by parent             |
-|                              |        |                               | volume. Values less than      |
-|                              |        |                               | 0.5 are not allowed           |
-|                              |        |                               | because they may lead to      |
-|                              |        |                               | ambiguous assignments.        |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``constraints``              | list   |                               | List of constraints to apply  |
-|                              |        |                               | to entities                   |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``contraints.constraint``    | string | ``maximum_child_count``       | The name of a constraint      |
-|                              |        | ``minimum_child_count``       | function to use to detect     |
-|                              |        | ``child_must_have_parent``    | problems in the parent        |
-|                              |        | ``parent_must_cover_child``   | and child DataFrames          |
-|                              |        | ``child_intersect_one_parent``|                               |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``contraints.value``         | Any    | Any or null                   | The parameter passed to       |
-|                              |        |                               | the constraint function to    |    
-|                              |        |                               | detect conflicts              |
-+------------------------------+--------+-------------------------------+-------------------------------+
-| ``contraints.resolution``    | string | ``remove_child``              | The conflict resolution       |
-|                              |        | ``remove_parent``             | method to resolve the         |
-|                              |        | ``create_parent``             | problem detected by the       |
-|                              |        | ``create_child``              | constraint                    |
-|                              |        | ``shrink_child``              |                               |
-+------------------------------+--------+-------------------------------+-------------------------------+
+.. list-table::
+   :header-rows: 1
 
+   * - Key 
+     - Type 
+     - Values  
+     - Meaning  
+   * - ``parent_type``
+     - string
+     - Any string 
+     - 
+   * - ``child_type``
+     - string
+     - Any string 
+     - 
+   * - ``child_coverage_threshold``
+     - float
+     - 0.5 - 1
+     - | Fraction of child entity volume that must be covered by parent volume. Values less than 0.5 are  
+       | not allowed because they may lead to ambiguous assignments.
+   * - ``constraints``
+     - list
+     -
+     - List of constraints to apply to entities
+   * - ``contraints.constraint``
+     - string
+     - | ``maximum_child_count``
+       | ``minimum_child_count`` 
+       | ``child_must_have_parent``
+       | ``parent_must_cover_child``
+       | ``child_intersect_one_parent``
+     - The name of a constraint function to use to detect problems in the parent and child DataFrames
+   * - ``contraints.value``
+     - Any
+     - Any or null
+     - The parameter passed to the constraint function to detect conflicts
+   * - ``contraints.resolution``
+     - string
+     - | ``remove_child`` 
+       | ``remove_parent`` 
+       | ``create_parent``
+       | ``create_child``
+       | ``shrink_child``
+     - The conflict resolution method to resolve the problem detected by the constraint
 
 Example Usage and Outputs
 ---------------------------

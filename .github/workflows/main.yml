@@ -31,7 +31,7 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.5.1
+          version: 1.7.1
           virtualenvs-create: true
           virtualenvs-in-project: true
 
@@ -90,7 +90,7 @@ jobs:
         if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
-          version: 1.5.1
+          version: 1.7.1
           virtualenvs-create: true
           virtualenvs-in-project: true
 
@@ -148,7 +148,7 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.5.1
+          version: 1.7.1
           virtualenvs-create: true
           virtualenvs-in-project: true
 

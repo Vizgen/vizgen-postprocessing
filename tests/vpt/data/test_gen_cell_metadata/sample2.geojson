@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "ID": 0, "EntityID": 607140005100030016, "ZIndex": 0, "Type": "cell", "Name": null, "ParentID": null, "ParentType": null, "ZLevel": 1.5 }, "Geometry": { "type": "MultiPolygon", "coordinates": [[ [ [ 0 , 0 ], [ 100, 0 ], [ 100,100 ], [ 0,100 ] ] ]] } },
+{ "type": "Feature", "properties": { "ID": 1, "EntityID": 607140005100030016, "ZIndex": 1, "Type": "cell", "Name": null, "ParentID": null, "ParentType": null, "ZLevel": 2.5 }, "Geometry": { "type": "MultiPolygon", "coordinates": [[ [ [ 0 , 0 ], [ 50, 0 ], [ 100,100 ], [ 0,100 ] ] ]] } },
+{ "type": "Feature", "properties": { "ID": 2, "EntityID": 607140005100030016, "ZIndex": 2, "Type": "cell", "Name": null, "ParentID": null, "ParentType": null, "ZLevel": 3.5 }, "Geometry": { "type": "MultiPolygon", "coordinates": [[ [ [ 0 , 0 ], [ 100, 0 ], [ 100,100 ], [ 0,100 ] ] ]] } }
+]}

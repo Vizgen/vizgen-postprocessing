@@ -109,7 +109,9 @@ def create_metadata_table(
             anisotropy = np.nan
 
         try:
-            solidity = allPlanesMultipolygon.area / allPlanesMultipolygon.convex_hull.area
+            convex_hull_area = sum(z_poly.convex_hull.area for z_poly in feature.get_true_polygons())
+            z_polygons_area = sum(z_poly.area for z_poly in feature.get_true_polygons())
+            solidity = z_polygons_area / convex_hull_area
         except ZeroDivisionError:
             log.info(f"Solidity of Entity {feature.get_feature_id()} could not be calculated")
             solidity = np.nan
