@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.0 (2024-02-08)
+
+### Feature
+
+* Support for Cellpose 2 workflow ([#32](https://github.com/Vizgen/vizgen-postprocessing/issues/32)) ([`139a9f9`](https://github.com/Vizgen/vizgen-postprocessing/commit/139a9f9167b4c17189280f9da2e96ee8dece7c48))
+
 ## v1.1.2 (2023-08-18)
 
 
