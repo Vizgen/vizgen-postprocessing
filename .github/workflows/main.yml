@@ -234,8 +234,8 @@ jobs:
           push: true
           tags: |
             vzgdocker/vpt:latest
-            vzgdocker/vpt:${{ needs.deploy.outputs.version }}
+            vzgdocker/vpt:1.2
           build-args: |
-            "VERSION=${{ needs.deploy.outputs.version }}"  
+            "VERSION=$1.2"  
           cache-from: type=gha
           cache-to: type=gha,mode=max
