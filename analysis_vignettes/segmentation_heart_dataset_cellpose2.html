@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experimental Features" href="../experimental_features/index.html" />
+    <link rel="prev" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" href="segmentation_of_a_local_dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Analysis Vignettes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-setup">System Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-evaluate-baseline-segmentation">Step 1: Evaluate Baseline Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-identify-regions-to-target-for-segmentation-model-retraining-and-extract-image-patches">Step 2: Identify Regions to Target for Segmentation Model Retraining and Extract Image Patches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step3-annotate-cell-boundaries-on-extracted-image-patches">Step3: Annotate Cell Boundaries on Extracted Image Patches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-retrain-the-machine-learning-model-using-the-annotations">Step 4: Retrain the Machine Learning Model Using the Annotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-re-segment-full-merscope-dataset-using-retrained-model">Step 5: Re-segment Full MERSCOPE Dataset Using Retrained Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-6-evaluate-new-segmentation">Step 6: Evaluate New Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Analysis Vignettes</a></li>
+      <li class="breadcrumb-item active">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/analysis_vignettes/segmentation_heart_dataset_cellpose2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-re-segmenting-a-merscope-heart-dataset-with-a-machine-learning-model-customized-with-manual-annotations">
+<h1>Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations<a class="headerlink" href="#example-re-segmenting-a-merscope-heart-dataset-with-a-machine-learning-model-customized-with-manual-annotations" title="Permalink to this headline"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
+<p>MERSCOPE maps the precise locations of hundreds of millions of transcripts from hundreds of genes across intact tissue slices
+using MERFISH technology.  The high-resolution, highly multiplexed measurements enable mapping the cellular composition of
+tissues with fine cell-type resolution. This single-cell analysis is greatly facilitated by MERSCOPEs cell boundary stain
+and onboard cell segmentation algorithms that provide single-cell analysis results alongside the list of detected transcripts.
+However, cells in some tissues, such as multinucleated muscle tissues or tissues with abnormal cell shape may not be segmented
+well by the MERSCOPE onboard cell segmentation algorithms. For these tissues that are more challenging to segment, you can
+improve the segmentation results by hand annotating a small number of tiles, following the steps described in this workflow.</p>
+<p>The workflow includes several steps – the first part consists of evaluating the initial segmentation to determine the need
+to improve the segmentation results. Next, identifying problematic regions using MERSCOPE Vizualizer and extracting corresponding
+image patches with the Vizgen Postprocessing Tool (VPT). Then, loading the image patches into Cellpose 2 (Pachitariu &amp; Stringer, Nature Methods, 2022)
+and annotating the boundaries of the observed cells to retrain the Cellpose2 model. Lastly, using VPT to resegment the full
+dataset and evaluate the improved segmentation results.  Here we show how the workflow can be applied to heart tissue to
+generate improved segmentation where the resegmented cells better visually match the cell boundary stain, have a much larger
+volume consistent with the larger volume of heart cells, and a substantially larger fraction of transcripts are assigned
+to a cell compared to the original cell segmentation results. The heart dataset used has an imaged area of 27.5 square millimeters
+and 205,596,450 transcripts.</p>
+<a class="reference internal image-reference" href="../_images/cellpose2_workflow.png"><img alt="An image of cellpose2 workflow" class="align-center" src="../_images/cellpose2_workflow.png" style="width: 1200px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>Workflow inputs</strong></p>
+<p>This workflow processes the output data from the MERSCOPE instrument. For a dataset named %EXPERIMENT_NAME%, the output
+data is found on the MERSCOPE instrument under z:\merfish_output\%EXPERIMENT_NAME%\%REGION_NAME%\. Within this directory,
+you can find the following files that are required as inputs for this workflow.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head"><p>File Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mosaic tiff images</p></td>
+<td><p>images/mosaic_{stain name}_z{z level}.tif</p></td>
+<td><div class="line-block">
+<div class="line">Every image channel acquired during a MERFISH experiment that is not decoded as a MERFISH</div>
+<div class="line">bit, will be output as a mosaic tiff image in this folder. This includes DAPI, PolyT, Cellbound</div>
+<div class="line">stains (if applicable), and subsequent round stains (if applicable). The raw data images from</div>
+<div class="line">the MERFISH experiment are stitched together based on the alignment of fiducial beads to create</div>
+<div class="line">a mosaic that minimizes the appearance of seams between fields of view. The images themselves</div>
+<div class="line">are single channel, single plane, 16-bit grayscale tiff files, with the naming convention</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">mosaic_{stain</span> <span class="pre">name}_z{z</span> <span class="pre">level}.tif</span></code></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Micron to mosaic pixel transformation matrix</p></td>
+<td><p>micron_to_mosaic_pixel_transform.csv</p></td>
+<td><div class="line-block">
+<div class="line">An affine transformation matrix describing translation and a scaling to convert from  micron</div>
+<div class="line">units (used for transcirpt locations) to pixel units (of the mosaic images). This file helps convert</div>
+<div class="line">the coordinates of the pixels in the mosaic tiff images to real world micron coordinates.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>List of detected transcripts</p></td>
+<td><p>detected_transcripts.csv</p></td>
+<td><div class="line-block">
+<div class="line">The <code class="docutils literal notranslate"><span class="pre">detected_transcripts.csv</span></code> file is a standard comma separated values (csv) formatted</div>
+<div class="line">text file that lists all of the transcripts detected in the MERSCOPE run, include the gene identity</div>
+<div class="line">of each transcripts and it’s x, y, and z location within the sample.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>VZG file</p></td>
+<td><p>{experiment_name}_region_{region_index}.vzg</p></td>
+<td><div class="line-block">
+<div class="line">The VZG file contains a representation of the dataset that can be opened with the</div>
+<div class="line">MERSCOPE Vizualizer. It contains all the information needed to interactively visualize</div>
+<div class="line">the transcript locations, cell boundaries, and a compressed version of the mosaic image</div>
+<div class="line">channels (e.g. DAPI, PolyT, Cellbound stains).</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workflow Summary (6 hours 30 minutes)</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We ran the VPT re-segmentation on a more powerful computer than we used for the rest of the workflow. We utilized a
+compute instance with 32 cores and 256GB of RAM. The rest of the steps were completed on a machine with 4 cores and
+16GB of RAM.</p>
+</div>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 55%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Summary</p></th>
+<th class="head"><p>Time Estimate (for heart dataset)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>System setup</p></td>
+<td><div class="line-block">
+<div class="line">Identify the location of the required input files. Install MERSCOPE Vizualizer, Vizgen</div>
+<div class="line">Postprocessing Tool (VPT), and Cellpose 2.</div>
+</div>
+</td>
+<td><p>15 minutes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Evaluate baseline segmentation</p></td>
+<td><div class="line-block">
+<div class="line">Load the VZG file for the dataset into the MERSCOPE Vizualizer and evaluate the initial</div>
+<div class="line">segmentation results.</div>
+</div>
+</td>
+<td><p>15 minutes</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">Identify regions to target for segmentation model retraining</div>
+<div class="line">and extract image patches</div>
+</div>
+</td>
+<td><div class="line-block">
+<div class="line">Identify regions that need improved segmentation using MERSCOPE Vizualizer. Extract</div>
+<div class="line">corresponding image patches from the mosaic tiff images using VPT. For this example we</div>
+<div class="line">extracted 20 patches, each 108 x 108 um.</div>
+</div>
+</td>
+<td><p>30 minutes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Annotate cell boundaries on extracted image patches</p></td>
+<td><div class="line-block">
+<div class="line">Load the extracted patches into the Cellpose UI and use the Cellpose tools to annotate the</div>
+<div class="line">boundaries on each image.</div>
+</div>
+</td>
+<td><p>3 hours, 30 minutes</p></td>
+</tr>
+<tr class="row-even"><td><p>Retrain the machine learning model using the annotations</p></td>
+<td><div class="line-block">
+<div class="line">Use the Cellpose UI to retrain the base model using the manual annotations. Here we</div>
+<div class="line">retrained with 100 epochs.</div>
+</div>
+</td>
+<td><p>30 minutes</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">Re-segment the full MERSCOPE dataset using the</div>
+<div class="line">retrained model</div>
+</div>
+</td>
+<td><div class="line-block">
+<div class="line">Use VPT to re-segment the full dataset, generating a new VZG file, cell metadata, and</div>
+<div class="line">cell by gene matrix with the new segmentation results.</div>
+</div>
+</td>
+<td><p>1 hour</p></td>
+</tr>
+<tr class="row-even"><td><p>Evaluate the new segmentation</p></td>
+<td><div class="line-block">
+<div class="line">Load the new VZG file into MERSCOPE Vizualizer to qualitatively examine the new</div>
+<div class="line">segmentation and use VPT to generate a quantitative segmentation report.</div>
+</div>
+</td>
+<td><p>30 minutes</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="system-setup">
+<h2>System Setup<a class="headerlink" href="#system-setup" title="Permalink to this headline"></a></h2>
+<p><strong>Requirements Summary</strong></p>
+<ul>
+<li><p>Computer:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Windows or MacOS (at least Yosemite) (Windows 10 used here with VPT running in WSL)</p></li>
+<li><p>&gt; 16 GB RAM recommended (16GB used here)</p></li>
+<li><p>i7-1185G used here</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Software:</p>
+<blockquote>
+<div><ul>
+<li><p>MERSCOPE Vizualizer</p></li>
+<li><p>Python &gt;=3.9 and &lt;3.11 with virtual environments configured for:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vpt</span> <span class="pre">&gt;=</span> <span class="pre">1.2.0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cellpose</span> <span class="pre">&gt;=</span> <span class="pre">2.0.0</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>MERSCOPE Vizualizer</strong></p>
+<p>The MERSCOPE Vizualizer is a software tool for interactively exploring MERSCOPE output data and is available to any MERSCOPE
+user. MacOS and Windows versions can be downloaded from  <a class="reference external" href="https://portal.vizgen.com/resources/software">here.</a></p>
+<p><strong>Python</strong></p>
+<p>VPT and Cellpose2 are Python libraries and require a version of Python between 3.9 and 3.11 to be installed. Python can
+be downloaded from <a class="reference external" href="https://www.python.org/downloads/">Download Python.</a> Once python is installed, pip and venv modules should be installed before proceeding
+to installing VPT and Cellpose2.</p>
+<p><strong>VPT (with cellpose2 plugin)</strong></p>
+<p>Vizgen postprocessing tool (VPT) is a command line tool that facilitates re-segmenting full MERSOCPE output datasets with
+customized segmentation parameters. To install VPT, follow the instructions at <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a>. This workflow requires
+<code class="docutils literal notranslate"><span class="pre">vpt</span> <span class="pre">&gt;=</span> <span class="pre">1.2.0</span></code>. If you don’t have the latest version if VPT, it should be upgraded to the latest version using the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>vpt
+</pre></div>
+</div>
+<p>The Cellpose2 plugin is available as a Python package and can be installed using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-cellpose2
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the plugin to be recognized, it must be installed in the same environment as VPT</p>
+</div>
+<p><strong>Cellpose2</strong></p>
+<p>Cellpose2 is widely used segmentation tool created by Professor Carsen Stringer’s lab. Cellpose2 contains tools for interactively
+annotating images and retraining the base Cellpose2 models. For additional resources, please visit <a class="reference external" href="https://pypi.org/project/cellpose/">PyPi</a>
+or the <a class="reference external" href="https://cellpose.readthedocs.io/en/latest/installation.html">cellpose installation page</a>. To prepare cellpose2
+for this workflow:</p>
+<ol class="arabic simple">
+<li><p>Create a virtual environment and activate it</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">cellpose</span> <span class="pre">&gt;=</span> <span class="pre">2.0.0</span></code> with the GUI into the virtual environment</p></li>
+</ol>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@computer:~$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/.venv/cellpose2
+<span class="gp">user@computer:~$ </span><span class="nb">source</span><span class="w"> </span>.venv/cellpose2/bin/activate
+<span class="gp gp-VirtualEnv">(cellpose2)</span> <span class="gp">user@computer:~$ </span>pip<span class="w"> </span>install<span class="w"> </span>cellpose<span class="o">[</span>gui<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[ pip installation progress trimmed for brevity ]</span>
+
+<span class="go">Successfully installed MarkupSafe-2.1.3 PyQt6-Qt6-6.6.1 cachetools-5.3.2 cellpose-2.2.3 certifi-2023.11.17 charset-normalizer-3.3.2 colorama-0.4.6 fastremap-1.14.0 filelock-3.13.1 fsspec-2023.12.2 google-api-core-2.15.0 google-auth-2.25.2 google-cloud-core-2.4.1 google-cloud-storage-2.14.0 google-crc32c-1.5.0 google-resumable-media-2.7.0 googleapis-common-protos-1.62.0 idna-3.6 imagecodecs-2023.9.18 jinja2-3.1.2 llvmlite-0.41.1 mpmath-1.3.0 natsort-8.4.0 networkx-3.2.1 numba-0.58.1 numpy-1.26.2 opencv-python-headless-4.8.1.78 packaging-23.2 protobuf-4.25.1 pyasn1-0.5.1 pyasn1-modules-0.3.0 pygments-2.17.2 pyqt6-6.6.1 pyqt6.sip-13.6.0 pyqtgraph-0.13.3 qtpy-2.4.1 requests-2.31.0 roifile-2023.8.30 rsa-4.9 scipy-1.11.4 superqt-0.6.1 sympy-1.12 tifffile-2023.12.9 torch-2.1.2 tqdm-4.66.1 typing-extensions-4.9.0 urllib3-2.1.0</span>
+</pre></div>
+</div>
+<p>We recommend confirming that Cellpose has been installed properly and that the Cellpose2 UI can be opened using the command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(cellpose2)</span> <span class="gp">user@computer:~$ </span>python<span class="w"> </span>-m<span class="w"> </span>cellpose
+</pre></div>
+</div>
+</section>
+<section id="step-1-evaluate-baseline-segmentation">
+<h2>Step 1: Evaluate Baseline Segmentation<a class="headerlink" href="#step-1-evaluate-baseline-segmentation" title="Permalink to this headline"></a></h2>
+<p>To evaluate whether the segmentation may benefit from a machine learning model retrained with manual annotations, we begin
+by qualitatively and quantitatively evaluating the out-of-the-box segmentation. We find that retraining the machine learning
+model can substantially improve the cell segmentation on samples if either cells visually present in the DAPI or cell boundary
+stain images but not detected in the out-of-the-box segmentation or the cells have atypical cell morphology that is not
+well traced by the out of the box segmentation.</p>
+<p><strong>Qualitative segmentation evaluation with MERSCOPE Vizualizer</strong></p>
+<p>To qualitatively explore the initial segmentation results, we loaded the VZG file from the mouse heart experiment into the
+MERSCOPE Vizualizer software and examined the segmentation boundaries overlaid on the detected transcripts and the DAPI
+and cellpoa portion o. In the image below, we overlay the cell boundaries on top of the mosaic. The DAPI is colored blue,
+the cell boundary stain is colored green, the transcripts are overlaid as points, and the segmented cell boundaries are
+shown as cyan lines. Immediately, it can be seen that the geometries do not closely follow the clear cell boundaries and
+many transcripts fall outside of the cell boundaries.</p>
+<a class="reference internal image-reference" href="../_images/workflow_image1.png"><img alt="An image of cellpose1" class="align-center" src="../_images/workflow_image1.png" style="width: 500px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>Quantitative segmentation evaluation with MERSCOPE segmentation summary report</strong></p>
+<p>To MERSCOPE run summary report contains a segmentation summary that can facilitate quantitative evaluation of the segmentation
+quality. For experiments ran prior to MERSCOPE instrument control software version 234, the segmentation summary can be
+generated using the VPT command, <code class="docutils literal notranslate"><span class="pre">generate-segmentation-metrics</span></code>. For more information about the options and arguments that
+may be passed to <code class="docutils literal notranslate"><span class="pre">generate-segmentation-metrics</span></code>, please see the <a class="reference internal" href="../command_line_interface/index.html#command-line-interface"><span class="std std-ref">Command Line Interface</span></a> section of the user guide.</p>
+<p>An example of the segmentation report for the mouse heart dataset is shown below. From this segmentation summary, both the
+tissue area covered by cells and transcripts within a cell appear low (38% and 64% respectively), consistent with the qualitative
+evaluation using the MERSCOPE Vizualizer.</p>
+<a class="reference internal image-reference" href="../_images/workflow_image2.png"><img alt="An image of cellpose1 report" class="align-center" src="../_images/workflow_image2.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/workflow_image3.png"><img alt="An image of cellpose1 report" class="align-center" src="../_images/workflow_image3.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/workflow_image4.png"><img alt="An image of cellpose1 report" class="align-center" src="../_images/workflow_image4.png" style="width: 800px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="step-2-identify-regions-to-target-for-segmentation-model-retraining-and-extract-image-patches">
+<h2>Step 2: Identify Regions to Target for Segmentation Model Retraining and Extract Image Patches<a class="headerlink" href="#step-2-identify-regions-to-target-for-segmentation-model-retraining-and-extract-image-patches" title="Permalink to this headline"></a></h2>
+<p>To retrain the machine learning model to achieve improved cell segmentation results, we first have to identify regions of
+the tissue to extract images to manually annotate. Since MERSCOPE Vizualizer enables interactively exploring a MERSCOPE
+output dataset, it is an ideal tool for identify regions of interest across the sample. To identify regions of the heart
+to extract for manual annotation, we opened the MERSCOPE Vizualizer, loaded the VZG file for the experiment, and identified
+regions where the segmentation boundaries did not match the expectations based on the DAPI and cell boundary stain images.
+If there are diverse cell morphologies across different regions of the tissue, we recommend extracting a diversity of regions
+covering the diversity of cell morphologies to avoid over-optimizing the model against a subset of the tissue.</p>
+<p>Once a region is identified, the following steps allow you to extract the corresponding image patch that can be loaded into Cellpose2.</p>
+<ol class="arabic simple">
+<li><p>Select the “Toggle info panel” button in the top left corner of the window (highlighted in red below).</p></li>
+<li><p>Zoom in to the area of interest and use the “Window center (um)” or use the live cursor coordinates named “Cursor position (um)” from the info panel in the bottom left corner of the window (highlighted in red below) to find the (x, y) coordinate in micron space of the patch center you want to extract.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/workflow_image5.png"><img alt="An image of Vizualizer" class="align-center" src="../_images/workflow_image5.png" style="width: 1000px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic" start="3">
+<li><p>Record the (x,y) center coordinates of the selected region (center_x=4316.0, center_y=2512.0 here).</p></li>
+<li><p>Use VPT to extract the corresponding patch from the mosaic images using the <code class="docutils literal notranslate"><span class="pre">extract-image-patch</span></code> command. For more information about the options and arguments that may be passed to <code class="docutils literal notranslate"><span class="pre">extract-image-patch</span></code>, please see the <a class="reference internal" href="../command_line_interface/index.html#command-line-interface"><span class="std std-ref">Command Line Interface</span></a> section of the user guide. This generates an RGB PNG image patch wherever you have specified the output.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>To minimize file transfer later on in the workflow, we recommend saving all output PNGs to the same folder.</p></li>
+<li><p>Note for this example heart dataset, the MERSCOPE Cell Boundary Stain was used and the Cellbound1 and Cellbound3 images were included in the output patch. For experiments where the MERSCOPE Cell Boundary Stain wasn’t used, DAPI and PolyT stains are still available for segmentation.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Repeat steps 2 through 4 for each of the regions selected for manual annotation.</p></li>
+</ol>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>--log-level<span class="w"> </span><span class="m">1</span><span class="w"> </span>extract-image-patch<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-images<span class="w"> </span>MsHeart/region_0/images/<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-micron-to-mosaic<span class="w"> </span>MsHeart/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-patch<span class="w"> </span>analysis_outputs/patch_4316_2512.png<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--center-x<span class="w"> </span><span class="m">4316</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--center-y<span class="w"> </span><span class="m">2512</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--size-x<span class="w"> </span><span class="m">108</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--size-y<span class="w"> </span><span class="m">108</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-z-index<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--red-stain-name<span class="w"> </span>Cellbound1<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--green-stain-name<span class="w"> </span>Cellbound3<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--blue-stain-name<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--normalization<span class="w"> </span>CLAHE
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-12-06 16:53:22,352 - . - INFO - run extract-image-patch with args:Namespace(input_images=&#39;MsHeart/region_0/images/&#39;, input_micron_to_mosaic=&#39;MsHeart/region_0/images/micron_to_mosaic_pixel_transform.csv&#39;, output_patch=&#39;analysis_outputs/patch_4316_2512.png&#39;, center_x=4316.0, center_y=2512.0, size_x=108.0, size_y=108.0, input_z_index=3, red_stain_name=&#39;Cellbound2&#39;, green_stain_name=&#39;Cellbound3&#39;, blue_stain_name=&#39;DAPI&#39;, normalization=&#39;CLAHE&#39;, overwrite=False)</span>
+<span class="go">2023-12-06 16:53:23,500 - . - INFO - extract image patch started</span>
+<span class="go">2023-12-06 16:54:38,346 - . - INFO - extract image patch finished</span>
+</pre></div>
+</div>
+<p>An example of an output RGB PNG is shown below:</p>
+<a class="reference internal image-reference" href="../_images/workflow_image6.png"><img alt="An image of a patch" class="align-center" src="../_images/workflow_image6.png" style="width: 500px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="step3-annotate-cell-boundaries-on-extracted-image-patches">
+<h2>Step3: Annotate Cell Boundaries on Extracted Image Patches<a class="headerlink" href="#step3-annotate-cell-boundaries-on-extracted-image-patches" title="Permalink to this headline"></a></h2>
+<p>Retraining the machine learning model requires manually indicating the ideal location of the cell boundaries within each
+of the selected image patches. This is achieved by loading the image patches into the Cellpose2 UI and using the Cellpose2
+tools to indicate the ideal cell boundaries. To do this, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Activate the cellpose 2.0 environment created during setup</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@computer:~$ </span><span class="nb">source</span><span class="w"> </span>.venv/cellpose2/bin/activate
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Launch the Cellpose UI (the UI should immediately pop up):</p></li>
+</ol>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(cellpose2)</span> <span class="gp">user@computer:~$ </span>python<span class="w"> </span>-m<span class="w"> </span>cellpose
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-12-21 15:57:00,717 [INFO] WRITING LOG OUTPUT TO user\.cellpose\run.log</span>
+<span class="go">2023-12-21 15:57:00,717 [INFO]</span>
+<span class="go">cellpose version:       2.2.3</span>
+<span class="go">platform:               win32</span>
+<span class="go">python version:         3.9.13</span>
+<span class="go">torch version:          2.0.0+cpu</span>
+<span class="go">2023-12-21 15:57:01,681 [INFO] TORCH CUDA version not installed/working.</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/workflow_image7.png"><img alt="An image of Cellpose GUI" class="align-center" src="../_images/workflow_image7.png" style="width: 700px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Load the PNG image that was saved in the previous step via File → Load image (*.tif, *.png, *.jpg).</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/workflow_image8.png"><img alt="An image of Cellpose GUI" class="align-center" src="../_images/workflow_image8.png" style="width: 700px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic" start="4">
+<li><p>Modify the segmentation parameters on the left panel and select the desired segmentation channels.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>The cyto2 model we used here accepts a channel to segment and an optional nuclear channel. Here we selected channel 0 as “chan to segment” and channel 3 as “chan2 (optional).”</p></li>
+<li><p>A more detailed description of each parameter can be found in the <a class="reference external" href="https://cellpose.readthedocs.io/en/latest/api.html#">Cellpose API</a> .</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>To facilitate the hand annotation, we first ran a baseline segmentation model on the image patch to generate preliminary cell boundaries to manually adjust by hand. The baseline model can either be one from the Cellpose2 “model zoo” or a previously trained custom model.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>We suggest evaluating the models in the model zoo to determine which gives the best baseline segmentation. The best baseline segmentation will both require the fewest manual edits and likely be the best base model to use for the following retraining step.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Modify the baseline segmentation masks by following the instructions in the Cellpose2 instruction video: <a class="reference external" href="https://www.youtube.com/watch?v=3Y1VKcxjNy4">Cellpose2: human-in-the-loop model training (2x speed)</a>.</p></li>
+<li><p>After any modification, a save via File → Save masks and image (as *_seg.npy) OR Ctrl+S will save the new annotation NPY file in the current working directory with the same name as the image with a “_seg.npy” tagged on the end.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/workflow_image9.png"><img alt="An image of Cellpose GUI" class="align-center" src="../_images/workflow_image9.png" style="width: 700px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="step-4-retrain-the-machine-learning-model-using-the-annotations">
+<h2>Step 4: Retrain the Machine Learning Model Using the Annotations<a class="headerlink" href="#step-4-retrain-the-machine-learning-model-using-the-annotations" title="Permalink to this headline"></a></h2>
+<p>Once the manual annotations are created, Cellpose2 facilitates retraining the base model with the new annotations. To train
+on the series of ROI images that were just annotated, ensure all PNG images and associated NPY files are in a common folder
+and ensure that folder is set as the current working directory (can be seen at the top of the cellpose2 GUI). Once all manual
+annotations are completed, we retrained the model following the steps below:</p>
+<ol class="arabic">
+<li><p>In the menu bar along the top of the window, select Models → Train new model with images+masks in folder</p></li>
+<li><p>Enter the name of the new model, the base model the new model should be derived from, and the training parameters and run the model.</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p>The model to be trained on top of is the model whose weights you wish to adjust. We recommend using the built-in cellpose model that was just used to generate the baseline for the manual adjustments. If no built-in model provided reasonable baseline segmentation, you may wish instead to train a model from scratch by selecting “scratch”.</p></li>
+<li><p>Model training parameters</p>
+<blockquote>
+<div><ol class="lowerroman simple">
+<li><p><strong>Learning Rate:</strong> The size of the steps taken during gradient descent (used to scale the magnitude of parameter updates). A higher rate can speed up learning, but risks not minimizing the loss function, while a lower rate may lead to slow convergence.</p></li>
+<li><p><strong>Weight Decay:</strong> A regularization technique that penalizes large weights in the model. This can help to prevent overfitting by discouraging overly complex models.</p></li>
+<li><p><strong>Number of Epochs:</strong> The number the total passes through the training data. Here we used 100 epochs.</p></li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>The model will get saved to the \models folder in the current working directory and/or wherever you installed cellpose and specified the model locations (typically a \.cellpose\models\ folder in the \Users directory).</p></li>
+<li><p>To evaluate the new model, import an image patch, modify the segmentation parameters to match the settings used for training, and select the custom model in the “custom models” section. Select “run model” as highlighted in red in the image below and examine the results of the model on your image.</p></li>
+<li><p>If the results of the retrained model do not closely meet your expectations, we recommend either including additional image patches, adjusting the segmentation parameters, or changing the base model.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/workflow_image10.png"><img alt="An image of Cellpose GUI" class="align-center" src="../_images/workflow_image10.png" style="width: 700px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="step-5-re-segment-full-merscope-dataset-using-retrained-model">
+<h2>Step 5: Re-segment Full MERSCOPE Dataset Using Retrained Model<a class="headerlink" href="#step-5-re-segment-full-merscope-dataset-using-retrained-model" title="Permalink to this headline"></a></h2>
+<p>Once the refined Cellpose2 model was created using the manual annotations, we need to run the retrained model across the
+full MERSCOPE dataset to regenerate the cell by gene matrix to use for downstream single cell analysis. To do this processing,
+we use VPT to resegment the original images using the newly trained model.</p>
+<p>The segmentation algorithm for VPT is specified through an algorithm JSON file. Example algorithm JSON files for Cellpose2
+can be found in the “example_analysis_algorithm” folder within the vpt-plugin-cellpose2 repository: <a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose2/tree/develop/example_analysis_algorithm">https://github.com/Vizgen/vpt-plugin-cellpose2/tree/develop/example_analysis_algorithm</a>.
+These can be used as a template for customizing to match the parameters specified within the Cellpose2 UI.</p>
+<ol class="arabic simple">
+<li><p>Files with “custom” are examples using customs models and not built-in models.</p></li>
+<li><p>Files with “2task” are examples uisng multiple segmentation tasks whose results get harmonized. Typically one task segments the cell boundaries and the other segments nuclei.</p></li>
+</ol>
+<p>In the algorithm JSON file, there are some fields that need to be updated. This includes the path to the newly saved custom
+model and the channel colors to the proper stain in the “segmentation_properties” section:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CP_20230830_093420&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;channel_map&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;red&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;green&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound3&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;blue&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>and the channel names, cell diameter, and thresholds in the “segmentation_parameters” section:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;nuclear_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;entity_fill_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;diameter&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">137.76</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;flow_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;cellprob_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;minimum_mask_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>To achieve equivalent results to what was observed earlier in the Cellpose2 UI, the diameter parameter should be set equal
+to the expected one from the cellpose2 GUI. To get this value, load the newly trained model in the “custom models” section
+and read the value filled in the “cell diameter” field, as indicated in the image below:</p>
+<a class="reference internal image-reference" href="../_images/workflow_image11.png"><img alt="An image of Cellpose GUI" class="align-center" src="../_images/workflow_image11.png" style="width: 200px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>With the segmentation parameter file configured, we used VPTs run-segmentation command to run the new model at scale by
+utilizing the cellpose2 plugin. This generates a new parquet file with the segmentation boundaries determined using the
+newly trained model across the full dataset. Note that we ran the VPT re-segmentation on a more powerful computer than we
+used for the rest of the workflow. We utilized a compute instance with 32 cores and 256GB of RAM.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>--processes<span class="w"> </span><span class="m">32</span><span class="w"> </span>run-segmentation<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--segmentation-algorithm<span class="w"> </span>example_analysis_algorithm/cellpose2_custom_2task.json<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-images<span class="o">=</span><span class="s2">&quot;MsHeart/region_0/images/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-micron-to-mosaic<span class="w"> </span>MsHeart/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-path<span class="w"> </span>analysis_outputs<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--tile-size<span class="w"> </span><span class="m">2400</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--tile-overlap<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2024-01-03 16:45:11,103 - . - INFO - run run-segmentation with args:Namespace(segmentation_algorithm=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/cellpose2_2task_optimized.json&#39;, input_images=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\\w|-]+[0-9]?)_z(?P&lt;z&gt;[0-9]+).tif&#39;, input_micron_to_mosaic=&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv&#39;, output_path=&#39;202305010900_U2OS_small_set_VMSC00000/cellpose2/&#39;, tile_size=1000, tile_overlap=200, max_row_group_size=17500, overwrite=True)</span>
+<span class="go">2024-01-03 16:45:11,600 - . - INFO - run_segmentation started</span>
+<span class="go">2024-01-03 16:45:11,797 - . - INFO - prepare segmentation started</span>
+<span class="go">2024-01-03 16:46:08,556 - . - INFO - prepare segmentation finished</span>
+<span class="go">2024-01-03 16:46:16,445 - ./task-368 - INFO - Run segmentation on tile 368 started</span>
+<span class="go">2024-01-03 16:46:16,477 - ./task-344 - INFO - Run segmentation on tile 344 started</span>
+<span class="go">2024-01-03 16:46:16,497 - ./task-396 - INFO - Run segmentation on tile 396 started</span>
+<span class="go">2024-01-03 16:46:16,497 - ./task-364 - INFO - Run segmentation on tile 364 started</span>
+<span class="go">2024-01-03 16:46:16,517 - ./task-380 - INFO - Run segmentation on tile 380 started</span>
+<span class="go">2024-01-03 16:46:16,517 - ./task-376 - INFO - Run segmentation on tile 376 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-308 - INFO - Run segmentation on tile 308 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-284 - INFO - Run segmentation on tile 284 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-312 - INFO - Run segmentation on tile 312 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-372 - INFO - Run segmentation on tile 372 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-360 - INFO - Run segmentation on tile 360 started</span>
+<span class="go">2024-01-03 16:46:16,547 - ./task-316 - INFO - Run segmentation on tile 316 started</span>
+<span class="go">2024-01-03 16:46:16,579 - ./task-300 - INFO - Run segmentation on tile 300 started</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">[ run-segmentation progress trimmed ]</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">2024-01-03 16:46:17,099 - ./task-376 - INFO - Tile 376 [22400, 11200, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,172 - ./task-368 - INFO - Tile 368 [11200, 11200, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,172 - ./task-284 - INFO - Tile 284 [19600, 8400, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,180 - ./task-308 - INFO - Tile 308 [53200, 8400, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,180 - ./task-312 - INFO - Tile 312 [58800, 8400, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,202 - ./task-372 - INFO - Tile 372 [16800, 11200, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,221 - ./task-316 - INFO - Tile 316 [1400, 9800, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,240 - ./task-344 - INFO - Tile 344 [40600, 9800, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,240 - ./task-364 - INFO - Tile 364 [5600, 11200, 1600, 1600]</span>
+<span class="go">2024-01-03 16:46:17,261 - ./task-300 - INFO - Tile 300 [42000, 8400, 1600, 1600]</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">[ run-segmentation progress trimmed ]</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">2024-01-03 16:48:21,020 - ./task-344 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,100 - ./task-344 - INFO - get_polygons_from_mask: z=0, labels:96</span>
+<span class="go">2024-01-03 16:48:21,171 - ./task-300 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,232 - ./task-300 - INFO - get_polygons_from_mask: z=0, labels:133</span>
+<span class="go">2024-01-03 16:48:21,294 - ./task-380 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,371 - ./task-380 - INFO - get_polygons_from_mask: z=0, labels:110</span>
+<span class="go">2024-01-03 16:48:21,404 - ./task-384 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,481 - ./task-384 - INFO - get_polygons_from_mask: z=0, labels:110</span>
+<span class="go">2024-01-03 16:48:21,549 - ./task-392 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,626 - ./task-336 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:21,637 - ./task-392 - INFO - get_polygons_from_mask: z=0, labels:127</span>
+<span class="go">2024-01-03 16:48:21,704 - ./task-336 - INFO - get_polygons_from_mask: z=0, labels:94</span>
+<span class="go">2024-01-03 16:48:22,262 - ./task-364 - INFO - raw segmentation result contains 36 rows</span>
+<span class="go">2024-01-03 16:48:22,263 - ./task-364 - INFO - fuze across z</span>
+<span class="go">2024-01-03 16:48:22,408 - ./task-372 - INFO - generate_polygons_from_mask</span>
+<span class="go">2024-01-03 16:48:22,410 - ./task-364 - INFO - remove edge polys</span>
+<span class="go">2024-01-03 16:48:22,486 - ./task-372 - INFO - get_polygons_from_mask: z=0, labels:90</span>
+<span class="go">2024-01-03 16:48:23,529 - ./task-284 - INFO - raw segmentation result contains 84 rows</span>
+<span class="go">2024-01-03 16:48:23,529 - ./task-284 - INFO - fuze across z</span>
+<span class="go">2024-01-03 16:48:23,716 - ./task-284 - INFO - remove edge polys</span>
+<span class="go">2024-01-03 16:48:25,166 - ./task-344 - INFO - raw segmentation result contains 94 rows</span>
+<span class="go">2024-01-03 16:48:25,166 - ./task-344 - INFO - fuze across z</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">[ run-segmentation progress trimmed ]</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">.</span>
+<span class="go">2024-01-03 17:23:19,716 - . - INFO - After both resolution steps, found 0 uncaught overlaps</span>
+<span class="go">2024-01-03 17:23:49,330 - . - INFO - Resolved overlapping in the compiled dataframe</span>
+<span class="go">2024-01-03 17:23:56,102 - . - INFO - Saved compiled dataframe for entity cell in micron space</span>
+<span class="go">2024-01-03 17:24:14,568 - . - INFO - Saved compiled dataframe for entity cell in mosaic space</span>
+<span class="go">2024-01-03 17:24:14,569 - . - INFO - Compile tile segmentation finished</span>
+<span class="go">2024-01-03 17:24:15,509 - . - INFO - run_segmentation finished</span>
+</pre></div>
+</div>
+<p>Along with the cell boundaries, we also regenerated the cell by gene matrix (the number of times a transcript from each
+of the targetted genes appears within each of the segmented cell boundaries), the cell metadata (containing coordinates,
+volume, and transcript counts for each cell), and updated the vzg file to include the new segmentation boundaries using
+the following commands in VPT:</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>partition-transcripts<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose2_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-transcripts<span class="w"> </span>MsHeart/region_0/detected_transcripts.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-12-22 18:12:22,915 - . - INFO - run partition-transcripts with args:Namespace(input_boundaries=&#39;analysis_outputs/cellpose2_micron_space.parque&#39;, input_transcripts=&#39;MsHeart/region_0/detected_transcripts.csv&#39;, output_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, chunk_size=10000000, output_transcripts=None, overwrite=False)</span>
+<span class="go">2023-12-22 18:12:23,023 - . - INFO - Partition transcripts started</span>
+<span class="go">2023-12-22 19:36:15,115 - . - INFO - cell by gene matrix saved as analysis_outputs/cell_by_gene.csv</span>
+<span class="go">2023-12-22 19:36:15,115 - . - INFO - Partition transcripts finished</span>
+</pre></div>
+</div>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>derive-entity-metadata<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose2_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-metadata<span class="w"> </span>analysis_outputs/cell_metadata.csv
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-12-22 21:09:19,721 - . - INFO - run derive-entity-metadata with args:Namespace(input_boundaries=&#39;analysis_outputs/cellpose2_micron_space.parquet&#39;, output_metadata=&#39;analysis_outputs/cell_metadata.csv&#39;, input_entity_by_gene=None, overwrite=False)</span>
+<span class="go">2023-12-22 21:09:19,828 - . - INFO - Derive cell metadata started</span>
+<span class="go">2023-12-22 21:12:58,070 - . - INFO - Derive cell metadata finished</span>
+</pre></div>
+</div>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>--processes<span class="w"> </span><span class="m">8</span><span class="w"> </span>update-vzg<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-vzg<span class="w"> </span>MsHeart/region_0/MsHeart_region_0.vzg<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>analysis_outputs/cellpose2_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-vzg<span class="w"> </span>analysis_outputs/MsHeart_region_0_cellpose2.vzg
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2024-01-04 15:53:07,072 - . - INFO - run update-vzg with args:Namespace(input_vzg=&#39;MsHeart/region_0/MsHeart_region_0.vzg&#39;, input_boundaries=&#39;analysis_outputs/cellpose2_micron_space.parquet&#39;, input_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, output_vzg=&#39;analysis_outputs/MsHeart_region_0_cellpose2.vzg&#39;, input_metadata=None, input_entity_type=None, overwrite=False)</span>
+<span class="go">2024-01-04 15:53:07,162 - . - INFO - Unpacking vzg file</span>
+<span class="go">2024-01-04 15:54:22,797 - . - INFO - MsHeart/region_0/MsHeart_region_0.vzg unpacked!</span>
+<span class="go">2024-01-04 15:54:22,800 - . - INFO - Dataset folder: vzg_build_temp/vzg_2024-01-04T15_53_07_162250/MsHeart_region_0</span>
+<span class="go">2024-01-04 15:54:22,800 - . - INFO - Number of input genes: 635</span>
+<span class="go">2024-01-04 15:54:27,800 - . - INFO - There is no cell metadata on input, start creating</span>
+<span class="go">2024-01-04 15:55:56,412 - . - INFO - Cell metadata file created</span>
+<span class="go">2024-01-04 15:55:57,133 - . - INFO - Running cell assembly in 8 processes for feature cell</span>
+<span class="go">2024-01-04 15:55:59,528 - ./task-0 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,528 - ./task-5 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,529 - ./task-7 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,529 - ./task-1 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,529 - ./task-3 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,531 - ./task-4 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,546 - ./task-6 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 15:55:59,548 - ./task-2 - INFO - running cells processing for fovs</span>
+<span class="go">2024-01-04 16:03:13,625 - ./task-6 - INFO - Done fov 6</span>
+<span class="go">2024-01-04 16:04:03,978 - ./task-0 - INFO - Done fov 0</span>
+<span class="go">2024-01-04 16:05:21,948 - ./task-2 - INFO - Done fov 2</span>
+<span class="go">2024-01-04 16:05:25,018 - ./task-3 - INFO - Done fov 3</span>
+<span class="go">2024-01-04 16:05:26,003 - ./task-1 - INFO - Done fov 1</span>
+<span class="go">2024-01-04 16:05:44,222 - ./task-4 - INFO - Done fov 4</span>
+<span class="go">2024-01-04 16:05:48,758 - ./task-5 - INFO - Done fov 5</span>
+<span class="go">2024-01-04 16:06:20,875 - . - INFO - Cells binaries generation completed for feature cell</span>
+<span class="go">2024-01-04 16:06:24,141 - . - INFO - Start calculating expression matrices</span>
+<span class="go">2024-01-04 16:07:52,520 - . - INFO - Start calculating coloring arrays</span>
+<span class="go">2024-01-04 16:07:54,998 - . - INFO - Finish calculating</span>
+<span class="go">2024-01-04 16:07:55,047 - . - INFO - Assembler data binaries generation complected for feature cell</span>
+<span class="go">2024-01-04 16:12:29,691 - . - INFO - new vzg file created</span>
+<span class="go">2024-01-04 16:12:30,654 - . - INFO - temp files deleted</span>
+<span class="go">2024-01-04 16:12:30,654 - . - INFO - Update VZG completed</span>
+</pre></div>
+</div>
+</section>
+<section id="step-6-evaluate-new-segmentation">
+<h2>Step 6: Evaluate New Segmentation<a class="headerlink" href="#step-6-evaluate-new-segmentation" title="Permalink to this headline"></a></h2>
+<p>With the newly generated segmentation, we next evaluated the performance improvement from the re-annotated dataset, both
+qualitatively and quantitatively as we did with the original segmentation results.</p>
+<p>For qualitative evaluation, we loaded the newly generated VZG file into the MERSCOPE Vizualizer software and examined the
+segmentation boundaries overlaid on the transcripts and images. With the retrained model, we can see that the segmented
+cells much more closely follow the elongated shape expected for the muscle cells in this region of the heart.</p>
+<a class="reference internal image-reference" href="../_images/workflow_image12.png"><img alt="An image of Vizualizer" class="align-center" src="../_images/workflow_image12.png" style="width: 1000px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>With VPT, we also regenerated the segmentation summary using generate-segmentation-metrics directly to generate a new quantitative
+report and metrics csv file for the full-scale segmentation run. This command requires the detected_transcripts.csv as well
+as the cell_by_gene.csv, and cell_metadata.csv, generated from the previous VPT commands.</p>
+<p><strong>User Input</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(vpt_env)</span> <span class="gp">user@computer:~$ </span>vpt<span class="w"> </span>--verbose<span class="w"> </span>generate-segmentation-metrics<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-entity-by-gene<span class="w"> </span>analysis_outputs/cell_by_gene.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-metadata<span class="w"> </span>analysis_outputs/cell_metadata.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-transcripts<span class="w"> </span>MsHeart/region_0/detected_transcripts.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-csv<span class="w"> </span>analysis_outputs/segmentation_metrics.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--experiment-name<span class="w"> </span>MsHeart_cellpose2<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-report<span class="w"> </span>analysis_outputs/segmentation_report.html<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--output-clustering<span class="w"> </span>analysis_outputs/<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-images<span class="w"> </span>MsHeart/region_0/images/<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-boundaries<span class="w"> </span>MsHeart/cellpose2_micron_space.parquet<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-micron-to-mosaic<span class="w"> </span>MsHeart/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--input-z-index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--red-stain-name<span class="w"> </span>Cellbound1<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--green-stain-name<span class="w"> </span>Cellbound3<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--blue-stain-name<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--normalization<span class="w"> </span>CLAHE<span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--transcript-count-filter-threshold<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="gp">&gt; </span>--volume-filter-threshold<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+</pre></div>
+</div>
+<p><strong>Console Output</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">2023-12-06 12:10:32,525 - . - INFO - run generate-segmentation-metrics with args:Namespace(input_entity_by_gene=&#39;analysis_outputs/cell_by_gene.csv&#39;, input_metadata=&#39;analysis_outputs/cell_metadata.csv&#39;, input_transcripts=&#39;MsHeart/region_0/detected_transcripts.csv&#39;, output_csv=&#39;analysis_outputs/segmentation_metrics.csv&#39;, experiment_name=&#39;MsHeart_cellpose2&#39;, output_report=&#39;analysis_outputs/segmentation_report.html&#39;, output_clustering=&#39;analysis_outputs/&#39;, input_images=&#39;MsHeart/region_0/images/&#39;, input_boundaries=&#39;MsHeart/cellpose2_micron_space.parquet&#39;, input_micron_to_mosaic=&#39;MsHeart/region_0/images/micron_to_mosaic_pixel_transform.csv&#39;, input_z_index=0, red_stain_name=&#39;Cellbound1&#39;, green_stain_name=&#39;Cellbound3&#39;, blue_stain_name=&#39;DAPI&#39;, normalization=&#39;CLAHE&#39;, transcript_count_filter_threshold=100, volume_filter_threshold=200, overwrite=False)</span>
+<span class="go">2023-12-06 12:10:51,642 - . - INFO - Generate segmentation metrics started</span>
+<span class="go">2023-12-06 12:10:53,518 - . - INFO - Cell clustering started</span>
+<span class="go">2023-12-06 12:11:17,369 - . - INFO - Cell clustering finished</span>
+<span class="go">2023-12-06 12:11:17,370 - . - INFO - Making html report started</span>
+<span class="go">2023-12-06 12:12:02,489 - . - INFO - Making html report finished</span>
+<span class="go">2023-12-06 12:12:02,499 - . - INFO - Generate segmentation metrics finished</span>
+</pre></div>
+</div>
+<p>Opening of the summary html (shown below), the metrics and distributions can be directly compared to the previous segmentation.
+From the new summary report, we can see that for this example heart dataset, the retrained model significantly improved
+the cell segmentation metrics: cell size increased from 730.3 um^3 to 1423.3 um^3, transcripts per cell increased from 891 to 1514,
+and the percent of transcripts found within a segmented cell increased from 64.1% to 78.6%. For this sample with atypical
+cell morphology, manually annotating a few small regions and retraining the machine-learning model yielded significantly
+improved single-cell quantification for downstream biological analysis.</p>
+<a class="reference internal image-reference" href="../_images/workflow_image13.png"><img alt="An image of cellpose2 report" class="align-center" src="../_images/workflow_image13.png" style="width: 800px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<a class="reference internal image-reference" href="../_images/workflow_image14.png"><img alt="An image of cellpose2 report" class="align-center" src="../_images/workflow_image14.png" style="width: 800px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<a class="reference internal image-reference" href="../_images/workflow_image15.png"><img alt="An image of cellpose2 report" class="align-center" src="../_images/workflow_image15.png" style="width: 800px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="segmentation_of_a_local_dataset.html" class="btn btn-neutral float-left" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../experimental_features/index.html" class="btn btn-neutral float-right" title="Experimental Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

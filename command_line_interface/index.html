@@ -105,6 +105,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat10">Optional arguments</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#extract-image-patch">extract-image-patch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat11">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat11">Optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-segmentation-metrics">generate-segmentation-metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-arguments_repeat12">Required arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments_repeat12">Optional arguments</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -148,7 +158,7 @@
 <h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline"></a></h2>
 <dl class="option-list">
 <dt><kbd></kbd></dt>
-<dd><p>Possible choices: run-segmentation, prepare-segmentation, run-segmentation-on-tile, compile-tile-segmentation, derive-entity-metadata, partition-transcripts, sum-signals, update-vzg, convert-geometry, convert-to-ome, convert-to-rgb-ome</p>
+<dd><p>Possible choices: run-segmentation, prepare-segmentation, run-segmentation-on-tile, compile-tile-segmentation, derive-entity-metadata, partition-transcripts, sum-signals, update-vzg, convert-geometry, convert-to-ome, convert-to-rgb-ome, extract-image-patch, generate-segmentation-metrics</p>
 </dd>
 </dl>
 </section>
@@ -615,6 +625,171 @@ examples above).</p>
 </dd>
 <dt><kbd>--overwrite</kbd></dt>
 <dd></dd>
+</dl>
+</section>
+</section>
+<section id="extract-image-patch">
+<h3>extract-image-patch<a class="headerlink" href="#extract-image-patch" title="Permalink to this headline"></a></h3>
+<p>Extracts a patch of specified coordinates and channels from the 16-bit mosaic tiff images produced by the MERSCOPE as an 8-bit RGB PNG file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">extract</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">patch</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat11">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat11" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-images</kbd></dt>
+<dd><p>Input images can be specified in one of three ways:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The path to a directory of tiff files if the files are named by the MERSCOPE convention.</dt><dd><p>Example: /path/to/files/</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The path to a directory of tiff files including a python formatting string specifying the file name.</dt><dd><p>Example: /path/to/files/image_{stain}_z{z}.tif</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A regular expression matching the tiff files to be used</dt><dd><p>Example: /path/to/files/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If a formatting string or regular expression are used, it must return values for <code class="docutils literal notranslate"><span class="pre">stain</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> (as in the
+examples above).</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
+</dd>
+<dt><kbd>--output-patch</kbd></dt>
+<dd><p>Path to the patch PNG file, will append .png to the end if not included in file name.</p>
+</dd>
+<dt><kbd>--center-x</kbd></dt>
+<dd><p>MERSCOPE Vizualizer X coordinate in micron space that will serve as the center of the saved PNG patch</p>
+</dd>
+<dt><kbd>--center-y</kbd></dt>
+<dd><p>MERSCOPE Vizualizer Y coordinate in micron space that will serve as the center of the saved PNG patch</p>
+</dd>
+<dt><kbd>--green-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the green channel of the patch</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat11">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat11" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--size-x</kbd></dt>
+<dd><p>Number of microns for the width of the patch. Default: 108.</p>
+</dd>
+<dt><kbd>--size-y</kbd></dt>
+<dd><p>Number of microns for the height of the patch. Default: 108.</p>
+</dd>
+<dt><kbd>--input-z-index</kbd></dt>
+<dd><p>The Z plane of the mosaic tiff images to use for the patch. Default: 2.</p>
+</dd>
+<dt><kbd>--red-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the red channel of the patch. Default: None.</p>
+</dd>
+<dt><kbd>--blue-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the blue channel of the patch. Default: None.</p>
+</dd>
+<dt><kbd>--normalization</kbd></dt>
+<dd><p>The name of the normalization method that will be used on each channel of the patch. Default: None.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="generate-segmentation-metrics">
+<h3>generate-segmentation-metrics<a class="headerlink" href="#generate-segmentation-metrics" title="Permalink to this headline"></a></h3>
+<p>Computes a number of segmentation metrics and figures to assess the quality of cell segmentation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vpt</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">generate</span><span class="o">-</span><span class="n">segmentation</span><span class="o">-</span><span class="n">metrics</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="required-arguments_repeat12">
+<h4>Required arguments<a class="headerlink" href="#required-arguments_repeat12" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-entity-by-gene</kbd></dt>
+<dd><p>Path to the Entity by gene csv file.</p>
+</dd>
+<dt><kbd>--input-metadata</kbd></dt>
+<dd><p>Path to the output csv file where the entity metadata will be stored.</p>
+</dd>
+<dt><kbd>--input-transcripts</kbd></dt>
+<dd><p>Path to an existing transcripts csv file.</p>
+</dd>
+<dt><kbd>--input-boundaries</kbd></dt>
+<dd><p>Path to a micron-space parquet boundary file.</p>
+</dd>
+<dt><kbd>--input-micron-to-mosaic</kbd></dt>
+<dd><p>Path to the micron to mosaic pixel transformation matrix.</p>
+</dd>
+<dt><kbd>--output-csv</kbd></dt>
+<dd><p>Path to the csv file where segmentation metrics will be stored.</p>
+</dd>
+</dl>
+</section>
+<section id="optional-arguments_repeat12">
+<h4>Optional arguments<a class="headerlink" href="#optional-arguments_repeat12" title="Permalink to this headline"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-images</kbd></dt>
+<dd><p>Input images can be specified in one of three ways:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The path to a directory of tiff files if the files are named by the MERSCOPE convention.</dt><dd><p>Example: /path/to/files/</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The path to a directory of tiff files including a python formatting string specifying the file name.</dt><dd><p>Example: /path/to/files/image_{stain}_z{z}.tif</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A regular expression matching the tiff files to be used</dt><dd><p>Example: /path/to/files/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If a formatting string or regular expression are used, it must return values for <code class="docutils literal notranslate"><span class="pre">stain</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> (as in the
+examples above).</p>
+</dd>
+<dt><kbd>--experiment-name</kbd></dt>
+<dd><p>The name of the experiment to be used as the index in the output csv and segmentation report. Default: Analysis Timestamp.</p>
+</dd>
+<dt><kbd>--output-report</kbd></dt>
+<dd><p>Path to the output HTML file, will append .html to the end if not included in file name.</p>
+</dd>
+<dt><kbd>--output-clustering</kbd></dt>
+<dd><p>Path where the Cell categories Parquet files with clustering results will be saved.</p>
+</dd>
+<dt><kbd>--input-z-index</kbd></dt>
+<dd><p>The Z plane of the mosaic tiff images to use for the patch. Default: 2.</p>
+</dd>
+<dt><kbd>--red-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the red channel in images. Default: None.</p>
+</dd>
+<dt><kbd>--green-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the red channel in images. Default: PolyT.</p>
+</dd>
+<dt><kbd>--blue-stain-name</kbd></dt>
+<dd><p>The name of the stain that will be used for the blue channel in images. Default: DAPI.</p>
+</dd>
+<dt><kbd>--normalization</kbd></dt>
+<dd><p>The name of the normalization method that will be used on each channel. Default: CLAHE.</p>
+</dd>
+<dt><kbd>--transcript-count-filter-threshold</kbd></dt>
+<dd><p>The cell transcript count threshold used for computing metrics and clustering. Default: 100.</p>
+</dd>
+<dt><kbd>--volume-filter-threshold</kbd></dt>
+<dd><p>The cell volume threshold used for computing metrics and clustering. Default: 200.</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>Set flag if you want to use non empty directory and agree that files can be over-written.</p>
+</dd>
 </dl>
 </section>
 </section>

@@ -85,7 +85,7 @@ Step 1: Install vpt in a Virtual Environment
 
     user@computer:~$ python3 -m venv ~/.venv/vpt_env
     user@computer:~$ source .venv/vpt_env/bin/activate
-    (vpt_env) user@computer:~$ pip install vpt
+    (vpt_env) user@computer:~$ pip install vpt[all]
 
 
 **Console Output**
@@ -601,7 +601,7 @@ In order to examine the new cell boundaries in the Vizgen MERSCOPE™ Vizualizer
 
 Once the vzg file is updated, it is possible to explore the data in the Vizgen MERSCOPE™ Vizualizer as usual
 
-.. image:: ../_static/cellpose_segmented_small_dataset.png
+.. image:: ../_static/vignette_images/local_dataset/cellpose_segmented_small_dataset.png
     :width: 900
     :alt: An image of cells in the Vizgen MERSCOPE™ Vizualizer
 
