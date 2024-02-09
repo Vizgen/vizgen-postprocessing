@@ -236,6 +236,6 @@ jobs:
             vzgdocker/vpt:latest
             vzgdocker/vpt:1.2
           build-args: |
-            "VERSION=$1.2"  
+            "VERSION=1.2"  
           cache-from: type=gha
           cache-to: type=gha,mode=max
