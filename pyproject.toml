@@ -75,6 +75,14 @@ opencv-python-headless = "4.6.0.66"
 
 [tool.poetry.group.deploy.dependencies]
 python-semantic-release = "^7.32.2"
+sphinx = "^4.5.0"
+sphinxcontrib-applehelp = "1.0.4"
+sphinxcontrib-devhelp = "1.0.2"
+sphinxcontrib-htmlhelp = "2.0.1"
+sphinxcontrib-jquery = "4.1"
+sphinxcontrib-jsmath = "1.0.1"
+sphinxcontrib-qthelp = "1.0.3"
+sphinxcontrib-serializinghtml = "1.1.5"
 sphinx-argparse = "^0.4.0"
 sphinx-view = "^0.3.1"
 myst-nb = { version = "^0.17.1", python = "^3.9" }
