@@ -3,9 +3,8 @@ from typing import List
 import geopandas as gpd
 from pyarrow import parquet
 from shapely import wkb
-
 from vpt_core.io.input_tools import read_parquet
-from vpt_core.io.vzgfs import filesystem_path_split, vzg_open, retrying_attempts, io_with_retries
+from vpt_core.io.vzgfs import filesystem_path_split, io_with_retries, retrying_attempts, vzg_open
 from vpt_core.segmentation.seg_result import SegmentationResult
 
 from vpt.utils.validate import validate_micron_to_mosaic_transform

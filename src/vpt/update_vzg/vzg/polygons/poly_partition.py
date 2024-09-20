@@ -1,7 +1,7 @@
 import numpy as np
 
-from vpt.update_vzg.polygons.polystructers import IndexedPolygon, PointsIndices
-from vpt.update_vzg.polygons.vector_operations import (
+from vpt.update_vzg.vzg.polygons.polystructers import IndexedPolygon, PointsIndices
+from vpt.update_vzg.vzg.polygons.vector_operations import (
     dot_2d,
     find_bisector,
     point_in_sector,

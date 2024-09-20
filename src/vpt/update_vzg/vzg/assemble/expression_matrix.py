@@ -4,8 +4,8 @@ from typing import Tuple
 import numpy as np
 import pandas
 
-from vpt.update_vzg.byte_utils import extend_with_u32
-from vpt.update_vzg.cell_metadata import CellMetadata
+from vpt.update_vzg.vzg.byte_utils import extend_with_u32
+from vpt.update_vzg.vzg.cell_metadata import CellMetadata
 
 
 class ExpressionMetric(Enum):

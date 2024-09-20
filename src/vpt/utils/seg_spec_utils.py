@@ -1,7 +1,7 @@
 import json
 import os
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Union, Tuple
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from vpt_core.io.image import ImageInfo
 from vpt_core.io.vzgfs import filesystem_path_split, io_with_retries
@@ -9,8 +9,8 @@ from vpt_core.segmentation.fuse import SegFusion
 from vpt_core.segmentation.segmentation_task import SegTask
 from vpt_core.segmentation.task_input_data import InputData
 
+from vpt.entity.relationships import EntityRelationships, get_default_relationship, relationships_from_dict
 from vpt.prepare_segmentation.validate import validate_fusion_parameters
-from vpt.entity.relationships import EntityRelationships, relationships_from_dict, get_default_relationship
 from vpt.run_segmentation_on_tile.output_utils import make_entity_output_filename
 from vpt.utils.validate import validate_does_not_exist, validate_exists, validate_experimental
 

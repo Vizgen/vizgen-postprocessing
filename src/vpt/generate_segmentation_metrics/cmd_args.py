@@ -3,12 +3,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List
 
-import pandas as pd
 import geopandas as gpd
-from vpt.generate_segmentation_metrics.metrics_settings import OUTPUT_FILE_NAME1, OUTPUT_FILE_NAME2
-from vpt.utils.validate import validate_does_not_exist, validate_exists
+import pandas as pd
 from vpt_core.io.regex_tools import parse_images_str
 from vpt_core.io.vzgfs import filesystem_path_split, io_with_retries
+
+from vpt.generate_segmentation_metrics.metrics_settings import OUTPUT_FILE_NAME1, OUTPUT_FILE_NAME2
+from vpt.utils.validate import validate_does_not_exist, validate_exists
 
 
 @dataclass

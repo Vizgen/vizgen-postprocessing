@@ -5,7 +5,7 @@ import numpy as np
 from h5py import Group
 from shapely import geometry
 from shapely.validation import make_valid
-from vpt_core.io.vzgfs import vzg_open, retrying_attempts
+from vpt_core.io.vzgfs import retrying_attempts, vzg_open
 from vpt_core.segmentation.polygon_utils import convert_to_multipoly
 from vpt_core.segmentation.seg_result import SegmentationResult
 

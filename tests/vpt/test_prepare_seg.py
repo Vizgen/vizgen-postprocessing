@@ -1,15 +1,17 @@
 import json
+from datetime import datetime
 from typing import List, Optional
 
+import numpy as np
 import pytest
-
-from vpt.entity import Constraint, Strategy
 from vpt_core.utils.base_case import BaseCase
 
-from tests.vpt import TEST_DATA_ROOT
-from vpt.prepare_segmentation.input_tools import AlgInfo
-from vpt.prepare_segmentation.validate import validate_alg_info
+from tests.vpt import IMAGES_ROOT, TEST_DATA_ROOT
+from vpt.entity import Constraint, Strategy
 from vpt.entity.relationships import EntityRelationships
+from vpt.prepare_segmentation.input_tools import AlgInfo, read_json
+from vpt.prepare_segmentation.main import get_segmentation_spec
+from vpt.prepare_segmentation.validate import validate_alg_info
 
 
 class AlgSpecCase(BaseCase):
@@ -119,3 +121,10 @@ def test_alg_spec_validation(case: AlgSpecCase):
         assert not case.valid
         return
     assert case.valid
+
+
+def test_sleep():
+    timestamp = datetime.now().timestamp()
+    alg = read_json(str(TEST_DATA_ROOT / "test_algorithm.json"))
+    get_segmentation_spec(alg, str(IMAGES_ROOT), np.array([]), 1000, 1, "", "", "")
+    assert int(datetime.now().timestamp()) > int(timestamp)

@@ -1,13 +1,13 @@
 from typing import List
 
-from vpt.entity.empty_resolver import EmptyResolver
-from vpt.entity.factory import get_constraint_resolver
-from vpt.entity.relationships import relationships_from_dict
 from vpt_core.io.regex_tools import RegexInfo
 from vpt_core.io.vzgfs import filesystem_path_split
 from vpt_core.segmentation.fuse import FusionCallbacks
 from vpt_core.segmentation.seg_result import SegmentationResult
 
+from vpt.entity.empty_resolver import EmptyResolver
+from vpt.entity.factory import get_constraint_resolver
+from vpt.entity.relationships import relationships_from_dict
 from vpt.prepare_segmentation.input_tools import AlgInfo, OutputFiles
 from vpt.segmentation.segmentations_factory import get_seg_implementation
 from vpt.utils.validate import validate_directory_empty, validate_does_not_exist, validate_experimental

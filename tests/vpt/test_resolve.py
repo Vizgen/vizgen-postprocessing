@@ -1,18 +1,17 @@
-from typing import Optional, List, Type
+from typing import List, Optional, Type
 
 import pytest
 from geopandas import GeoDataFrame
-
-from vpt.entity.segmentation_results_worker import create_segmentation_results_relation
 from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt_core.segmentation.segmentation_item import SegmentationItem
 from vpt_core.utils.base_case import BaseCase
-from vpt_core.utils.segmentation_utils import Square, from_shapes, from_shapes_3d, assert_seg_equals, Rect
+from vpt_core.utils.segmentation_utils import Rect, Square, assert_seg_equals, from_shapes, from_shapes_3d
 
 from vpt.entity import Constraint, Strategy
 from vpt.entity.factory import get_constraint_resolver
-from vpt.entity.resolver_base import StorageWorkerBase, RelatedSegmentationResults, ChildInfo
-from vpt.entity.relationships import create_entity_relationships, EntityRelationships
+from vpt.entity.relationships import EntityRelationships, create_entity_relationships
+from vpt.entity.resolver_base import ChildInfo, RelatedSegmentationResults, StorageWorkerBase
+from vpt.entity.segmentation_results_worker import create_segmentation_results_relation
 
 
 def with_parent(seg: SegmentationItem, parent_id: int, parent_type: str) -> SegmentationItem:

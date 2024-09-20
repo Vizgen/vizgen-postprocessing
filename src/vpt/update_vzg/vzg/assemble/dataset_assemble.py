@@ -5,9 +5,9 @@ import pandas
 from vpt_core import log
 from vpt_core.io.vzgfs import io_with_retries
 
-from vpt.update_vzg.assemble.cell_coloring import CellColoring
-from vpt.update_vzg.assemble.expression_matrix import GeneExprMatrix
-from vpt.update_vzg.cell_metadata import CellMetadata
+from vpt.update_vzg.vzg.assemble.cell_coloring import CellColoring
+from vpt.update_vzg.vzg.assemble.expression_matrix import GeneExprMatrix
+from vpt.update_vzg.vzg.cell_metadata import CellMetadata
 from vpt.utils.general_data import write_file
 
 

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from vpt.entity.resolver_base import SegmentationItem, ResolverBase, RelatedSegmentationResults, ChildInfo
+from vpt.entity.resolver_base import ChildInfo, RelatedSegmentationResults, ResolverBase, SegmentationItem
 
 
 class EmptyResolver(ResolverBase):

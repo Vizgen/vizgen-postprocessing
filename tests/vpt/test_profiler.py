@@ -3,8 +3,8 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
-from tests.vpt import OUTPUT_FOLDER
 import vpt.profiler as profiler
+from tests.vpt import OUTPUT_FOLDER
 
 
 @pytest.fixture

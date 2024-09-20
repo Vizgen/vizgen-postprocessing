@@ -10,16 +10,18 @@ from tests.vpt.test_partition_barcodes import (
 )
 
 
+@pytest.mark.parametrize("df_format", ["csv", "parquet"])
 @pytest.mark.parametrize("temp_dir", CLOUD_TEMP_FILESYSTEMS, ids=str)
-def test_func_partition_barcodes_cloud(temp_dir: TempDir):
+def test_func_partition_barcodes_cloud(temp_dir: TempDir, df_format: str):
     initialize_filesystem()
-    test_func_partition_barcodes(temp_dir)
+    test_func_partition_barcodes(temp_dir, df_format)
 
 
+@pytest.mark.parametrize("df_format", ["csv", "parquet"])
 @pytest.mark.parametrize("temp_dir", CLOUD_TEMP_FILESYSTEMS, ids=str)
-def test_func_partition_barcodes_new_transcripts_cloud(temp_dir: TempDir):
+def test_func_partition_barcodes_new_transcripts_cloud(temp_dir: TempDir, df_format: str):
     initialize_filesystem()
-    test_func_partition_barcodes_new_transcripts(temp_dir)
+    test_func_partition_barcodes_new_transcripts(temp_dir, df_format)
 
 
 @pytest.mark.parametrize("temp_dir", CLOUD_TEMP_FILESYSTEMS, ids=str)

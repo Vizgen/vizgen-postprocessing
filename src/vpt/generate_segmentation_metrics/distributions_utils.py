@@ -3,19 +3,25 @@ import os
 import tempfile
 import warnings
 from argparse import Namespace
+from typing import Union
 
 import anndata
 import geopandas as gpd
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import scanpy as sc
 import shapely
+from matplotlib.colors import Colormap
 from shapely import geometry
+from vpt_core.io.regex_tools import parse_images_str
+from wrapt_timeout_decorator import timeout
+
 from vpt.generate_segmentation_metrics.cmd_args import GenerateSegMetricsArgs
+from vpt.generate_segmentation_metrics.metrics_settings import PLOT_RENDERING_TIMEOUT
 from vpt.utils.input_utils import read_micron_to_mosaic_transform
 from vpt.utils.process_patch import ExtractImageArgs, transform_coords
-from vpt_core.io.regex_tools import parse_images_str
 
 warnings.filterwarnings("ignore")
 
@@ -90,9 +96,29 @@ def crop_segmentation(
     return cell_polys
 
 
-def make_dotplot(adata: anndata._core.anndata.AnnData) -> sc.plotting._dotplot.DotPlot:
+def make_dotplot(
+    adata: anndata._core.anndata.AnnData, cmap: Union[str, Colormap] = "Blues"
+) -> sc.plotting._dotplot.DotPlot:
     leiden_res = [item for item in adata.obs.columns if item.startswith("leiden")][0]
-    sc.tl.rank_genes_groups(adata=adata, groupby=leiden_res, method="t-test")
+
+    # If a cluster only has 1 cell, the descriptive stats needed for the dotplot will fail
+    cluster_counts = adata.obs.groupby(leiden_res).count()
+    clusters_with_enough_cells = list(cluster_counts.loc[cluster_counts["volume"] > 1].index)
+
+    # If there are no cells to cluster or there are no clusters with enough cells, the dotplot creation will fail
+    if "empty_anndata_indicator" in adata.uns or len(clusters_with_enough_cells) == 0:
+        dotplot = plt.figure(figsize=(5, 5))
+        message = "There aren't any clusters with enough cells to construct a dotplot."
+        plt.text(0.5, 0.5, message, ha="center", va="center", fontsize=12, color="k")
+        plt.axis("off")
+        return dotplot
+
+    sc.tl.rank_genes_groups(
+        adata=adata,
+        groupby=leiden_res,
+        groups=clusters_with_enough_cells,
+        method="t-test",
+    )
     data = pd.DataFrame.from_records(adata.uns["rank_genes_groups"]["names"])
     top_genes = []
     for cluster_idx in range(len(data.columns)):
@@ -111,7 +137,7 @@ def make_dotplot(adata: anndata._core.anndata.AnnData) -> sc.plotting._dotplot.D
         groupby=leiden_res,
         dendrogram=False,
         standard_scale="var",
-        cmap="Blues",
+        cmap=cmap,
         figsize=(figsize_x, figsize_y),
         return_fig=True,
     )
@@ -119,18 +145,52 @@ def make_dotplot(adata: anndata._core.anndata.AnnData) -> sc.plotting._dotplot.D
     return dotplot
 
 
+def make_empty_anndata(num_entries: int = 1) -> anndata._core.anndata.AnnData:
+    adata = anndata.AnnData(
+        obs=pd.DataFrame(
+            {
+                "volume": num_entries * [0.0],
+                "center_x": num_entries * [0.0],
+                "center_y": num_entries * [0.0],
+                "leiden_1.0": num_entries * ["0"],
+            }
+        ),
+        obsm={"X_umap": np.vstack(num_entries * [np.array([[0, 0]])])},
+        uns={"log1p": {}, "empty_anndata_indicator": None},
+    )
+    adata.obs.index.name = "cell"
+
+    return adata
+
+
+@timeout(PLOT_RENDERING_TIMEOUT)
+def make_plot_with_timeout(plot, plot_name: str) -> None:
+    plot.write_image(plot_name, format="png", engine="kaleido")
+
+
 def plot_to_base64(plot) -> str:
     with tempfile.TemporaryDirectory() as temp_dir:
-        if isinstance(plot, go.Figure):
-            plot.write_image(os.path.join(temp_dir, "plot.png"), format="png", engine="kaleido")
-        else:
-            plot.savefig(
-                os.path.join(temp_dir, "plot.png"),
-                dpi=75,
-                pad_inches=0.25,
-                facecolor="white",
-            )
-        with open(os.path.join(temp_dir, "plot.png"), "rb") as image_file:
+        plot_name = os.path.join(temp_dir, "plot.png")
+        try:
+            if isinstance(plot, go.Figure):
+                make_plot_with_timeout(plot, plot_name)
+            else:
+                plot.savefig(plot_name, dpi=75, pad_inches=0.25, facecolor="white")
+
+        except Exception:
+            # If rendering failed for any reason, including a timeout error, make a placeholder figure
+            plot = plt.figure(figsize=(5, 5))
+            message = "Plot rendering error."
+            plt.text(0.5, 0.5, message, ha="center", va="center", fontsize=18, color="#E02873")
+            plt.axis("off")
+            plot.savefig(plot_name, dpi=50, pad_inches=0.0, facecolor="white")
+
+        with open(plot_name, "rb") as image_file:
             image_data = base64.b64encode(image_file.read()).decode("utf-8")
 
     return f"data:image/png;base64,{image_data}"
+
+
+def compute_range(x):
+    min_, max_ = x.min(), x.max()
+    return min_ - (max_ - min_) * 0.05, max_ + (max_ - min_) * 0.05

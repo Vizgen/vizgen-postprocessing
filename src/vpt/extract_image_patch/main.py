@@ -1,10 +1,11 @@
 import argparse
 
 from PIL import Image
-from vpt.extract_image_patch.cmd_args import ExtractImagePatchArgs, get_parser, validate_args
-from vpt.utils.process_patch import load_paths_args, make_png, process_patch
 from vpt_core import log
 from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
+
+from vpt.extract_image_patch.cmd_args import ExtractImagePatchArgs, get_parser, validate_args
+from vpt.utils.process_patch import load_paths_args, make_png, process_patch
 
 
 def extract_image_patch(args: argparse.Namespace):

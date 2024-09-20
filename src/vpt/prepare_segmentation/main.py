@@ -1,9 +1,8 @@
+import time
 from datetime import datetime
 from typing import Dict
 
 import numpy as np
-
-from vpt.utils.metadata import get_installed_versions
 from vpt_core import log
 from vpt_core.io.regex_tools import parse_images_str
 from vpt_core.segmentation.seg_result import SegmentationResult
@@ -14,6 +13,7 @@ from vpt.prepare_segmentation.output_tools import save_to_json
 from vpt.prepare_segmentation.tiles import make_tiles
 from vpt.prepare_segmentation.validate import validate_alg_info, validate_regex_and_alg_match
 from vpt.utils.input_utils import read_micron_to_mosaic_transform
+from vpt.utils.metadata import get_installed_versions
 
 
 def run_prepare_segmentation(args):
@@ -65,6 +65,18 @@ def get_segmentation_spec(
     tile_info = make_tiles(regex_info.image_width, regex_info.image_height, tile_size, tile_overlap)
     if len(tile_info) > SegmentationResult.MAX_TILE_ID:
         raise OverflowError(f"Number of tiles in experiment could not be greater than {SegmentationResult.MAX_TILE_ID}")
+
+    # The following code block ensures that at least one second passes
+    # before the caller can generate a new specification.
+    # This way, the timestamps are guaranteed to be different between this call and the following calls.
+    # This is important because the unique part of the entity IDs is formed from the recorded timestamp.
+    for _ in range(3):
+        diff = datetime.now().timestamp() - int(timestamp)
+        if diff >= 1:
+            break
+        else:
+            time.sleep(1 - diff)
+
     return {
         "timestamp": timestamp,
         "input_args": {

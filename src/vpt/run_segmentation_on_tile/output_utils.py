@@ -2,7 +2,6 @@ from typing import Dict, List
 
 import numpy as np
 import pandas as pd
-
 from vpt_core.io.output_tools import format_experiment_timestamp
 from vpt_core.io.vzgfs import filesystem_path_split, io_with_retries
 from vpt_core.segmentation.seg_result import SegmentationResult

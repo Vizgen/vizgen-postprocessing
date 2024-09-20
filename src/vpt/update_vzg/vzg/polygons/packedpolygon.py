@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from vpt.update_vzg.byte_utils import extend_with_u32
+from vpt.update_vzg.vzg.byte_utils import extend_with_u32
 
 
 class LodLevel(Enum):

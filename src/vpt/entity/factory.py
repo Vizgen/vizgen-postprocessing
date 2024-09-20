@@ -1,14 +1,15 @@
-from typing import Optional, Dict
+from typing import Dict, Optional
 
+from vpt_core.segmentation.fuse import PolygonParams
+
+from vpt.entity import Constraint
 from vpt.entity.empty_resolver import EmptyResolver
 from vpt.entity.resolver.child_intersect_one_parent import ChildIntersectOneParent
 from vpt.entity.resolver.child_must_have_parent import ChildMustHaveParent
+from vpt.entity.resolver.maximum_child_count import MaximumChildCount
 from vpt.entity.resolver.minimum_child_count import MinimumChildCount
 from vpt.entity.resolver.parent_must_cover_child import ParentMustCoverChild
 from vpt.entity.resolver_base import ResolverBase
-from vpt.entity import Constraint
-from vpt.entity.resolver.maximum_child_count import MaximumChildCount
-from vpt_core.segmentation.fuse import PolygonParams
 
 
 def get_constraint_resolver(

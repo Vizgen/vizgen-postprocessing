@@ -3,7 +3,7 @@ from typing import List
 
 import numpy as np
 
-from vpt.update_vzg.assemble.expression_matrix import ExpressionMetric, GeneExprMatrix
+from vpt.update_vzg.vzg.assemble.expression_matrix import ExpressionMetric, GeneExprMatrix
 
 
 def create_bytearray(array_l, array_type=np.float32) -> bytearray:

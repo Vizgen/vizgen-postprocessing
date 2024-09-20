@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple, Optional
+from typing import Dict, Optional, Tuple
 
 import numpy as np
-
-from vpt.entity.relationships import EntityRelationships
-from vpt.utils.seg_spec_utils import create_seg_fusion, create_seg_et_relationships
 from vpt_core.io.vzgfs import filesystem_path_split
 from vpt_core.segmentation.fuse import PolygonParams
+
+from vpt.entity.relationships import EntityRelationships
+from vpt.utils.seg_spec_utils import create_seg_et_relationships, create_seg_fusion
 
 
 @dataclass

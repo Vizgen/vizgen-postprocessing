@@ -3,8 +3,8 @@ from typing import List, Optional
 import numpy as np
 import pandas
 
-from vpt.update_vzg.byte_utils import extend_with_u32, extend_with_f32
-from vpt.update_vzg.imageparams import ImageParams
+from vpt.update_vzg.vzg.byte_utils import extend_with_f32, extend_with_u32
+from vpt.update_vzg.vzg.imageparams import ImageParams
 from vpt.utils.general_data import extend_btr_by_fixed_str
 
 

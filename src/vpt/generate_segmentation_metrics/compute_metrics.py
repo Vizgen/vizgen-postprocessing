@@ -3,17 +3,28 @@ from typing import Any, Dict, List, Tuple, Union
 
 import anndata
 import geopandas as gpd
+import jinja2
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
-import vpt.generate_segmentation_metrics.metrics_settings as metrics_settings
 from pretty_html_table import build_table
+from vpt_core.io.input_tools import read_parquet
+from vpt_core.io.vzgfs import io_with_retries
+
+from vpt.generate_segmentation_metrics import metrics_settings
 from vpt.generate_segmentation_metrics.cmd_args import GenerateSegMetricsArgs
 from vpt.generate_segmentation_metrics.output_tools import save_to_parquets
 from vpt.utils.input_utils import read_micron_to_mosaic_transform
-from vpt_core.io.input_tools import read_parquet
-from vpt_core.io.vzgfs import io_with_retries
+
+DETECTED_TRANSCRIPTS_DTYPE = {
+    "gene": "str",
+    "x": "float32",
+    "y": "float32",
+    "fov": "int16",
+    "global_x": "float32",
+    "global_y": "float32",
+}
 
 
 def total_cell_count(cell_by_gene: pd.DataFrame) -> int:
@@ -43,7 +54,11 @@ def unique_genes_per_cell(cell_by_gene: pd.DataFrame) -> Tuple:
 
 def percent_transcripts_in_cell(cell_by_gene: pd.DataFrame, detected_transcripts: pd.DataFrame) -> Union[int, float]:
     transcripts_per_cell = cell_by_gene.sum(axis=1).to_numpy()
-    percent_in_cell = transcripts_per_cell.sum() / detected_transcripts.shape[0]
+    num_transcripts = detected_transcripts.shape[0]
+    if num_transcripts > 0:
+        percent_in_cell = transcripts_per_cell.sum() / detected_transcripts.shape[0]
+    else:
+        percent_in_cell = 0
     return round(100 * percent_in_cell, 1)
 
 
@@ -108,10 +123,7 @@ def make_time() -> str:
     return formatted_date
 
 
-def make_cells_report_data(extract_args: GenerateSegMetricsArgs, metrics_df: pd.DataFrame, distributions: Dict):
-    with open(str(metrics_settings.TEMPLATE_ROOT / "cells_report_template.html"), "r") as template_file:
-        output = template_file.read()
-
+def make_cells_report_data(extract_args: GenerateSegMetricsArgs, metrics_df: pd.DataFrame, distributions: Dict) -> Dict:
     args_dict = {}
     for arg, _ in extract_args.__annotations__.items():
         arg_value = getattr(extract_args, arg)
@@ -159,9 +171,6 @@ def make_cells_report_data(extract_args: GenerateSegMetricsArgs, metrics_df: pd.
                 config={"displaylogo": False, "responsive": True},
             )
 
-    for name, content in distributions.items():
-        output = output.replace("{{ " + name + " }}", content)
-
     headers = {
         "header0a": f"{metrics_df.loc['All cells', 'Cell count']}",
         "header0b": f"{metrics_df.loc['All cells', 'Transcripts per cell - median']}",
@@ -175,26 +184,22 @@ def make_cells_report_data(extract_args: GenerateSegMetricsArgs, metrics_df: pd.
         "header7": "Marker Gene Expression",
         "header8": "Gene Partitioning",
     }
-    for header_name, header in headers.items():
-        output = output.replace("{{ " + header_name + " }}", header)
-    return output
+
+    return distributions | headers
 
 
-def make_report(cells_report_data: str, extract_args: GenerateSegMetricsArgs):
-    with open(str(metrics_settings.TEMPLATE_ROOT / "template.html"), "r") as template_file:
-        output = template_file.read()
+def make_report(cells_report_data: Dict, extract_args: GenerateSegMetricsArgs) -> str:
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(metrics_settings.TEMPLATE_ROOT))
+    template = env.get_template("template.html")
 
-    output = output.replace("{{ " + "report_name" + " }}", extract_args.experiment_name)
-    output = output.replace(
-        "{{ " + "experiment_name" + " }}",
-        f"VPT Segmentation Report ({extract_args.experiment_name})",
+    output = template.render(
+        report_name=extract_args.experiment_name,
+        experiment_name=f"VPT Segmentation Report ({extract_args.experiment_name})",
+        time=make_time(),
+        plotly_js_only=px.bar(x=[1], y=[1]).to_html(include_plotlyjs=True, full_html=False),
+        cells_report_data=cells_report_data,
+        **cells_report_data,
     )
-    output = output.replace("{{ " + "time" + " }}", make_time())
-    output = output.replace(
-        "{{ " + "plotly_js_only" + " }}", px.bar(x=[1], y=[1]).to_html(include_plotlyjs=True, full_html=False)
-    )
-
-    output = output.replace("{{ " + "cells_report_data" + " }}", cells_report_data)
 
     return output
 
@@ -304,7 +309,11 @@ def compute_metrics(extract_args: GenerateSegMetricsArgs):
     cell_metadata: pd.DataFrame = io_with_retries(
         extract_args.input_metadata, "r", lambda f: pd.read_csv(f, index_col=0)
     )
-    detected_transcripts: pd.DataFrame = io_with_retries(extract_args.input_transcripts, "r", lambda f: pd.read_csv(f))
+    detected_transcripts: pd.DataFrame = io_with_retries(
+        extract_args.input_transcripts,
+        "r",
+        lambda f: pd.read_csv(f, usecols=list(DETECTED_TRANSCRIPTS_DTYPE.keys()), dtype=DETECTED_TRANSCRIPTS_DTYPE),
+    )
     m2m_transform = read_micron_to_mosaic_transform(extract_args.input_micron_to_mosaic)
 
     (

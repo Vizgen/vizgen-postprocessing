@@ -3,12 +3,12 @@ from typing import List, Tuple
 
 import numpy as np
 
-from vpt.update_vzg.polygons.packedfanpolygon import PackedFanPolygon
-from vpt.update_vzg.polygons.packedpolygon import LodLevel
-from vpt.update_vzg.polygons.packedstarpolygon import PackedStarPolygon
-from vpt.update_vzg.polygons.poly_partition import PolyPartition
-from vpt.update_vzg.polygons.polystructers import IndexedPolygon
-from vpt.update_vzg.polygons.vector_operations import clockwise_traverse, pseudo_scalar
+from vpt.update_vzg.vzg.polygons.packedfanpolygon import PackedFanPolygon
+from vpt.update_vzg.vzg.polygons.packedpolygon import LodLevel
+from vpt.update_vzg.vzg.polygons.packedstarpolygon import PackedStarPolygon
+from vpt.update_vzg.vzg.polygons.poly_partition import PolyPartition
+from vpt.update_vzg.vzg.polygons.polystructers import IndexedPolygon
+from vpt.update_vzg.vzg.polygons.vector_operations import clockwise_traverse, pseudo_scalar
 
 
 def l2_dist_sqr(deltaX, deltaY):

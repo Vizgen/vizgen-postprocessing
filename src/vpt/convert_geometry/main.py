@@ -11,8 +11,8 @@ from vpt_core.io.vzgfs import (
     initialize_filesystem,
     prefix_for_protocol,
     protocol_path_split,
-    vzg_open,
     retrying_attempts,
+    vzg_open,
 )
 from vpt_core.segmentation.fuse import SegFusion, fuse_task_polygons
 from vpt_core.segmentation.seg_result import SegmentationResult

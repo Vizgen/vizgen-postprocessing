@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Tuple, Callable
+from typing import Callable, Dict, Tuple
 
 from vpt_core.io.vzgfs import filesystem_path_split
 from vpt_core.segmentation.seg_result import SegmentationResult

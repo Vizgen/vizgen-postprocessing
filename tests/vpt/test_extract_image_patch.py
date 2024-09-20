@@ -1,14 +1,14 @@
 import os
 from argparse import Namespace
+
 import numpy as np
 import pytest
-
 from vpt_core.io.regex_tools import ImagePath, RegexInfo
+
 from tests.vpt import IMAGES_ROOT, IMAGES_ROOT_MOCK, OUTPUT_FOLDER, TEST_DATA_ROOT
 from vpt.extract_image_patch.main import extract_image_patch
 from vpt.utils.input_utils import read_micron_to_mosaic_transform
 from vpt.utils.process_patch import ExtractImageArgs, process_patch
-
 
 EXTRACT_IMAGE_CASES = [
     Namespace(

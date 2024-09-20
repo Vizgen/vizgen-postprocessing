@@ -7,8 +7,6 @@ import geopandas as gpd
 import numpy as np
 import pytest
 from shapely.geometry import MultiPolygon
-
-from vpt.compile_tile_segmentation.parameters import CompileParameters
 from vpt_core.io.vzgfs import initialize_filesystem
 from vpt_core.segmentation.fuse import PolygonParams
 from vpt_core.segmentation.seg_result import SegmentationResult
@@ -16,6 +14,7 @@ from vpt_core.utils.base_case import BaseCase
 from vpt_core.utils.segmentation_utils import assert_df_equals
 
 from vpt.compile_tile_segmentation.main import compile_dataframe
+from vpt.compile_tile_segmentation.parameters import CompileParameters
 
 
 @dataclass

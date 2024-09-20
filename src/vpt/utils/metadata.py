@@ -1,8 +1,7 @@
 import re
 import sys
-from importlib.metadata import version, PackageNotFoundError, distributions
+from importlib.metadata import PackageNotFoundError, distributions, version
 from typing import Dict
-
 
 from vpt_core import log
 

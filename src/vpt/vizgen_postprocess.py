@@ -6,12 +6,11 @@ from argparse import Namespace
 from typing import Dict, Tuple
 
 from rasterio.errors import NotGeoreferencedWarning
-
-from vpt.utils.metadata import get_installed_versions
 from vpt_core import log
 
 from vpt.app.context import Context
 from vpt.cmd_args import get_cmd_entrypoint
+from vpt.utils.metadata import get_installed_versions
 
 warnings.filterwarnings("ignore", message=".*initial implementation of Parquet.*")
 warnings.filterwarnings("ignore", message=".*invalid value encountered in intersection.*")

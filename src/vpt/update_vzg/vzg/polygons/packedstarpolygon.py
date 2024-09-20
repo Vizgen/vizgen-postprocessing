@@ -2,8 +2,8 @@ from typing import Tuple
 
 import numpy as np
 
-from vpt.update_vzg.byte_utils import extend_with_u32
-from vpt.update_vzg.polygons.packedpolygon import LodLevel, PackedPolygon
+from vpt.update_vzg.vzg.byte_utils import extend_with_u32
+from vpt.update_vzg.vzg.polygons.packedpolygon import LodLevel, PackedPolygon
 
 
 class PackedStarPolygon(PackedPolygon):

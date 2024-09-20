@@ -1,7 +1,7 @@
 import json
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, List, Iterable
+from typing import Any, Dict, Iterable, List
 
 from vpt_core import log
 from vpt_core.io.vzgfs import io_with_retries

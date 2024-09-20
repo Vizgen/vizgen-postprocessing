@@ -8,10 +8,10 @@ from distutils.dir_util import remove_tree
 from typing import Dict, List
 
 from vpt_core import log
-from vpt_core.io.vzgfs import Protocol, filesystem_for_protocol, protocol_path_split, vzg_open, retrying_attempts
+from vpt_core.io.vzgfs import Protocol, filesystem_for_protocol, protocol_path_split, retrying_attempts, vzg_open
 
-from vpt.update_vzg.imageparams import ImageParams
-from vpt.update_vzg.manifestgen import ManifestGenerator
+from vpt.update_vzg.vzg.imageparams import ImageParams
+from vpt.update_vzg.vzg.manifestgen import ManifestGenerator
 from vpt.utils.general_data import load_images_manifest, write_json_file
 
 

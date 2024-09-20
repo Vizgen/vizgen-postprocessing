@@ -146,7 +146,7 @@ to installing VPT and Cellpose2.
 
 **VPT (with cellpose2 plugin)**
 
-Vizgen postprocessing tool (VPT) is a command line tool that facilitates re-segmenting full MERSOCPE output datasets with 
+Vizgen postprocessing tool (VPT) is a command line tool that facilitates re-segmenting full MERSCOPE output datasets with 
 customized segmentation parameters. To install VPT, follow the instructions at :ref:`Installation`. This workflow requires 
 ``vpt >= 1.2.0``. If you don’t have the latest version if VPT, it should be upgraded to the latest version using the command:
 

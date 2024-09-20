@@ -1,10 +1,10 @@
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 
 from vpt_core.segmentation.fuse import PolygonParams
 from vpt_core.segmentation.segmentation_item import SegmentationItem, intersection
 
 from vpt.entity import Strategy
-from vpt.entity.resolver_base import ResolverBase, RelatedSegmentationResults, ChildInfo
+from vpt.entity.resolver_base import ChildInfo, RelatedSegmentationResults, ResolverBase
 
 
 class ParentMustCoverChild(ResolverBase):
