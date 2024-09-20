@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 from vpt_core import log
 from vpt_core.io.vzgfs import Protocol, filesystem_for_protocol, io_with_retries, protocol_path_split
-from vpt_segmentation_packing import assemble_vzg2, pack_cells, preprocess_cells
-from vpt_segmentation_packing.data import Feature
+from vzg2_segmentation_packing import assemble_vzg2, pack_cells, preprocess_cells
+from vzg2_segmentation_packing.data import Feature
 
 from vpt.app.context import current_context, parallel_run
 from vpt.app.task import Task
