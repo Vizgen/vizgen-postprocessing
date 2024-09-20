@@ -9,7 +9,7 @@ import pytest
 from shapely import geometry
 from shapely.geometry import Polygon
 from vpt_core.io.output_tools import save_geodataframe
-from vpt_core.io.vzgfs import initialize_filesystem, vzg_open, retrying_attempts, io_with_retries
+from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries, retrying_attempts, vzg_open
 from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt_core.utils.copy_utils import _copy_between_filesystems
 

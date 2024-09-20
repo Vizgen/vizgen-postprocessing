@@ -9,9 +9,9 @@ from vpt_core.segmentation.seg_result import SegmentationResult
 
 from vpt.entity.relationships import create_entity_relationships
 from vpt.run_segmentation_on_tile.cmd_args import RunOnTileCmdArgs, parse_cmd_args, validate_cmd_args
-from vpt.utils.seg_spec_utils import SegSpec, read_seg_spec, validate_seg_spec
 from vpt.run_segmentation_on_tile.output_utils import save_to_parquet
 from vpt.segmentation.segmentations_factory import get_seg_implementation
+from vpt.utils.seg_spec_utils import SegSpec, read_seg_spec, validate_seg_spec
 
 
 def get_tile_segmentation(seg_spec: SegSpec, window_info: Tuple[int, int, int, int]):

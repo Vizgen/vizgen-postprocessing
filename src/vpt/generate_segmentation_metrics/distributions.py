@@ -4,13 +4,24 @@ from typing import Any, Dict, List
 import numpy as np
 import plotly.express as px
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+from vpt_core import log
+
 from vpt.generate_segmentation_metrics.distributions_utils import (
+    compute_range,
     convert_args,
     crop_segmentation,
     make_dotplot,
     plot_to_base64,
 )
-from vpt.generate_segmentation_metrics.metrics_settings import FACTOR, SIZE_X, SIZE_Y
+from vpt.generate_segmentation_metrics.metrics_settings import (
+    FACTOR,
+    MATPLOTLIB_CMAP,
+    MAX_ROWS,
+    PLOTLY_PALETTE,
+    SIZE_X,
+    SIZE_Y,
+)
 from vpt.utils.process_patch import process_patch
 
 
@@ -26,14 +37,24 @@ class Distributions:
         self.gdf = distribution_inputs["cell_polys"]
         self.image_reader = distribution_inputs.get("image_reader")
 
+        self.sampled_indices = self.adata.obs.index
+        self.sampled_rows = np.arange(self.adata.n_obs)
+        if self.adata.n_obs > MAX_ROWS:
+            self.sampled_indices = self.adata.obs.sample(MAX_ROWS).index
+            self.sampled_rows = np.array([self.adata.obs.index.get_loc(idx) for idx in self.sampled_indices])
+        self.adata.uns["log1p"]["base"] = None
+
         self.distributions: Dict[str, Any] = {}
         self.preview_locations: List[List] = []
 
         self.marker_size = 1.0
-        if self.cell_by_gene.shape[0] > 5e5:
-            self.marker_size = 0.05
-        if self.cell_by_gene.shape[0] < 1e5:
-            self.marker_size = round(np.linspace(3, 1, num=int(1e5))[self.cell_by_gene.shape[0]], 2)
+        if len(self.sampled_rows) >= 5e5:
+            self.marker_size = 0.1
+        if len(self.sampled_rows) < 1e5:
+            self.marker_size = round(np.linspace(3, 1, num=int(1e5))[len(self.sampled_rows)], 2)
+
+        self.plotly_palette = distribution_inputs.get("plotly_palette", PLOTLY_PALETTE)
+        self.matplotlib_cmap = distribution_inputs.get("matplotlib_cmap", MATPLOTLIB_CMAP)
 
         self.font = "Gill Sans, sans-serif"
         self.leiden_res = [item for item in self.adata.obs.columns if item.startswith("leiden")][0]
@@ -49,6 +70,10 @@ class Distributions:
             self.y_factor = data_range_y / data_range_x
 
     def make_distributions(self) -> Dict:
+        _ = self.make_dotplot_fig()
+        if self.adata.n_obs > MAX_ROWS:
+            self.adata = self.adata[self.sampled_rows]
+        self.sampled_indices = self.sampled_indices.astype("int64")
         _ = self.make_seg_previews()
         _ = self.make_seg_preview_locs()
         _ = self.make_cc_cv()
@@ -59,11 +84,11 @@ class Distributions:
         _ = self.make_umap_cluster()
         _ = self.make_umap_tpc()
         _ = self.make_umap_unique_tpc()
+        _ = self.make_interactive_clusters()
         _ = self.make_cv_hist()
         _ = self.make_tpc_hist()
         _ = self.make_tpc_cv()
         _ = self.make_unique_tpc_hist()
-        _ = self.make_dotplot_fig()
         _ = self.make_top_20_genes()
         _ = self.make_bottom_20_genes()
 
@@ -74,6 +99,8 @@ class Distributions:
         retries = 100
         for n in range(3):
             for r in range(retries):
+                seg_image = np.zeros((100, 100))
+
                 size_x = min(SIZE_X, self.cell_metadata["center_x"].max() - self.cell_metadata["center_x"].min() - 1e-5)
                 size_y = min(SIZE_Y, self.cell_metadata["center_y"].max() - self.cell_metadata["center_y"].min() - 1e-5)
 
@@ -88,10 +115,15 @@ class Distributions:
                 extract_args_converted = convert_args(self.extract_args, center_x, center_y, size_x, size_y)
                 patch_args = [self.image_reader] if self.image_reader is not None else []
                 try:
-                    seg_image = process_patch(extract_args_converted, *patch_args)
+                    if len(self.cell_metadata) == 0:
+                        seg_image = np.zeros((100, 100))
+                        seg_polys = self.gdf
+                        self.cell_by_gene_filtered.loc[0] = [1] * len(self.cell_by_gene_filtered.columns)
+                    else:
+                        seg_image = process_patch(extract_args_converted, *patch_args)
+                        seg_polys = crop_segmentation(extract_args_converted, self.gdf)
                 except ValueError:
                     continue
-                seg_polys = crop_segmentation(extract_args_converted, self.gdf)
 
                 tpc_sample = self.cell_by_gene_filtered.loc[
                     self.cell_by_gene_filtered.index.isin(seg_polys["EntityID"].unique())
@@ -151,6 +183,7 @@ class Distributions:
             self.distributions[
                 f"plot_header{n+1}"
             ] = f"Segmentation Preview {n+1}:<br>Center=({center_x:.2f}, {center_y:.2f})"
+
         return seg_figs
 
     def make_seg_preview_locs(self):
@@ -202,7 +235,7 @@ class Distributions:
     def make_cv_hist(self):
         cv = go.Figure()
         cv_trace = go.Histogram(
-            x=self.cell_metadata["volume"] + 1, marker=dict(color="#1f77b4"), name="All cells", nbinsx=100
+            x=self.cell_metadata["volume"] + 1, marker=dict(color=self.plotly_palette[0]), name="All cells", nbinsx=100
         )
         cv.add_trace(cv_trace)
         cv.update_xaxes(title_text="Volume (\u00b5m<sup>3</sup>)")
@@ -235,7 +268,10 @@ class Distributions:
             showarrow=False,
         )
         trace2 = go.Histogram(
-            x=self.cell_metadata_filtered["volume"] + 1, marker=dict(color="#ff7f0e"), name="Filtered cells", nbinsx=100
+            x=self.cell_metadata_filtered["volume"] + 1,
+            marker=dict(color=self.plotly_palette[1]),
+            name="Filtered cells",
+            nbinsx=100,
         )
         cv.add_trace(trace2)
         self.distributions["plot_div4"] = cv
@@ -245,7 +281,7 @@ class Distributions:
     def make_tpc_hist(self):
         tpc = go.Figure()
         trace = go.Histogram(
-            x=self.cell_by_gene.sum(axis=1), marker=dict(color="#1f77b4"), name="All cells", nbinsx=100
+            x=self.cell_by_gene.sum(axis=1), marker=dict(color=self.plotly_palette[0]), name="All cells", nbinsx=100
         )
         tpc.add_trace(trace)
         tpc.update_xaxes(title_text="Transcripts per cell")
@@ -279,7 +315,7 @@ class Distributions:
         )
         trace2 = go.Histogram(
             x=self.cell_by_gene_filtered.sum(axis=1) + 1,
-            marker=dict(color="#ff7f0e"),
+            marker=dict(color=self.plotly_palette[1]),
             name="Filtered cells",
             nbinsx=100,
         )
@@ -291,7 +327,10 @@ class Distributions:
     def make_unique_tpc_hist(self):
         unique_tpc = go.Figure()
         trace = go.Histogram(
-            x=np.count_nonzero(self.cell_by_gene, axis=1), marker=dict(color="#1f77b4"), name="All cells", nbinsx=100
+            x=np.count_nonzero(self.cell_by_gene, axis=1),
+            marker=dict(color=self.plotly_palette[0]),
+            name="All cells",
+            nbinsx=100,
         )
         unique_tpc.add_trace(trace)
         unique_tpc.update_xaxes(title_text="Unique genes per cell")
@@ -309,7 +348,7 @@ class Distributions:
         )
         trace2 = go.Histogram(
             x=np.count_nonzero(self.cell_by_gene_filtered, axis=1),
-            marker=dict(color="#ff7f0e"),
+            marker=dict(color=self.plotly_palette[1]),
             name="Filtered cells",
             nbinsx=100,
         )
@@ -321,10 +360,10 @@ class Distributions:
     def make_tpc_cv(self):
         tpc_cv = go.Figure()
         tpc_cv_trace = go.Scatter(
-            x=self.cell_metadata["volume"],
-            y=self.cell_by_gene.sum(axis=1),
+            x=self.cell_metadata.loc[self.sampled_indices]["volume"],
+            y=self.cell_by_gene.loc[self.sampled_indices].sum(axis=1),
             mode="markers",
-            marker=dict(size=self.marker_size, color="#1f77b4"),
+            marker=dict(size=self.marker_size, color=self.plotly_palette[0]),
             name="All cells",
         )
         tpc_cv.add_trace(tpc_cv_trace)
@@ -346,12 +385,12 @@ class Distributions:
 
     def make_cc_cv(self):
         cc_cv_trace = go.Scattergl(
-            x=self.cell_metadata["center_x"],
-            y=self.cell_metadata["center_y"],
+            x=self.cell_metadata.loc[self.sampled_indices]["center_x"],
+            y=self.cell_metadata.loc[self.sampled_indices]["center_y"],
             mode="markers",
             marker=dict(
                 size=self.marker_size,
-                color=np.log10(self.cell_metadata["volume"] + 1),
+                color=np.log10(self.cell_metadata.loc[self.sampled_indices]["volume"] + 1),
                 colorscale="Viridis",
                 colorbar=dict(
                     title="Cell volume (log<sub>10</sub> \u00b5m<sup>3</sup>)",
@@ -376,12 +415,12 @@ class Distributions:
 
     def make_cc_tpc(self):
         cc_tpc_trace = go.Scattergl(
-            x=self.cell_metadata["center_x"],
-            y=self.cell_metadata["center_y"],
+            x=self.cell_metadata.loc[self.sampled_indices]["center_x"],
+            y=self.cell_metadata.loc[self.sampled_indices]["center_y"],
             mode="markers",
             marker=dict(
                 size=self.marker_size,
-                color=np.log10(self.cell_by_gene.sum(axis=1).to_numpy() + 1),
+                color=np.log10(self.cell_by_gene.loc[self.sampled_indices].sum(axis=1).to_numpy() + 1),
                 colorscale="Viridis",
                 colorbar=dict(title="Transcript count (log<sub>10</sub>)", title_side="right", len=1.0, thickness=15),
             ),
@@ -401,14 +440,19 @@ class Distributions:
 
     def make_cc_unique_tpc(self):
         cc_unique_tpc_trace = go.Scattergl(
-            x=self.cell_metadata["center_x"],
-            y=self.cell_metadata["center_y"],
+            x=self.cell_metadata.loc[self.sampled_indices]["center_x"],
+            y=self.cell_metadata.loc[self.sampled_indices]["center_y"],
             mode="markers",
             marker=dict(
                 size=self.marker_size,
-                color=np.log10(np.count_nonzero(self.cell_by_gene, axis=1) + 1),
+                color=np.log10(np.count_nonzero(self.cell_by_gene.loc[self.sampled_indices], axis=1) + 1),
                 colorscale="Viridis",
-                colorbar=dict(title="Unique genes count (log<sub>10</sub>)", title_side="right", len=1.0, thickness=15),
+                colorbar=dict(
+                    title="Unique genes count (log<sub>10</sub>)",
+                    title_side="right",
+                    len=1.0,
+                    thickness=15,
+                ),
             ),
         )
         layout = go.Layout(
@@ -424,13 +468,21 @@ class Distributions:
         self.distributions["plot_header10"] = "Cell Centers Colored by Unique Gene Count"
         return cc_unique_tpc
 
-    def make_cc_cluster(self):
-        cc_cluster = px.scatter(
-            x=self.adata.obs["center_x"],
-            y=self.adata.obs["center_y"],
-            color=self.adata.obs[self.leiden_res],
-            render_mode="webgl",
-        )
+    def _make_cc_cluster(self):
+        try:
+            cc_cluster = px.scatter(
+                x=self.adata.obs["center_x"],
+                y=self.adata.obs["center_y"],
+                color=self.adata.obs[self.leiden_res],
+                render_mode="webgl",
+                category_orders={"color": sorted(self.adata.obs[self.leiden_res].unique())},
+            )
+        except ValueError:
+            cc_cluster = px.scatter()
+            log.warning("Could not generate scatterplot colored by cluster")
+
+        cc_cluster.update_xaxes(range=compute_range(self.adata.obs["center_x"]))
+        cc_cluster.update_yaxes(range=compute_range(self.adata.obs["center_y"])[::-1])
         cc_cluster.update_traces(marker_size=self.marker_size)
         cc_cluster.update_coloraxes(colorbar_title="Cluster")
         cc_cluster.update_layout(
@@ -438,7 +490,6 @@ class Distributions:
             yaxis_title_text="Y (\u00b5m)",
             width=296,
             height=258,
-            yaxis=dict(autorange="reversed"),
             margin={"l": 20, "r": 20, "t": 20, "b": 20},
             font={"family": f"{self.font}", "size": 10},
             legend=dict(
@@ -446,18 +497,28 @@ class Distributions:
                 orientation="v",
             ),
         )
+
+        return cc_cluster
+
+    def make_cc_cluster(self):
+        cc_cluster = self._make_cc_cluster()
         self.distributions["plot_div11"] = cc_cluster
         self.distributions["plot_header11"] = "Cell Centers Colored by Cell Cluster"
         return cc_cluster
 
     def make_umap_cv(self):
-        umap1 = px.scatter(
-            x=self.adata.obsm["X_umap"][:, 0],
-            y=self.adata.obsm["X_umap"][:, 1],
-            color=np.log10(self.adata.obs["volume"] + 1),
-            color_continuous_scale="Viridis",
-            render_mode="webgl",
-        )
+        try:
+            umap1 = px.scatter(
+                x=self.adata.obsm["X_umap"][:, 0],
+                y=self.adata.obsm["X_umap"][:, 1],
+                color=np.log10(self.adata.obs["volume"] + 1),
+                color_continuous_scale="Viridis",
+                render_mode="webgl",
+            )
+        except ValueError:
+            log.warning("Could not generate scatterplot of UMAP colored by volume")
+            umap1 = px.scatter()
+
         umap1.update_traces(marker_size=self.marker_size)
         umap1.update_xaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
         umap1.update_yaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
@@ -474,13 +535,21 @@ class Distributions:
         return umap1
 
     def make_umap_tpc(self):
-        umap2 = px.scatter(
-            x=self.adata.obsm["X_umap"][:, 0],
-            y=self.adata.obsm["X_umap"][:, 1],
-            color=np.log10(self.cell_by_gene_filtered.sum(axis=1).to_numpy()),
-            color_continuous_scale="Viridis",
-            render_mode="webgl",
-        )
+        try:
+            cells_in_umap_and_expr = self.sampled_indices[
+                [x in self.cell_by_gene_filtered.index for x in self.sampled_indices]
+            ]
+            umap2 = px.scatter(
+                x=self.adata.obsm["X_umap"][:, 0],
+                y=self.adata.obsm["X_umap"][:, 1],
+                color=np.log10(self.cell_by_gene_filtered.loc[cells_in_umap_and_expr].sum(axis=1).to_numpy()),
+                color_continuous_scale="Viridis",
+                render_mode="webgl",
+            )
+        except (ValueError, KeyError):
+            log.warning("Could not generate scatterplot of UMAP colored by transcript count")
+            umap2 = px.scatter()
+
         umap2.update_traces(marker_size=self.marker_size)
         umap2.update_xaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
         umap2.update_yaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
@@ -497,12 +566,26 @@ class Distributions:
         return umap2
 
     def make_umap_unique_tpc(self):
-        umap3 = px.scatter(
-            x=self.adata.obsm["X_umap"][:, 0],
-            y=self.adata.obsm["X_umap"][:, 1],
-            color=np.log10(np.count_nonzero(self.cell_by_gene_filtered, axis=1) + 1),
-            color_continuous_scale="Viridis",
-        )
+        try:
+            cells_in_umap_and_expr = self.sampled_indices[
+                [x in self.cell_by_gene_filtered.index for x in self.sampled_indices]
+            ]
+            umap3 = px.scatter(
+                x=self.adata.obsm["X_umap"][:, 0],
+                y=self.adata.obsm["X_umap"][:, 1],
+                color=np.log10(
+                    np.count_nonzero(
+                        self.cell_by_gene_filtered.loc[cells_in_umap_and_expr],
+                        axis=1,
+                    )
+                    + 1
+                ),
+                color_continuous_scale="Viridis",
+            )
+        except (ValueError, KeyError):
+            log.warning("Could not generate scatterplot of UMAP colored by unique gene count")
+            umap3 = px.scatter()
+
         umap3.update_traces(marker_size=self.marker_size)
         umap3.update_xaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
         umap3.update_yaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
@@ -518,16 +601,27 @@ class Distributions:
         self.distributions["plot_header14"] = "UMAP Colored by Unique Gene Count"
         return umap3
 
-    def make_umap_cluster(self):
-        umap4 = px.scatter(
-            x=self.adata.obsm["X_umap"][:, 0],
-            y=self.adata.obsm["X_umap"][:, 1],
-            color=self.adata.obs[self.leiden_res],
-            render_mode="webgl",
-        )
+    def _make_umap_cluster(self):
+        try:
+            x_range = compute_range(self.adata.obsm["X_umap"][:, 0])
+            y_range = compute_range(self.adata.obsm["X_umap"][:, 1])
+
+            umap4 = px.scatter(
+                x=self.adata.obsm["X_umap"][:, 0],
+                y=self.adata.obsm["X_umap"][:, 1],
+                color=self.adata.obs[self.leiden_res],
+                render_mode="webgl",
+                category_orders={"color": sorted(self.adata.obs[self.leiden_res].unique())},
+            )
+        except ValueError:
+            log.warning("Could not generate scatterplot of UMAP colored by cell cluster")
+            umap4 = px.scatter()
+            x_range = (0, 1)
+            y_range = (0, 1)
+
         umap4.update_traces(marker_size=self.marker_size)
-        umap4.update_xaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
-        umap4.update_yaxes(title_text="", tickvals=[], ticktext=[], showgrid=False)
+        umap4.update_xaxes(title_text="", tickvals=[], ticktext=[], range=x_range, showgrid=False)
+        umap4.update_yaxes(title_text="", tickvals=[], ticktext=[], range=y_range, showgrid=False)
         umap4.update_coloraxes(colorbar_title="Cluster")
         umap4.update_layout(
             width=296,
@@ -539,12 +633,44 @@ class Distributions:
                 orientation="v",
             ),
         )
+        return umap4
+
+    def make_umap_cluster(self):
+        umap4 = self._make_umap_cluster()
         self.distributions["plot_div15"] = umap4
         self.distributions["plot_header15"] = "UMAP Colored by Cell Cluster"
         return umap4
 
+    def make_interactive_clusters(self):
+        cc = self._make_cc_cluster()
+
+        umap = self._make_umap_cluster()
+        umap.update_traces(showlegend=False)
+
+        fig = make_subplots(
+            rows=1,
+            cols=2,
+            subplot_titles=("<b>Spatial</b>", "<b>UMAP</b>"),
+        )
+        fig.update_layout(width=1320, height=575, margin=dict(t=30, r=70), legend_title="Cell cluster")
+
+        fig.add_traces(list(cc.data), 1, 1)
+        fig.add_traces(list(umap.data), 1, 2)
+
+        fig.update_xaxes({k: v for k, v in cc.layout.xaxis.to_plotly_json().items() if k != "domain"}, row=1, col=1)
+        fig.update_yaxes({k: v for k, v in cc.layout.yaxis.to_plotly_json().items() if k != "domain"}, row=1, col=1)
+
+        fig.update_xaxes({k: v for k, v in umap.layout.xaxis.to_plotly_json().items() if k != "domain"}, row=1, col=2)
+        fig.update_yaxes({k: v for k, v in umap.layout.yaxis.to_plotly_json().items() if k != "domain"}, row=1, col=2)
+
+        # update styles of subplot titles
+        fig.update_annotations(font=dict(family=self.font, size=20))
+
+        self.distributions["plot_div21"] = fig
+        return fig
+
     def make_dotplot_fig(self):
-        dotplot = make_dotplot(self.adata)
+        dotplot = make_dotplot(self.adata, self.matplotlib_cmap)
         self.distributions["plot_div16"] = plot_to_base64(dotplot)
         self.distributions["plot_header16"] = "Gene Expression by Cluster"
         return dotplot
@@ -552,6 +678,7 @@ class Distributions:
     def make_top_20_genes(self):
         gene_counts = self.detected_transcripts["gene"].value_counts()
         gene_partition_all = self.cell_by_gene.sum().reindex(gene_counts.index) / gene_counts
+        gene_partition_all = gene_partition_all[~gene_partition_all.index.str.contains("Blank")]
         gene_partition_all = gene_partition_all.sort_values(ascending=False)
         top_20_genes_all = gene_partition_all.head(20)
 
@@ -559,12 +686,15 @@ class Distributions:
         top_20_genes_filtered = gene_partition.loc[top_20_genes_all.index]
 
         top_20 = go.Bar(
-            x=top_20_genes_all.index, y=top_20_genes_all.values, marker=dict(color="#1f77b4"), name="All cells"
+            x=top_20_genes_all.index,
+            y=top_20_genes_all.values,
+            marker=dict(color=self.plotly_palette[0]),
+            name="All cells",
         )
         top_20_filtered = go.Bar(
             x=top_20_genes_filtered.index,
             y=top_20_genes_filtered.values,
-            marker=dict(color="#ff7f0e"),
+            marker=dict(color=self.plotly_palette[1]),
             name="Filtered cells",
         )
         layout = go.Layout(
@@ -589,6 +719,7 @@ class Distributions:
     def make_bottom_20_genes(self):
         gene_counts = self.detected_transcripts["gene"].value_counts()
         gene_partition_all = self.cell_by_gene.sum().reindex(gene_counts.index) / gene_counts
+        gene_partition_all = gene_partition_all[~gene_partition_all.index.str.contains("Blank")]
         gene_partition_all = gene_partition_all.sort_values(ascending=False)
         bottom_20_genes_all = gene_partition_all.tail(20)
 
@@ -596,12 +727,15 @@ class Distributions:
         bottom_20_genes_filtered = gene_partition.loc[bottom_20_genes_all.index]
 
         bottom_20 = go.Bar(
-            x=bottom_20_genes_all.index, y=bottom_20_genes_all.values, marker=dict(color="#1f77b4"), name="All cells"
+            x=bottom_20_genes_all.index,
+            y=bottom_20_genes_all.values,
+            marker=dict(color=self.plotly_palette[0]),
+            name="All cells",
         )
         bottom_20_filtered = go.Bar(
             x=bottom_20_genes_filtered.index,
             y=bottom_20_genes_filtered.values,
-            marker=dict(color="#ff7f0e"),
+            marker=dict(color=self.plotly_palette[1]),
             name="Filtered cells",
         )
         layout = go.Layout(

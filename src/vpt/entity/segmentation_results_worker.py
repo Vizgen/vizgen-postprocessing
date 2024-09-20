@@ -1,11 +1,10 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from geopandas import GeoDataFrame
-
 from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt_core.segmentation.segmentation_item import SegmentationItem
 
-from vpt.entity.resolver_base import StorageWorkerBase, RelatedSegmentationResults
+from vpt.entity.resolver_base import RelatedSegmentationResults, StorageWorkerBase
 
 
 class SegmentationResultsWorker(StorageWorkerBase):

@@ -1,9 +1,9 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from vpt_core.segmentation.segmentation_item import SegmentationItem
 
-from vpt.entity.resolver_base import ResolverBase, RelatedSegmentationResults, ChildInfo
 from vpt.entity import Strategy
+from vpt.entity.resolver_base import ChildInfo, RelatedSegmentationResults, ResolverBase
 
 
 class MinimumChildCount(ResolverBase):

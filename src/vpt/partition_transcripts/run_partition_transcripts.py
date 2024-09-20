@@ -1,13 +1,12 @@
 import argparse
 import warnings
 
-import pandas as pd
 from vpt_core import log
 from vpt_core.io.output_tools import make_parent_dirs
-from vpt_core.io.vzgfs import vzg_open, retrying_attempts, io_with_retries
+from vpt_core.io.vzgfs import io_with_retries, retrying_attempts
 
-from vpt.partition_transcripts.cell_x_gene import cell_by_gene_matrix
-from vpt.partition_transcripts.cmd_args import validate_args, PartitionTranscriptsArgs
+from vpt.partition_transcripts.cell_x_gene import cell_by_gene_matrix, get_chunks
+from vpt.partition_transcripts.cmd_args import PartitionTranscriptsArgs, validate_args
 from vpt.utils.boundaries import Boundaries
 from vpt.utils.cellsreader import CellsReader, cell_reader_factory
 
@@ -23,8 +22,8 @@ def main_partition_transcripts(args: argparse.Namespace) -> None:
     bnds = Boundaries(cellsReader)
 
     for attempt in retrying_attempts():
-        with attempt, vzg_open(args.input_transcripts, "r") as f:
-            chunks = pd.read_csv(f, chunksize=args.chunk_size)
+        with attempt:
+            chunks = get_chunks(args.input_transcripts, args.chunk_size)
             if args.output_transcripts:
                 make_parent_dirs(args.output_transcripts)
 

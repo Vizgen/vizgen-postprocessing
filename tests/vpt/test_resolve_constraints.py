@@ -1,12 +1,12 @@
 from typing import List
 
 import pytest
+from vpt_core.segmentation.seg_result import SegmentationResult
+from vpt_core.utils.base_case import BaseCase
+from vpt_core.utils.segmentation_utils import Rect, Square, assert_seg_equals, from_shapes, from_shapes_3d
 
 from vpt.entity import Constraint, Strategy
 from vpt.entity.relationships import resolve_constraint
-from vpt_core.segmentation.seg_result import SegmentationResult
-from vpt_core.utils.base_case import BaseCase
-from vpt_core.utils.segmentation_utils import assert_seg_equals, from_shapes, Square, Rect, from_shapes_3d
 
 
 def x_bounded_rect(x_start, x_width):

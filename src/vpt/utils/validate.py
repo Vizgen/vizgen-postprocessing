@@ -2,8 +2,9 @@ import os
 from distutils.util import strtobool
 from typing import List
 
-from vpt import IS_VPT_EXPERIMENTAL_VAR
 from vpt_core.io.vzgfs import filesystem_path_split
+
+from vpt import IS_VPT_EXPERIMENTAL_VAR
 
 
 def validate_experimental():

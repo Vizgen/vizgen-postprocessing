@@ -2,22 +2,21 @@ import argparse
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 import geopandas as gpd
 import numpy as np
 import pytest
 from shapely.geometry import MultiPolygon
-
-from vpt.entity.relationships import EntityRelationships
-from vpt.run_segmentation_on_tile.output_utils import make_entity_output_filename
 from vpt_core.io.input_tools import read_parquet
 from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt_core.utils.base_case import BaseCase
-from vpt_core.utils.segmentation_utils import assert_df_equals, Square, Rect
+from vpt_core.utils.segmentation_utils import Rect, Square, assert_df_equals
 
 from tests.vpt import OUTPUT_FOLDER
 from vpt.compile_tile_segmentation import run as run_compile_tile_segmentation
+from vpt.entity.relationships import EntityRelationships
+from vpt.run_segmentation_on_tile.output_utils import make_entity_output_filename
 
 DATA_PATH = OUTPUT_FOLDER / "compile_tile_segmentation/"
 

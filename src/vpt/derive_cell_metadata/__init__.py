@@ -1,4 +1,5 @@
 import argparse
+
 import vpt.derive_cell_metadata.cmd_args as cmd_args
 
 get_parser = cmd_args.get_parser

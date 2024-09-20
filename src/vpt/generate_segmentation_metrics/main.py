@@ -1,6 +1,9 @@
 import argparse
 import warnings
 
+from vpt_core import log
+from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
+
 from vpt.generate_segmentation_metrics.cluster_data import cluster_data
 from vpt.generate_segmentation_metrics.cmd_args import GenerateSegMetricsArgs, get_parser, validate_args
 from vpt.generate_segmentation_metrics.compute_metrics import (
@@ -10,11 +13,10 @@ from vpt.generate_segmentation_metrics.compute_metrics import (
     make_report,
 )
 from vpt.generate_segmentation_metrics.distributions import Distributions
-from vpt.generate_segmentation_metrics.output_tools import make_parent_folder
+from vpt.generate_segmentation_metrics.distributions_utils import make_empty_anndata
 from vpt.generate_segmentation_metrics.metrics_settings import METRICS_CSV_OUTPUT_MAPPER
+from vpt.generate_segmentation_metrics.output_tools import make_parent_folder
 from vpt.utils.process_patch import make_html
-from vpt_core import log
-from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
 
 warnings.filterwarnings("ignore")
 
@@ -33,11 +35,18 @@ def generate_segmentation_metrics(args: argparse.Namespace):
     )
 
     if extract_args.output_clustering or extract_args.output_report:
+        if len(distribution_inputs["cell_metadata"]) == 0:
+            raise ValueError("There are no entities to cluster. Check the cell metadata and cell by gene csv files.")
         log.info("Cell clustering started")
-        cluster_ann = cluster_data(
-            distribution_inputs["cell_by_gene_filtered"],
-            distribution_inputs["cell_metadata_filtered"],
-        )
+        try:
+            cluster_ann = cluster_data(
+                distribution_inputs["cell_by_gene_filtered"],
+                distribution_inputs["cell_metadata_filtered"],
+            )
+        except ValueError:
+            cluster_ann = make_empty_anndata(len(distribution_inputs["cell_metadata_filtered"]))
+            cluster_ann.obs.index = distribution_inputs["cell_metadata_filtered"].index
+
         log.info("Cell clustering finished")
 
     if extract_args.output_report:

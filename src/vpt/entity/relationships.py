@@ -1,16 +1,16 @@
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
-
-from vpt.entity import Constraint, constraint_from_dict, Strategy
-from vpt.entity.factory import get_constraint_resolver
-from vpt.entity.resolver_base import ChildInfo
-from vpt.entity.segmentation_results_worker import create_segmentation_results_relation
 from vpt_core import log
 from vpt_core.segmentation.fuse import PolygonParams
 from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt_core.segmentation.segmentation_item import SegmentationItem
+
+from vpt.entity import Constraint, Strategy, constraint_from_dict
+from vpt.entity.factory import get_constraint_resolver
+from vpt.entity.resolver_base import ChildInfo
+from vpt.entity.segmentation_results_worker import create_segmentation_results_relation
 
 
 @dataclass(frozen=True)

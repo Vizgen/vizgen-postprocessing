@@ -1,12 +1,68 @@
-from typing import Optional, List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as pq
 import shapely
 from shapely import Polygon
-from vpt_core.io.vzgfs import io_with_retries
+from vpt_core.io.vzgfs import get_storage_options, retrying_attempts, vzg_open
 
 from vpt.utils.boundaries import Boundaries
+
+ROW_GROUP_SIZE = 10_000_000  # about 1 GB in memory
+
+
+def read_parquet_chunked(f, chunksize: int):
+    file = pq.ParquetFile(f)
+
+    if file.metadata.num_rows == 0:
+        yield file.read().to_pandas()
+        return
+
+    for chunk in file.iter_batches(chunksize):
+        temp = chunk.to_pandas()
+        if "" in temp.columns:
+            yield temp.rename(columns={"": "Unnamed: 0"})
+        else:
+            yield temp.reset_index().rename(columns={"index": "Unnamed: 0"})
+
+
+def get_chunks(input_transcripts: str, chunk_size: int):
+    if input_transcripts.endswith(".csv"):
+        with vzg_open(input_transcripts, "r") as f:
+            yield from pd.read_csv(f, chunksize=chunk_size)
+    elif input_transcripts.endswith(".parquet"):
+        with vzg_open(input_transcripts, "rb") as f:
+            yield from read_parquet_chunked(f, chunksize=chunk_size)
+    else:
+        raise NotImplementedError()
+
+
+def write_detected_transcripts(transcripts_df: pd.DataFrame, output_path: str, append: bool = False) -> None:
+    storage_options = get_storage_options(output_path)
+
+    for attempt in retrying_attempts():
+        with attempt:
+            if output_path.endswith(".csv"):
+                transcripts_df.to_csv(
+                    output_path,
+                    index=False,
+                    header=not append,
+                    mode="a" if append else "w",
+                    storage_options=storage_options,
+                )
+            elif output_path.endswith(".parquet"):
+                transcripts_df.to_parquet(
+                    output_path,
+                    engine="fastparquet",
+                    index=False,
+                    append=append,
+                    compression="zstd",
+                    row_group_offsets=ROW_GROUP_SIZE,
+                    storage_options=storage_options,
+                )
+            else:
+                raise NotImplementedError()
 
 
 def process_chunk(chunk_df, shapely_list, z_planes_count, cell_id_list, needs_new_dt: bool = False):
@@ -86,15 +142,11 @@ def construct_cell_x_gene(
         transcripts_df = transcripts_df.rename(columns={transcripts_df.columns[0]: ""})
 
         if first_chunk:
-            io_with_retries(
-                output_transcripts, "w", lambda f: transcripts_df.to_csv(f, mode="w", index=False, header=True)
-            )
+            write_detected_transcripts(transcripts_df, output_transcripts, append=False)
             first_chunk = False
             continue
 
-        io_with_retries(
-            output_transcripts, "a", lambda f: transcripts_df.to_csv(f, mode="a", index=False, header=False)
-        )
+        write_detected_transcripts(transcripts_df, output_transcripts, append=True)
 
     cell_by_gene.set_index("cell", inplace=True, drop=True)
     cell_by_gene.index = cell_by_gene.index.astype(np.int64)

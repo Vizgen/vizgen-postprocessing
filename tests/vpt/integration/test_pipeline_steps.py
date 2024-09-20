@@ -3,13 +3,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
+from vpt_core.io.input_tools import read_parquet
+from vpt_core.segmentation.seg_result import SegmentationResult
 
 from tests.vpt import IMAGES_ROOT, OUTPUT_FOLDER
 from tests.vpt.integration import DATA_ROOT as TEST_DATA_ROOT
 from vpt.cmd_args import get_postprocess_parser as get_parser
 from vpt.vizgen_postprocess import main as vpt_run
-from vpt_core.io.input_tools import read_parquet
-from vpt_core.segmentation.seg_result import SegmentationResult
 
 
 @pytest.fixture

@@ -1,12 +1,11 @@
 import json
 import warnings
-from typing import Callable, Tuple, Set, List, Optional, Dict
+from typing import Callable, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import pandas as pd
 from geopandas import GeoDataFrame
 from pandas import Series
-
 from vpt_core import log
 from vpt_core.io.input_tools import read_parquet
 from vpt_core.io.output_tools import save_segmentation_results
@@ -15,8 +14,8 @@ from vpt_core.segmentation.fuse import PolygonParams
 from vpt_core.segmentation.seg_result import SegmentationResult
 
 from vpt.compile_tile_segmentation.cmd_args import CompileTileSegmentationArgs, parse_cmd_args, validate_cmd_args
-from vpt.compile_tile_segmentation.parameters import IOPaths, extract_parameters_from_spec, CompileParameters
-from vpt.entity.relationships import create_entity_relationships, EntityRelationships
+from vpt.compile_tile_segmentation.parameters import CompileParameters, IOPaths, extract_parameters_from_spec
+from vpt.entity.relationships import EntityRelationships, create_entity_relationships
 from vpt.run_segmentation_on_tile.output_utils import make_entity_output_filename
 from vpt.utils.validate import validate_does_not_exist, validate_experimental
 

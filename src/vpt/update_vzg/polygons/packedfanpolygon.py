@@ -3,7 +3,7 @@ from typing import List, Tuple
 import numpy as np
 from vpt_core import log
 
-from vpt.update_vzg.byte_utils import extend_with_u32, extend_with_f32
+from vpt.update_vzg.byte_utils import extend_with_f32, extend_with_u32
 from vpt.update_vzg.polygons.packedpolygon import PackedPolygon
 from vpt.update_vzg.polygons.polystructers import IndexedPolygon
 

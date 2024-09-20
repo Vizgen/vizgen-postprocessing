@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 import tifffile
 from shapely.geometry import MultiPolygon
-from vpt_core.io.vzgfs import initialize_filesystem, vzg_open, retrying_attempts, io_with_retries
+from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries, retrying_attempts, vzg_open
 from vpt_core.utils.base_case import BaseCase
 
 from tests.vpt.temp_dir import LocalTempDir, TempDir
@@ -111,6 +111,39 @@ SUM_SIGNALS_TEST_SCHEMES = [
             {"c1_raw": [21**2 * 2, 0], "c1_high_pass": [0, 0]}, dtype=np.float64, index=[10439330, 10439331]
         ),
         workers=4,
+        temp_dir=LocalTempDir(),
+    ),
+    SumSignalsCaseScheme(
+        "z_layers",
+        [
+            (np.ones((100, 100)), "ex_COL_gene", 1),
+            (np.ones((100, 100)), "ex_COL_gene", 2),
+            (np.zeros((100, 100)), "ex_COL_gene", 3),
+        ],
+        gpd.GeoDataFrame(
+            {
+                "ID": range(3),
+                "EntityID": [10439330, 10439330, 10439331],
+                "Name": np.nan,
+                "Type": ["cell"] * 3,
+                "ParentID": np.nan,
+                "ParentType": np.nan,
+                "ZLevel": range(3),
+                "ZIndex": range(1, 4),
+                "Geometry": [
+                    MultiPolygon([([(40, 40), (60, 40), (60, 60), (40, 60)], [])]),
+                    MultiPolygon([([(40, 40), (60, 40), (60, 60), (40, 60)], [])]),
+                    MultiPolygon([([(40, 40), (60, 40), (60, 60), (40, 60)], [])]),
+                ],
+            }
+        ).set_geometry("Geometry"),
+        np.eye(3),
+        pd.DataFrame(
+            {"ex:gene_raw": [21**2 * 2, 0], "ex:gene_high_pass": [0, 0]},
+            dtype=np.float64,
+            index=[10439330, 10439331],
+        ),
+        workers=1,
         temp_dir=LocalTempDir(),
     ),
 ]

@@ -1,6 +1,6 @@
 import argparse
 from collections import defaultdict
-from typing import Iterable, Tuple
+from typing import Dict, Iterable, Tuple
 
 import numpy as np
 import pandas as pd
@@ -15,8 +15,8 @@ from vpt_core.io.vzgfs import (
     filesystem_path_split,
     get_rasterio_environment,
     initialize_filesystem,
-    rasterio_open,
     io_with_retries,
+    rasterio_open,
 )
 from vpt_core.log import show_progress
 from vpt_core.segmentation.seg_result import SegmentationResult
@@ -24,7 +24,7 @@ from vpt_core.segmentation.seg_result import SegmentationResult
 from vpt.app.context import current_context, parallel_run
 from vpt.app.task import Task
 from vpt.sum_signals.cmd_args import SumSignalsArgs, parse_args, validate_args
-from vpt.sum_signals.validate import validate_z_layers_number
+from vpt.sum_signals.validate import char_decoding, validate_z_layers_number
 from vpt.utils.input_utils import read_geodataframe, read_micron_to_mosaic_transform, read_parquet_by_groups
 
 
@@ -39,26 +39,26 @@ def get_cell_brightness_in_image(image_path: str, entities: Iterable[Tuple[int, 
                 if cell is None or cell.is_empty:
                     continue
 
-                # Define an image area to read
-                rasterio_window = [
-                    cell.bounds[0],
-                    cell.bounds[1],
-                    cell.bounds[2] - cell.bounds[0] + 1,
-                    cell.bounds[3] - cell.bounds[1] + 1,
-                ]
-
-                # Read the image area and convert to 2D numpy array
-                rasterio_window = [int(x) for x in rasterio_window]
-                image_data = file.read(1, window=rasterio.windows.Window(*rasterio_window))
-
-                high_pass_input = image_data
-                cell_fft = np.fft.fft2(high_pass_input)
-                filtered_fft = ndimage.fourier_uniform(cell_fft, size=10)
-                inverse_filtered_fft = np.fft.ifft2(filtered_fft)
-                high_pass_image = high_pass_input - inverse_filtered_fft.real
-                high_pass_image = np.maximum(high_pass_image, 0)
-
                 try:
+                    # Define an image area to read
+                    rasterio_window = [
+                        cell.bounds[0],
+                        cell.bounds[1],
+                        cell.bounds[2] - cell.bounds[0] + 1,
+                        cell.bounds[3] - cell.bounds[1] + 1,
+                    ]
+
+                    # Read the image area and convert to 2D numpy array
+                    rasterio_window = [int(x) for x in rasterio_window]
+                    image_data = file.read(1, window=rasterio.windows.Window(*rasterio_window))
+
+                    high_pass_input = image_data
+                    cell_fft = np.fft.fft2(high_pass_input)
+                    filtered_fft = ndimage.fourier_uniform(cell_fft, size=10)
+                    inverse_filtered_fft = np.fft.ifft2(filtered_fft)
+                    high_pass_image = high_pass_input - inverse_filtered_fft.real
+                    high_pass_image = np.maximum(high_pass_image, 0)
+
                     # Create a polygon at the origin to use to mask an image
                     selector_poly = translate(cell, xoff=-cell.bounds[0], yoff=-cell.bounds[1])
 
@@ -108,6 +108,12 @@ def validate_and_prepare_ids(images, fn_boundary):
     return boundaries["EntityID"].unique()
 
 
+def replace_encoded_chars(stain: str, mapping: Dict) -> str:
+    for encoded_char, decoded_char in mapping.items():
+        stain = stain.replace(encoded_char, decoded_char)
+    return stain
+
+
 def get_cell_brightnesses(images, fn_boundary, transform):
     ids = validate_and_prepare_ids(images, fn_boundary)
 
@@ -136,8 +142,9 @@ def get_cell_brightnesses(images, fn_boundary, transform):
 
     sum_signals_data = {}
     for stain in results_raw.keys():
-        sum_signals_data[f"{stain}_raw"] = results_raw[stain]
-        sum_signals_data[f"{stain}_high_pass"] = results_high_pass[stain]
+        stain_name = replace_encoded_chars(stain, char_decoding)
+        sum_signals_data[f"{stain_name}_raw"] = results_raw[stain]
+        sum_signals_data[f"{stain_name}_high_pass"] = results_high_pass[stain]
 
     df = pd.DataFrame(sum_signals_data)
     df.sort_index(inplace=True)

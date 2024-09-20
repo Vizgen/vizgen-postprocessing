@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from pyarrow.parquet import ParquetFile
 from shapely import wkb
-from vpt_core.io.vzgfs import vzg_open, retrying_attempts
+from vpt_core.io.vzgfs import retrying_attempts, vzg_open
 from vpt_core.segmentation.seg_result import SegmentationResult
 
 from vpt.utils.cellsreader.base_reader import CellsReader

@@ -1,10 +1,10 @@
 import math
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 from vpt_core import log
 
-from vpt.update_vzg.byte_utils import extend_with_u32, extend_with_i16, extend_with_i32
+from vpt.update_vzg.byte_utils import extend_with_i16, extend_with_i32, extend_with_u32
 from vpt.update_vzg.cell_metadata import CellMetadata
 from vpt.update_vzg.imageparams import ImageParams
 from vpt.update_vzg.polygons.packedfanpolygon import PackedFanPolygon

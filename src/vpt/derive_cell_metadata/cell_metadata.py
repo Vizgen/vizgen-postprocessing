@@ -4,12 +4,11 @@ from typing import List, Optional, Union
 import numpy as np
 import pandas as pd
 from shapely import geometry
-
-from vpt.utils.cellsreader import CellsReader, cell_reader_factory
 from vpt_core import log
+from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
 
 from vpt.utils.boundaries import Boundaries
-from vpt_core.io.vzgfs import initialize_filesystem, io_with_retries
+from vpt.utils.cellsreader import CellsReader, cell_reader_factory
 
 
 def polygons_generator(geometries):

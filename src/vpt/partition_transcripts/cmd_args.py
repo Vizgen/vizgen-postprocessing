@@ -1,7 +1,8 @@
 from argparse import ArgumentParser
 from dataclasses import dataclass
 
-from vpt_core.io.vzgfs import vzg_open, retrying_attempts
+import pyarrow.parquet as pq
+from vpt_core.io.vzgfs import retrying_attempts, vzg_open
 
 from vpt.utils.validate import validate_does_not_exist, validate_exists
 
@@ -14,6 +15,21 @@ class PartitionTranscriptsArgs:
     chunk_size: int
     output_transcripts: str
     overwrite: bool
+
+
+def get_input_transcripts_columns(path: str) -> list:
+    if path.endswith(".csv"):
+        with vzg_open(path, "r") as f:
+            header = f.readline()
+            header = header.replace("\n", "").split(",")
+    elif path.endswith(".parquet"):
+        with vzg_open(path, "rb") as f:
+            pq_file = pq.ParquetFile(f)
+            header = pq_file.schema.names
+    else:
+        raise ValueError("Input-transcripts should be a csv or a parquet file")
+
+    return header
 
 
 def validate_args(args: PartitionTranscriptsArgs):
@@ -30,9 +46,8 @@ def validate_args(args: PartitionTranscriptsArgs):
 
     transcripts_header = {"gene", "global_x", "global_y", "global_z"}
     for attempt in retrying_attempts():
-        with attempt, vzg_open(args.input_transcripts, "r") as f:
-            header = f.readline()
-            header = header.replace("\n", "").split(",")
+        with attempt:
+            header = get_input_transcripts_columns(args.input_transcripts)
             if not transcripts_header.issubset(header):
                 raise ValueError(
                     f"Expected columns {transcripts_header.difference(header)} were not found in the "
@@ -52,7 +67,7 @@ def get_parser() -> ArgumentParser:
         "--input-boundaries", required=True, type=str, help="Path to a micron-space parquet boundary file."
     )
     required.add_argument(
-        "--input-transcripts", required=True, type=str, help="Path to an existing transcripts csv file."
+        "--input-transcripts", required=True, type=str, help="Path to an existing transcripts csv or parquet file."
     )
     required.add_argument(
         "--output-entity-by-gene", required=True, type=str, help="Path to output the Entity by gene matrix csv file."

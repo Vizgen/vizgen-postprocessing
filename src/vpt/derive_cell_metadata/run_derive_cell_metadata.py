@@ -7,7 +7,7 @@ from vpt_core.io.output_tools import make_parent_dirs
 from vpt_core.io.vzgfs import io_with_retries
 
 from vpt.derive_cell_metadata.cell_metadata import create_metadata_table
-from vpt.derive_cell_metadata.cmd_args import validate_args, DeriveMetadataArgs
+from vpt.derive_cell_metadata.cmd_args import DeriveMetadataArgs, validate_args
 from vpt.utils.boundaries import Boundaries
 from vpt.utils.cellsreader import CellsReader, cell_reader_factory
 

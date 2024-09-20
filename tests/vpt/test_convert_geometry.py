@@ -13,8 +13,8 @@ from vpt_core.utils.base_case import BaseCase
 from vpt_core.utils.segmentation_utils import assert_df_equals
 
 from tests.vpt import OUTPUT_FOLDER, TEST_DATA_ROOT
-from vpt.convert_geometry.main import convert_geometry
 from vpt.convert_geometry import cmd_args
+from vpt.convert_geometry.main import convert_geometry
 
 
 class ConvertCase(BaseCase):
