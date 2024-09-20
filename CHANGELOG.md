@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0 (2024-09-20)
+
+### Feature
+
+* MERSCOPE Ultra Support ([#38](https://github.com/Vizgen/vizgen-postprocessing/issues/38)) ([`3f34a41`](https://github.com/Vizgen/vizgen-postprocessing/commit/3f34a410fd212e3d35c54ad51bc650d4a1b2b6da))
+
 ## v1.2.2 (2024-02-09)
 
 
