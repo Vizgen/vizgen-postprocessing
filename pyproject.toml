@@ -21,6 +21,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 packages = [{ include = "vpt", from = "src" }]
 include = ["src/vpt/utils/seg_json_generator/templates/*"]
@@ -29,7 +32,7 @@ include = ["src/vpt/utils/seg_json_generator/templates/*"]
 vpt = "vpt.vizgen_postprocess:entry_point"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.9,<3.13"
 boto3 = ">=1.17"
 dask = ">=2023.2.0"
 distributed = ">=2023.2.0"
