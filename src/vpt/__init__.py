@@ -1,7 +1,11 @@
 import os
 
+import numpy as np
 import dask
 import dask.distributed
+
+if not hasattr(np, "float_"):
+    np.float_ = np.float64
 
 dask.config.set(
     {

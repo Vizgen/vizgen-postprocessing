@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "vpt-segmentation-packing"
+version = "1.0.1"
+description = "Packs cell boundaries for the Vizgen vzg2 file format"
+license = "Apache-2.0"
+authors = ["Vizgen <techsupport@vizgen.com>"]
+maintainers = ["Timothy Wiggin <timothy.wiggin@vizgen.com>"]
+readme = "README.md"
+repository = "https://github.com/Vizgen/vpt-segmentation-packing"
+documentation = "https://vizgen.github.io/vizgen-postprocessing/"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+packages = [{ include = "vpt_segmentation_packing" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+mapbox-earcut = ">=1.0.1"
+numpy = ">=1.24.3"
+pandas = { version = ">=2.0.3", extras = ["hdf5"] }
+pyarrow = ">=8.0.0"
+shapely = ">=2.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
