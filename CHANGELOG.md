@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.1 (2026-04-28)
+
+### Documentation
+
+* Update documentation for new segmentation plugins ([`61d822b`](https://github.com/Vizgen/vizgen-postprocessing/commit/61d822b9e79a7e726adf25ca87c9dad76c91092c))
+
 ## v1.3.0 (2024-09-20)
 
 ### Feature
