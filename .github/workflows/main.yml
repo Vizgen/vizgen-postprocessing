@@ -80,8 +80,8 @@ jobs:
       - name: Configure AWS credentials for pytest
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.VZGPT_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.VZGPT_AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::161990795214:role/GitHubActionsVizgenPostprocessingCloudTests
+          role-session-name: vizgen-postprocessing-tests
           aws-region: us-east-1
 
       - name: Set up Python ${{ matrix.python-version }}
