@@ -59,6 +59,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="cellpose_segment.html">Cellpose Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose2_segment.html">Cellpose2 Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellposesam_segment.html">CellposeSAM Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instanseg_segment.html">InstanSeg Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">Segmentation Benchmarks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
@@ -96,6 +100,13 @@
 <p>The Watershed segmentation algorithm uses the 3-D watershed implementation in scikit-image
 (<code class="docutils literal notranslate"><span class="pre">skimage.segmentation.watershed</span></code>). Watershed segmentation converts one or more images into seed
 locations and a depth map and fills the depth map &quot;basins&quot; from the seed locations.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Watershed plugin source is available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-watershed">vpt-plugin-watershed repository</a>. That repository README
+includes additional plugin documentation and source-install guidance for users who want to work from a checkout
+instead of the <code class="docutils literal notranslate"><span class="pre">vpt[watershed]</span></code> or <code class="docutils literal notranslate"><span class="pre">vpt[all]</span></code> extras.</p>
+</div>
 <section id="input-data">
 <h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
 <dl class="simple">

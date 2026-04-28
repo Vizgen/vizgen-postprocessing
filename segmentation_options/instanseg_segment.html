@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InstanSeg Options &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Segmentation Benchmarks" href="benchmarks.html" />
+    <link rel="prev" title="CellposeSAM Options" href="cellposesam_segment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_task_definition.html">Segmentation Task Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watershed_segment.html">Watershed Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose_segment.html">Cellpose Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose2_segment.html">Cellpose2 Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellposesam_segment.html">CellposeSAM Options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">InstanSeg Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instanseg-model-properties">InstanSeg Model Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instanseg-model-parameters">InstanSeg Model Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-segmentation-specification">Example Segmentation Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">Segmentation Benchmarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
+      <li class="breadcrumb-item active">InstanSeg Options</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/segmentation_options/instanseg_segment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="instanseg-options">
+<h1>InstanSeg Options<a class="headerlink" href="#instanseg-options" title="Permalink to this headline"></a></h1>
+<p>The InstanSeg plugin (<code class="docutils literal notranslate"><span class="pre">segmentation_family:</span> <span class="pre">&quot;InstanSeg&quot;</span></code>) provides cell and nucleus segmentation using the
+InstanSeg architecture <a class="reference internal" href="#instanseg-citation" id="id1"><span>[instanseg_citation]</span></a>, a channel-invariant model that can accept a variable number of input
+image channels without retraining. This makes it straightforward to use with different panel configurations.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<p>InstanSeg is <strong>not</strong> included in the base <code class="docutils literal notranslate"><span class="pre">vpt</span></code> or <code class="docutils literal notranslate"><span class="pre">vpt[all]</span></code> install. Install it in the same Python
+environment as <code class="docutils literal notranslate"><span class="pre">vpt</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-instanseg
+</pre></div>
+</div>
+<p>Additional plugin documentation and source-install instructions are available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-instanseg">vpt-plugin-instanseg repository</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>InstanSeg automatically selects CUDA, then MPS, then CPU based on runtime availability.</p>
+</div>
+</section>
+<section id="input-data">
+<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
+<p>InstanSeg accepts a variable number of image channels. The model is channel-invariant, so you can provide any
+combination of channels in <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code> (e.g. DAPI, PolyT, Cellbound markers). All channels listed are
+passed to the model as a multi-channel input.</p>
+</section>
+<section id="instanseg-model-properties">
+<h2>InstanSeg Model Properties<a class="headerlink" href="#instanseg-model-properties" title="Permalink to this headline"></a></h2>
+<p>The InstanSeg task schema accepts the following keys in <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code>:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">model</span></code></dt><dd><p>Required. Name of the bundled InstanSeg model to download and load when <code class="docutils literal notranslate"><span class="pre">custom_weights</span></code> is not set. A common
+value is <code class="docutils literal notranslate"><span class="pre">&quot;fluorescence_nuclei_and_cells&quot;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model_dimensions</span></code></dt><dd><p>Required. Must be <code class="docutils literal notranslate"><span class="pre">&quot;2D&quot;</span></code>. The current plugin supports 2D inference only. Each selected z-plane is segmented
+independently and VPT merges the per-plane masks into a 3D output structure.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">version</span></code></dt><dd><p>Required. Version string for the bundled model. Use <code class="docutils literal notranslate"><span class="pre">&quot;latest&quot;</span></code> to let the plugin resolve the newest available
+bundled model version, or pin an explicit version such as <code class="docutils literal notranslate"><span class="pre">&quot;0.1.1&quot;</span></code> for reproducibility.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">custom_weights</span></code></dt><dd><p>Optional. Path to a local TorchScript <code class="docutils literal notranslate"><span class="pre">.pt</span></code> file. When set, the plugin loads this file directly and ignores the
+<code class="docutils literal notranslate"><span class="pre">model</span></code> and <code class="docutils literal notranslate"><span class="pre">version</span></code> fields. The file must exist on disk.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The plugin rejects unrecognized keys in <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code> and validates that <code class="docutils literal notranslate"><span class="pre">custom_weights</span></code> exists if
+it is provided.</p>
+</div>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;fluorescence_nuclei_and_cells&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;version&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;latest&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="instanseg-model-parameters">
+<h2>InstanSeg Model Parameters<a class="headerlink" href="#instanseg-model-parameters" title="Permalink to this headline"></a></h2>
+<p>All InstanSeg keys in <code class="docutils literal notranslate"><span class="pre">segmentation_parameters</span></code> are optional because the plugin defines defaults for each one:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">pixel_size</span></code></dt><dd><p>Optional. Default: <code class="docutils literal notranslate"><span class="pre">0.1</span></code>. Positive image pixel size in microns. InstanSeg uses this value to rescale images to
+the resolution the model was trained on. Incorrect values change the apparent object scale seen by the model.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">normalise</span></code></dt><dd><p>Optional. Default: <code class="docutils literal notranslate"><span class="pre">true</span></code>. Enables InstanSeg's own percentile-style input normalization during inference. This
+is independent of any VPT preprocessing configured in <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">target</span></code></dt><dd><p>Optional. Default: <code class="docutils literal notranslate"><span class="pre">&quot;all_outputs&quot;</span></code>. Controls which mask layer the plugin returns to VPT. Valid values are
+<code class="docutils literal notranslate"><span class="pre">&quot;all_outputs&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;nuclei&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;cells&quot;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rescale_output</span></code></dt><dd><p>Optional. Default: <code class="docutils literal notranslate"><span class="pre">true</span></code>. If enabled, the plugin rescales the predicted masks back to the original image
+coordinate space after inference. If disabled, masks remain in the model's inference scale.</p>
+</dd>
+</dl>
+<p><strong>Understanding the</strong> <code class="docutils literal notranslate"><span class="pre">target</span></code> <strong>parameter:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">target</span></code> parameter determines what the InstanSeg model segments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;nuclei&quot;</span></code> — Segment nuclei only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;cells&quot;</span></code> — Segment whole cells only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;all_outputs&quot;</span></code> — Segment both nuclei and cells. When this option is used, the plugin returns the <strong>cell</strong>
+boundaries to VPT as the primary segmentation output.</p></li>
+</ul>
+<p>In most use cases, <code class="docutils literal notranslate"><span class="pre">&quot;all_outputs&quot;</span></code> is recommended because jointly predicting nuclei and cells allows the model
+to leverage both signals for more accurate cell boundaries.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before execution, the plugin rejects unrecognized <code class="docutils literal notranslate"><span class="pre">segmentation_parameters</span></code> keys, requires <code class="docutils literal notranslate"><span class="pre">pixel_size</span></code> to be a
+positive number when provided, and requires <code class="docutils literal notranslate"><span class="pre">target</span></code> to be one of <code class="docutils literal notranslate"><span class="pre">all_outputs</span></code>, <code class="docutils literal notranslate"><span class="pre">nuclei</span></code>, or <code class="docutils literal notranslate"><span class="pre">cells</span></code>.</p>
+</div>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;pixel_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;normalise&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;target&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;all_outputs&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;rescale_output&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-segmentation-specification">
+<h2>Example Segmentation Specification<a class="headerlink" href="#example-segmentation-specification" title="Permalink to this headline"></a></h2>
+<p>A complete single-task InstanSeg specification with two channels:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;experiment_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;all_z_indexes&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">],</span>
+<span class="w">        </span><span class="s2">&quot;z_positions_um&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">,</span><span class="w"> </span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span><span class="w"> </span><span class="mf">10.5</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_tasks&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;task_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_family&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;InstanSeg&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;entity_types_detected&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;z_layers&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">3</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;fluorescence_nuclei_and_cells&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;version&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;latest&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;task_input_data&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;image_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PolyT&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;image_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;pixel_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;normalise&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;target&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;all_outputs&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;rescale_output&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;polygon_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;simplification_tol&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;smoothing_radius&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;minimum_final_area&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_task_fusion&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;entity_fusion_strategy&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;harmonize&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;fused_polygon_postprocessing_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;min_distance_between_entities&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;min_final_area&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;output_files&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;entity_types_output&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;files&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;run_on_tile_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;result_tiles/&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;mosaic_geometry_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;instanseg_mosaic_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;micron_geometry_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;instanseg_micron_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;cell_metadata_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;instanseg_cell_metadata.csv&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+<dl class="citation">
+<dt class="label" id="instanseg-citation"><span class="brackets"><a class="fn-backref" href="#id1">instanseg_citation</a></span></dt>
+<dd><p>Goldsborough, T., et al. (2024). InstanSeg: an embedding-based instance segmentation algorithm optimized for accurate, efficient and portable cell segmentation. <em>arXiv preprint arXiv:2408.15954</em>.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cellposesam_segment.html" class="btn btn-neutral float-left" title="CellposeSAM Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="benchmarks.html" class="btn btn-neutral float-right" title="Segmentation Benchmarks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -60,6 +60,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="segmentation_heart_dataset_cellpose2.html">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_u2os_new_plugins.html">Example: Segmenting the U2OS Small Dataset with Newer Plugins</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
@@ -163,6 +164,14 @@
 </section>
 <section id="step-1-install-vpt-in-a-virtual-environment">
 <h2>Step 1: Install vpt in a Virtual Environment<a class="headerlink" href="#step-1-install-vpt-in-a-virtual-environment" title="Permalink to this headline"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vpt[all]</span></code> installs VPT together with the <strong>legacy</strong> Cellpose and Watershed
+segmentation plugins. Newer plugin families (Cellpose2, CellposeSAM, InstanSeg) are
+distributed as separate packages and must be installed individually. See <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a>
+for details, or follow the <a class="reference internal" href="segmentation_u2os_new_plugins.html"><span class="doc">Example: Segmenting the U2OS Small Dataset with Newer Plugins</span></a> vignette for a worked
+example with the newer plugins.</p>
+</div>
 <p><strong>User Input</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@computer:~$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/.venv/vpt_env
 <span class="gp">user@computer:~$ </span><span class="nb">source</span><span class="w"> </span>.venv/vpt_env/bin/activate

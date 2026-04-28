@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Output Data Formats" href="../output_data_formats/index.html" />
+    <link rel="next" title="Cellpose2 Options" href="cellpose2_segment.html" />
     <link rel="prev" title="Watershed Options" href="watershed_segment.html" /> 
 </head>
 
@@ -59,6 +59,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#cellpose-model-parameters">Cellpose Model Parameters</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose2_segment.html">Cellpose2 Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellposesam_segment.html">CellposeSAM Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instanseg_segment.html">InstanSeg Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">Segmentation Benchmarks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
@@ -93,7 +97,22 @@
              
   <section id="cellpose-options">
 <h1>Cellpose Options<a class="headerlink" href="#cellpose-options" title="Permalink to this headline"></a></h1>
-<p>The Cellpose segmentation algorithm uses the Cellpose v.1.0.2 <a class="reference internal" href="#citation" id="id1"><span>[citation]</span></a>. In addition
+<p>This page documents the <strong>legacy built-in Cellpose</strong> family (<code class="docutils literal notranslate"><span class="pre">segmentation_family:</span> <span class="pre">&quot;Cellpose&quot;</span></code>), which uses
+Cellpose v.1.0.2 <a class="reference internal" href="#citation" id="id1"><span>[citation]</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<blockquote>
+<div><p>For the newer Cellpose-derived plugins, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="cellpose2_segment.html"><span class="doc">Cellpose2 Options</span></a> — Cellpose2 plugin with multi-channel support and <code class="docutils literal notranslate"><span class="pre">cellprob_threshold</span></code></p></li>
+<li><p><a class="reference internal" href="cellposesam_segment.html"><span class="doc">CellposeSAM Options</span></a> — CellposeSAM plugin combining Cellpose 4 with SAM-based segmentation</p></li>
+</ul>
+</div></blockquote>
+<p>The legacy Cellpose plugin source is also available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose">vpt-plugin-cellpose repository</a>. That repository README includes
+additional implementation notes and source-install guidance for users who need to work from a plugin checkout.</p>
+</div>
+<p>In addition
 to supporting  the default model weights (e.g. cyto2, nuclei), <code class="docutils literal notranslate"><span class="pre">vpt</span></code> supports custom
 weights that may be more appropriate for a specific tissue type.</p>
 <section id="input-data">
@@ -104,19 +123,22 @@ model, both a nuclear and entity fill channel are required.</p>
 </section>
 <section id="cellpose-model-properties">
 <h2>Cellpose Model Properties<a class="headerlink" href="#cellpose-model-properties" title="Permalink to this headline"></a></h2>
-<p>The following model properties are REQUIRED:</p>
-<ul>
-<li><p>model <em>(&quot;cyto2&quot; or &quot;nuclei&quot;)</em></p></li>
-<li><p>model_dimensions <em>(&quot;2D&quot; or &quot;3D&quot;)</em></p>
-<p>&quot;2D&quot; applies the 2D Cellpose model to all z-planes specified in the <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> list seperately and the results are
-combined into a 3D output. &quot;3D&quot; applies the native-3D Cellpose model to all z-planes specified in the <code class="docutils literal notranslate"><span class="pre">z_layers</span></code> list.</p>
-</li>
-</ul>
-<p>The following model properties are OPTIONAL:</p>
-<ul class="simple">
-<li><p>custom_weights <em>(path to a custom Cellpose weights file, local file system only)</em></p></li>
-<li><p>version <em>(any valid string, used for record keeping)</em></p></li>
-</ul>
+<p>The legacy Cellpose task schema accepts the following keys in <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code>:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">model</span></code></dt><dd><p>Required. Selects the built-in Cellpose weights to load. Supported values are <code class="docutils literal notranslate"><span class="pre">&quot;cyto2&quot;</span></code> for whole-cell
+segmentation and <code class="docutils literal notranslate"><span class="pre">&quot;nuclei&quot;</span></code> for nucleus-focused segmentation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model_dimensions</span></code></dt><dd><p>Required. Accepts <code class="docutils literal notranslate"><span class="pre">&quot;2D&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;3D&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;2D&quot;</span></code> applies the 2D Cellpose model to each z-plane in the
+<code class="docutils literal notranslate"><span class="pre">z_layers</span></code> list separately, after which VPT merges the masks into a 3D output. <code class="docutils literal notranslate"><span class="pre">&quot;3D&quot;</span></code> passes the selected
+z-planes to Cellpose as a volumetric stack and runs the native 3D model.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">custom_weights</span></code></dt><dd><p>Optional. Path to a local custom Cellpose weights file. When provided, the plugin loads this file instead of the
+model zoo weights named by <code class="docutils literal notranslate"><span class="pre">model</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">version</span></code></dt><dd><p>Optional. Free-form provenance string stored in the task JSON for record keeping. It does not select a different
+model implementation in the legacy plugin.</p>
+</dd>
+</dl>
 <p>Usage:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cyto2&quot;</span><span class="p">,</span>
@@ -129,15 +151,28 @@ combined into a 3D output. &quot;3D&quot; applies the native-3D Cellpose model t
 </section>
 <section id="cellpose-model-parameters">
 <h2>Cellpose Model Parameters<a class="headerlink" href="#cellpose-model-parameters" title="Permalink to this headline"></a></h2>
-<p>The following model parameters are required:</p>
-<ul class="simple">
-<li><p>nuclear_channel <em>(The image channel that represents nuclei)</em></p></li>
-<li><p>entity_fill_channel <em>(The image channel that either fills or outlines the cells)</em></p></li>
-<li><p>diameter <em>(typical cell size, pixels)</em></p></li>
-<li><p>flow_threshold <em>(range: 0 to 1, larger values output more cells)</em></p></li>
-<li><p>mask_threshold <em>(range: -6 to 6, lower values output larger cells)</em></p></li>
-<li><p>minimum_mask_size <em>(minimum cell size, pixels)</em></p></li>
-</ul>
+<p>The legacy Cellpose task schema accepts the following keys in <code class="docutils literal notranslate"><span class="pre">segmentation_parameters</span></code>:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nuclear_channel</span></code></dt><dd><p>Required. Name of the input image channel containing nuclear signal, typically DAPI. This channel should also be
+present in <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code>. For <code class="docutils literal notranslate"><span class="pre">&quot;cyto2&quot;</span></code> it supplies Cellpose's nuclear guidance channel; for
+<code class="docutils literal notranslate"><span class="pre">&quot;nuclei&quot;</span></code> it is often the main informative channel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">entity_fill_channel</span></code></dt><dd><p>Required. Name of the input image channel containing cell body or cell boundary signal. For whole-cell
+segmentation this is usually a cytoplasmic or membrane-associated stain such as PolyT.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">diameter</span></code></dt><dd><p>Required. Expected object diameter in pixels. Cellpose uses this value to internally rescale the image before
+inference. Values that are too small or too large can lead to oversegmentation or undersegmentation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flow_threshold</span></code></dt><dd><p>Required. Flow consistency threshold passed directly to Cellpose. Higher values allow more candidate masks to pass
+filtering and generally increase recall; lower values apply stricter quality filtering.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mask_threshold</span></code></dt><dd><p>Required. Cell probability threshold used by Cellpose v1. Lower values accept weaker signal and generally produce
+larger or more numerous masks. Higher values suppress weak detections.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">minimum_mask_size</span></code></dt><dd><p>Required. Minimum mask area in pixels. Masks smaller than this value are removed before VPT converts them to
+polygons.</p>
+</dd>
+</dl>
 <p>Detailed descriptions of each parameter are available in the <a class="reference external" href="https://cellpose.readthedocs.io/en/v1.0.2/index.html">Cellpose documentation</a></p>
 <p>Usage:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
@@ -163,7 +198,7 @@ combined into a 3D output. &quot;3D&quot; applies the native-3D Cellpose model t
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="watershed_segment.html" class="btn btn-neutral float-left" title="Watershed Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../output_data_formats/index.html" class="btn btn-neutral float-right" title="Output Data Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cellpose2_segment.html" class="btn btn-neutral float-right" title="Cellpose2 Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

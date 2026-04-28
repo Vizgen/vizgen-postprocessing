@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview &mdash; Vizgen Post-processing Tool  documentation</title>
+  <title>Segmentation Benchmarks &mdash; Vizgen Post-processing Tool  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Segmentation Algorithm JSON File Structure" href="json_file_format.html" />
-    <link rel="prev" title="Segmentation Options" href="index.html" /> 
+    <link rel="next" title="Output Data Formats" href="../output_data_formats/index.html" />
+    <link rel="prev" title="InstanSeg Options" href="instanseg_segment.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmentation_task_definition.html">Segmentation Task Definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
@@ -57,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cellpose2_segment.html">Cellpose2 Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cellposesam_segment.html">CellposeSAM Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instanseg_segment.html">InstanSeg Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">Segmentation Benchmarks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Segmentation Benchmarks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
@@ -80,9 +80,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
-      <li class="breadcrumb-item active">Overview</li>
+      <li class="breadcrumb-item active">Segmentation Benchmarks</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/segmentation_options/overview.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/segmentation_options/benchmarks.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -90,31 +90,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
-<p>The Vizgen Post-processing Tool <code class="docutils literal notranslate"><span class="pre">vpt</span></code> accepts two types of inputs to specify
-how to run segmentation:</p>
+  <section id="segmentation-benchmarks">
+<h1>Segmentation Benchmarks<a class="headerlink" href="#segmentation-benchmarks" title="Permalink to this headline"></a></h1>
+<p>The table below shows example wall-clock runtimes and approximate cell counts for
+three segmentation methods on 10 000 × 10 000 pixel crop regions from four
+internal MERSCOPE tissue datasets. These datasets are not publicly available;
+they are included here to illustrate relative method performance across tissue
+types. Each run used the default <code class="docutils literal notranslate"><span class="pre">--tile-size</span> <span class="pre">2400</span> <span class="pre">--tile-overlap</span> <span class="pre">200</span></code>
+settings on a single z-layer.</p>
+<p><strong>Channels used per tissue:</strong></p>
 <ul class="simple">
-<li><p>Command line arguments</p></li>
-<li><p>Segmentation algorithm .json file parameters</p></li>
+<li><p><strong>Mouse Brain</strong> — DAPI, PolyT (2 channels)</p></li>
+<li><p><strong>Liver</strong> — DAPI, PolyT, Cellbound3 (3 channels)</p></li>
+<li><p><strong>Lung</strong> — DAPI, PolyT, Cellbound3 (3 channels)</p></li>
+<li><p><strong>Colon</strong> — DAPI, PolyT, Cellbound3 (3 channels)</p></li>
 </ul>
-<p>Command line arguments generally relate to properties of the computing platform running <code class="docutils literal notranslate"><span class="pre">vpt</span></code> and are expected to vary with
-each experiment. For example, the location of files and optimal number of parallel processes depend on the  computer running
-<code class="docutils literal notranslate"><span class="pre">vpt</span></code> and are set with command line arguments. These arguments are described in the <a class="reference internal" href="../command_line_interface/index.html#command-line-interface"><span class="std std-ref">Command Line Interface</span></a> section.</p>
-<p>In contrast, the segmentation algorithm .json file describes a series of steps to perform on the input data that are
-independent of the computing environment. Using the same segmentation algorithm on a series of experiments ensures that they
-are processed identically and reproducibly.</p>
-<p>In addition to this documentation, several working example segmentation algorithm json files are provided that can serve
-either as a ready-made segmentation definition, or as a template for a custom workflow. These files are available on the
-<code class="docutils literal notranslate"><span class="pre">vpt</span></code> GitHub Repository (<a class="reference external" href="https://github.com/Vizgen/vizgen-postprocess">https://github.com/Vizgen/vizgen-postprocess</a>) or in the Docker Image.</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Example runtimes and cell counts on 10 000 × 10 000 px tissue crops</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tissue</p></th>
+<th class="head"><p>Cellpose2 (8 proc)</p></th>
+<th class="head"><p>InstanSeg (2 proc)</p></th>
+<th class="head"><p>CellposeSAM (2 proc)</p></th>
+<th class="head"><p>Approx. Cells (median)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mouse Brain</p></td>
+<td><p>1 min 16 s</p></td>
+<td><p>0 min 59 s</p></td>
+<td><p>6 min 23 s</p></td>
+<td><p>~2 700</p></td>
+</tr>
+<tr class="row-odd"><td><p>Liver</p></td>
+<td><p>1 min 37 s</p></td>
+<td><p>1 min 38 s</p></td>
+<td><p>8 min 31 s</p></td>
+<td><p>~5 100</p></td>
+</tr>
+<tr class="row-even"><td><p>Lung</p></td>
+<td><p>1 min 34 s</p></td>
+<td><p>1 min 52 s</p></td>
+<td><p>6 min 26 s</p></td>
+<td><p>~7 400</p></td>
+</tr>
+<tr class="row-odd"><td><p>Colon</p></td>
+<td><p>1 min 30 s</p></td>
+<td><p>2 min 01 s</p></td>
+<td><p>8 min 06 s</p></td>
+<td><p>~8 800</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Benchmark environment.</strong> All timings were measured on a Linux workstation
+with a mid-range CUDA GPU (8 GB VRAM), 16 logical CPU cores, and 32 GB RAM.
+Cellpose2 was run with 8 parallel processes; InstanSeg and CellposeSAM each
+used 2 processes. Runtime depends strongly on GPU model, CPU count, tile
+size, and image dimensions. Cell counts are the median across the three
+methods (rounded to the nearest hundred) and are intended to convey the
+density of each tissue region. These numbers are provided as representative
+examples and should not be interpreted as guaranteed performance.</p>
+</div>
+<p>See <span class="xref std std-ref">system-requirements</span> for hardware and software prerequisites.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Segmentation Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="json_file_format.html" class="btn btn-neutral float-right" title="Segmentation Algorithm JSON File Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="instanseg_segment.html" class="btn btn-neutral float-left" title="InstanSeg Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../output_data_formats/index.html" class="btn btn-neutral float-right" title="Output Data Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Experimental Features" href="../experimental_features/index.html" />
+    <link rel="next" title="Example: Segmenting the U2OS Small Dataset with Newer Plugins" href="segmentation_u2os_new_plugins.html" />
     <link rel="prev" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" href="segmentation_of_a_local_dataset.html" /> 
 </head>
 
@@ -62,6 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#step-6-evaluate-new-segmentation">Step 6: Evaluate New Segmentation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_u2os_new_plugins.html">Example: Segmenting the U2OS Small Dataset with Newer Plugins</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
@@ -311,6 +312,8 @@ customized segmentation parameters. To install VPT, follow the instructions at <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-cellpose2
 </pre></div>
 </div>
+<p>Additional plugin documentation and source-install instructions are available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose2">vpt-plugin-cellpose2 repository</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For the plugin to be recognized, it must be installed in the same environment as VPT</p>
@@ -534,7 +537,8 @@ annotations are completed, we retrained the model following the steps below:</p>
 full MERSCOPE dataset to regenerate the cell by gene matrix to use for downstream single cell analysis. To do this processing,
 we use VPT to resegment the original images using the newly trained model.</p>
 <p>The segmentation algorithm for VPT is specified through an algorithm JSON file. Example algorithm JSON files for Cellpose2
-can be found in the “example_analysis_algorithm” folder within the vpt-plugin-cellpose2 repository: <a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose2/tree/develop/example_analysis_algorithm">https://github.com/Vizgen/vpt-plugin-cellpose2/tree/develop/example_analysis_algorithm</a>.
+can be found in the <code class="docutils literal notranslate"><span class="pre">example_analysis_algorithm</span></code> folder of the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose2">vpt-plugin-cellpose2 repository</a>.
 These can be used as a template for customizing to match the parameters specified within the Cellpose2 UI.</p>
 <ol class="arabic simple">
 <li><p>Files with “custom” are examples using customs models and not built-in models.</p></li>
@@ -809,7 +813,7 @@ improved single-cell quantification for downstream biological analysis.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="segmentation_of_a_local_dataset.html" class="btn btn-neutral float-left" title="Example: Segmenting a Small Dataset Saved on a Local Hard Drive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../experimental_features/index.html" class="btn btn-neutral float-right" title="Experimental Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="segmentation_u2os_new_plugins.html" class="btn btn-neutral float-right" title="Example: Segmenting the U2OS Small Dataset with Newer Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

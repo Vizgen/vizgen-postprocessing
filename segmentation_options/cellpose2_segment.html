@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cellpose2 Options &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CellposeSAM Options" href="cellposesam_segment.html" />
+    <link rel="prev" title="Cellpose Options" href="cellpose_segment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Segmentation Options</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json_file_format.html">Segmentation Algorithm JSON File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_task_definition.html">Segmentation Task Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task_fusion_definition.html">Task Fusion Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watershed_segment.html">Watershed Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cellpose_segment.html">Cellpose Options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cellpose2 Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cellpose2-model-properties">Cellpose2 Model Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cellpose2-model-parameters">Cellpose2 Model Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-segmentation-specification">Example Segmentation Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cellposesam_segment.html">CellposeSAM Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instanseg_segment.html">InstanSeg Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">Segmentation Benchmarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_vignettes/index.html">Analysis Vignettes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Segmentation Options</a></li>
+      <li class="breadcrumb-item active">Cellpose2 Options</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/segmentation_options/cellpose2_segment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cellpose2-options">
+<h1>Cellpose2 Options<a class="headerlink" href="#cellpose2-options" title="Permalink to this headline"></a></h1>
+<p>The Cellpose2 plugin (<code class="docutils literal notranslate"><span class="pre">segmentation_family:</span> <span class="pre">&quot;Cellpose2&quot;</span></code>) provides segmentation using newer Cellpose model weights
+and introduces multi-channel input via the <code class="docutils literal notranslate"><span class="pre">channel_map</span></code> property <a class="reference internal" href="#cellpose2-citation" id="id1"><span>[cellpose2_citation]</span></a>. Unlike the <a class="reference internal" href="cellpose_segment.html"><span class="doc">legacy
+built-in Cellpose family</span></a>, Cellpose2 uses <code class="docutils literal notranslate"><span class="pre">cellprob_threshold</span></code> instead of <code class="docutils literal notranslate"><span class="pre">mask_threshold</span></code> and
+supports mapping multiple image channels to the model's RGB input.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<p>Cellpose2 is <strong>not</strong> included in the base <code class="docutils literal notranslate"><span class="pre">vpt</span></code> or <code class="docutils literal notranslate"><span class="pre">vpt[all]</span></code> install. Install it in the same Python environment
+as <code class="docutils literal notranslate"><span class="pre">vpt</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-cellpose2
+</pre></div>
+</div>
+<p>Additional plugin documentation, example algorithm JSON files, and source-install instructions are available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellpose2">vpt-plugin-cellpose2 repository</a>.</p>
+</section>
+<section id="input-data">
+<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
+<p>The number and identity of input channels is controlled by the <code class="docutils literal notranslate"><span class="pre">channel_map</span></code> property. Each key in the map
+(<code class="docutils literal notranslate"><span class="pre">red</span></code>, <code class="docutils literal notranslate"><span class="pre">green</span></code>, <code class="docutils literal notranslate"><span class="pre">blue</span></code>) specifies which image channel is assigned to that color input of the model. Channels
+listed in the map must also appear in the <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code> list so that the corresponding images are loaded and
+preprocessed.</p>
+<p>For the <strong>nuclei</strong> model, typically only a nuclear channel (e.g. DAPI) is needed. For the <strong>cyto2</strong> model, a nuclear
+channel and one or more entity fill channels are recommended.</p>
+</section>
+<section id="cellpose2-model-properties">
+<h2>Cellpose2 Model Properties<a class="headerlink" href="#cellpose2-model-properties" title="Permalink to this headline"></a></h2>
+<p>The Cellpose2 task schema accepts the following keys in <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code>:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">model_dimensions</span></code></dt><dd><p>Required. Accepts <code class="docutils literal notranslate"><span class="pre">&quot;2D&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;3D&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;2D&quot;</span></code> applies the 2D Cellpose model to each selected z-plane
+separately and VPT merges the masks into a 3D output. <code class="docutils literal notranslate"><span class="pre">&quot;3D&quot;</span></code> passes the selected z-planes as a volumetric stack
+and runs Cellpose with <code class="docutils literal notranslate"><span class="pre">do_3D=True</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">channel_map</span></code></dt><dd><p>Required. Dictionary mapping <code class="docutils literal notranslate"><span class="pre">red</span></code>, <code class="docutils literal notranslate"><span class="pre">green</span></code>, and <code class="docutils literal notranslate"><span class="pre">blue</span></code> to image channel names from <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code>.
+The plugin builds an RGB image in that exact order before calling Cellpose. Set a color entry to an empty string
+<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to leave that plane empty; the plugin fills unused color planes with zeros.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model</span></code></dt><dd><p>Optional when <code class="docutils literal notranslate"><span class="pre">custom_weights</span></code> is set; otherwise required. Selects built-in Cellpose weights such as
+<code class="docutils literal notranslate"><span class="pre">&quot;cyto2&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;nuclei&quot;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">custom_weights</span></code></dt><dd><p>Optional. Path to a local custom Cellpose weights file. When present, the plugin loads this file and ignores the
+built-in model named by <code class="docutils literal notranslate"><span class="pre">model</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Cellpose2 does not define a <code class="docutils literal notranslate"><span class="pre">version</span></code> field in <code class="docutils literal notranslate"><span class="pre">segmentation_properties</span></code>. Before execution, the plugin validates
+that every non-empty <code class="docutils literal notranslate"><span class="pre">channel_map</span></code> entry appears in <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code> and that at least one of <code class="docutils literal notranslate"><span class="pre">model</span></code> or
+<code class="docutils literal notranslate"><span class="pre">custom_weights</span></code> is set.</p>
+</div>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cyto2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;channel_map&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;red&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;green&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;blue&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="cellpose2-model-parameters">
+<h2>Cellpose2 Model Parameters<a class="headerlink" href="#cellpose2-model-parameters" title="Permalink to this headline"></a></h2>
+<p>The Cellpose2 task schema accepts the following keys in <code class="docutils literal notranslate"><span class="pre">segmentation_parameters</span></code>:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">nuclear_channel</span></code></dt><dd><p>Required. Selects the second Cellpose input channel, typically a nuclear stain such as DAPI. Accepted values are
+an image channel listed in <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code>, one of the mapped color names <code class="docutils literal notranslate"><span class="pre">red</span></code>, <code class="docutils literal notranslate"><span class="pre">green</span></code>, or <code class="docutils literal notranslate"><span class="pre">blue</span></code>,
+or the special values <code class="docutils literal notranslate"><span class="pre">all</span></code> and <code class="docutils literal notranslate"><span class="pre">grayscale</span></code>. Both <code class="docutils literal notranslate"><span class="pre">all</span></code> and <code class="docutils literal notranslate"><span class="pre">grayscale</span></code> resolve to Cellpose's grayscale
+input channel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">entity_fill_channel</span></code></dt><dd><p>Required. Selects the first Cellpose input channel used for cell body or boundary signal. It accepts the same value
+forms as <code class="docutils literal notranslate"><span class="pre">nuclear_channel</span></code>: a task input channel name, a mapped color name, or the special values <code class="docutils literal notranslate"><span class="pre">all</span></code> and
+<code class="docutils literal notranslate"><span class="pre">grayscale</span></code>. In practice, <code class="docutils literal notranslate"><span class="pre">all</span></code> or <code class="docutils literal notranslate"><span class="pre">grayscale</span></code> are useful when a custom model was trained on a composite
+signal rather than a single stain.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">diameter</span></code></dt><dd><p>Required. Expected object diameter in pixels. The plugin passes this value directly to Cellpose, which uses it to
+rescale imagery before inference. Incorrect values can materially change mask size and mask count.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flow_threshold</span></code></dt><dd><p>Required. Flow consistency threshold passed directly to Cellpose. Higher values allow more candidate masks to pass
+filtering and generally increase recall; lower values are stricter.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cellprob_threshold</span></code></dt><dd><p>Required. Cell probability threshold passed directly to Cellpose2. Lower values accept weaker signal and generally
+produce larger or more numerous masks. Higher values suppress weak detections.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">minimum_mask_size</span></code></dt><dd><p>Required. Minimum mask area in pixels. The plugin passes this value as Cellpose <code class="docutils literal notranslate"><span class="pre">min_size</span></code> and removes masks
+smaller than this threshold before polygon generation.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before execution, the plugin validates that <code class="docutils literal notranslate"><span class="pre">task_input_data</span></code> contains at least one channel and that both
+<code class="docutils literal notranslate"><span class="pre">nuclear_channel</span></code> and <code class="docutils literal notranslate"><span class="pre">entity_fill_channel</span></code> resolve to valid inputs.</p>
+</div>
+<p>Detailed descriptions of flow and cell-probability thresholds are available in the
+<a class="reference external" href="https://cellpose.readthedocs.io/en/latest/settings.html">Cellpose documentation</a>.</p>
+<p>Usage:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;nuclear_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;entity_fill_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;diameter&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">70</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;flow_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;cellprob_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;minimum_mask_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-segmentation-specification">
+<h2>Example Segmentation Specification<a class="headerlink" href="#example-segmentation-specification" title="Permalink to this headline"></a></h2>
+<p>A complete single-task Cellpose2 specification using the <code class="docutils literal notranslate"><span class="pre">cyto2</span></code> model with three channels:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;experiment_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;all_z_indexes&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">],</span>
+<span class="w">        </span><span class="s2">&quot;z_positions_um&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">,</span><span class="w"> </span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span><span class="w"> </span><span class="mf">10.5</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_tasks&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;task_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_family&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellpose2&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;entity_types_detected&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;z_layers&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">3</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_properties&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;model&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cyto2&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;model_dimensions&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;custom_weights&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;channel_map&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;red&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;green&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound3&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;blue&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;task_input_data&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;image_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;image_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Cellbound3&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="s2">&quot;image_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;image_preprocessing&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;clip_limit&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;filter_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">100</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">]}}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;segmentation_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;nuclear_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;entity_fill_channel&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;diameter&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">70</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;flow_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;cellprob_threshold&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;minimum_mask_size&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;polygon_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;simplification_tol&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;smoothing_radius&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;minimum_final_area&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="s2">&quot;segmentation_task_fusion&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;entity_fusion_strategy&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;harmonize&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;fused_polygon_postprocessing_parameters&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;min_distance_between_entities&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;min_final_area&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;output_files&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;entity_types_output&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="s2">&quot;files&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="s2">&quot;run_on_tile_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;result_tiles/&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;mosaic_geometry_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cellpose2_mosaic_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;micron_geometry_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cellpose2_micron_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;cell_metadata_file&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cellpose2_cell_metadata.csv&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The <a class="reference internal" href="../analysis_vignettes/segmentation_heart_dataset_cellpose2.html"><span class="doc">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</span></a> vignette demonstrates Cellpose2 with
+custom-retrained weights on a heart tissue dataset.</p>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+<dl class="citation">
+<dt class="label" id="cellpose2-citation"><span class="brackets"><a class="fn-backref" href="#id1">cellpose2_citation</a></span></dt>
+<dd><p>Pachitariu, M. &amp; Stringer, C. (2022). Cellpose 2.0: how to train your own model. <em>Nature methods</em>, 19(12), 1634–1641.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cellpose_segment.html" class="btn btn-neutral float-left" title="Cellpose Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cellposesam_segment.html" class="btn btn-neutral float-right" title="CellposeSAM Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

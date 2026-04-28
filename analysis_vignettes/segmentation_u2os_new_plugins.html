@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example: Segmenting the U2OS Small Dataset with Newer Plugins &mdash; Vizgen Post-processing Tool  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experimental Features" href="../experimental_features/index.html" />
+    <link rel="prev" title="Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations" href="segmentation_heart_dataset_cellpose2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/Logo_Vizgen_White_Text.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface/index.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../segmentation_options/index.html">Segmentation Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../output_data_formats/index.html">Output Data Formats</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Analysis Vignettes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="segmentation_of_a_local_dataset.html">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation_heart_dataset_cellpose2.html">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Example: Segmenting the U2OS Small Dataset with Newer Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#before-beginning-system-setup">Before Beginning: System Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cellposesam">CellposeSAM</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#install-the-plugin">Install the Plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#segmentation-specification">Segmentation Specification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#run-segmentation">Run Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#expected-results">Expected Results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#instanseg">InstanSeg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Install the Plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Segmentation Specification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Run Segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Expected Results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental_features/index.html">Experimental Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vizgen Post-processing Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Analysis Vignettes</a></li>
+      <li class="breadcrumb-item active">Example: Segmenting the U2OS Small Dataset with Newer Plugins</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/analysis_vignettes/segmentation_u2os_new_plugins.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-segmenting-the-u2os-small-dataset-with-newer-plugins">
+<h1>Example: Segmenting the U2OS Small Dataset with Newer Plugins<a class="headerlink" href="#example-segmenting-the-u2os-small-dataset-with-newer-plugins" title="Permalink to this headline"></a></h1>
+<p>This vignette demonstrates how to run cell segmentation on the publicly available
+<a class="reference external" href="https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip">U2OS small dataset</a>
+using the <strong>CellposeSAM</strong> and <strong>InstanSeg</strong> segmentation plugins.</p>
+<p>The U2OS small dataset (3953 × 3960 px, 5 stains, 7 z-levels) is the same dataset
+used in the <a class="reference internal" href="segmentation_of_a_local_dataset.html"><span class="doc">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</span></a> vignette. Where that vignette
+uses the legacy built-in Cellpose family, this one shows the newer plugin-based
+workflows.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>CellposeSAM and InstanSeg are <strong>separate packages</strong> — they are not included
+with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vpt[all]</span></code>. Each plugin must be installed individually in
+the same Python environment as VPT. See <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a> for details.</p>
+</div>
+<section id="before-beginning-system-setup">
+<h2>Before Beginning: System Setup<a class="headerlink" href="#before-beginning-system-setup" title="Permalink to this headline"></a></h2>
+<p>Make sure your environment meets the <span class="xref std std-ref">system-requirements</span> before
+proceeding. In particular, CellposeSAM requires a CUDA-capable GPU.</p>
+<p><strong>Download the dataset</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>-q<span class="w"> </span>https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
+unzip<span class="w"> </span>-q<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000.zip
+</pre></div>
+</div>
+</section>
+<section id="cellposesam">
+<h2>CellposeSAM<a class="headerlink" href="#cellposesam" title="Permalink to this headline"></a></h2>
+<section id="install-the-plugin">
+<h3>Install the Plugin<a class="headerlink" href="#install-the-plugin" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-cellposesam
+</pre></div>
+</div>
+<p>Additional plugin documentation and source-install instructions are available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-cellposesam">vpt-plugin-cellposesam repository</a>.</p>
+<p>Verify that VPT recognises the plugin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vpt<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<section id="segmentation-specification">
+<h3>Segmentation Specification<a class="headerlink" href="#segmentation-specification" title="Permalink to this headline"></a></h3>
+<p>Create a file named <code class="docutils literal notranslate"><span class="pre">cellposesam_u2os.json</span></code> with the following contents. This
+specification selects three stains (DAPI, PolyT, Cellbound1), segments z-layer 3,
+and applies CLAHE preprocessing to each channel:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;experiment_properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;all_z_indexes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;z_positions_um&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.5</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;segmentation_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;task_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_family&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CellposeSAM&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;entity_types_detected&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;z_layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cellpose-sam&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;model_dimensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;custom_weights&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;latest&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;task_input_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PolyT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;nuclear_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;entity_fill_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PolyT&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;diameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;flow_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;cellprob_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-5.5</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;minimum_mask_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;polygon_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;simplification_tol&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;smoothing_radius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;minimum_final_area&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;segmentation_task_fusion&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;entity_fusion_strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;harmonize&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;fused_polygon_postprocessing_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;min_distance_between_entities&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;min_final_area&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;output_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;entity_types_output&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;run_on_tile_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;result_tiles/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mosaic_geometry_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cellpose_mosaic_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;micron_geometry_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cellpose_micron_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;cell_metadata_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cellpose_cell_metadata.csv&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="run-segmentation">
+<h3>Run Segmentation<a class="headerlink" href="#run-segmentation" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vpt<span class="w"> </span>--verbose<span class="w"> </span>run-segmentation<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--segmentation-algorithm<span class="w"> </span>cellposesam_u2os.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-images<span class="w"> </span><span class="s1">&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-micron-to-mosaic<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>u2os_cellposesam_output/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tile-size<span class="w"> </span><span class="m">2400</span><span class="w"> </span>--tile-overlap<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+</section>
+<section id="expected-results">
+<h3>Expected Results<a class="headerlink" href="#expected-results" title="Permalink to this headline"></a></h3>
+<p>CellposeSAM should detect approximately <strong>800 cell entities</strong> across 4 tiles. The output
+directory will contain:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cellpose_micron_space.parquet</span></code> — cell boundary polygons in micron coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cellpose_mosaic_space.parquet</span></code> — cell boundary polygons in mosaic pixel coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_tiles/</span></code> — per-tile intermediate results</p></li>
+</ul>
+<p>These geometry tables store one row per entity per z-level, so count cells by unique <code class="docutils literal notranslate"><span class="pre">EntityID</span></code> rather than total parquet rows.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cell_metadata_file</span></code> entry in the segmentation specification reserves the
+downstream metadata filename. The metadata file itself is created later by
+<code class="docutils literal notranslate"><span class="pre">derive-entity-metadata</span></code>, not by <code class="docutils literal notranslate"><span class="pre">run-segmentation</span></code>.</p>
+<p>In one representative run on a mid-range CUDA GPU, this completed in approximately
+<strong>2 minutes 20 seconds</strong> wall-clock time.</p>
+</section>
+</section>
+<section id="instanseg">
+<h2>InstanSeg<a class="headerlink" href="#instanseg" title="Permalink to this headline"></a></h2>
+<section id="id1">
+<h3>Install the Plugin<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vpt-plugin-instanseg
+</pre></div>
+</div>
+<p>Additional plugin documentation and source-install instructions are available in the
+<a class="reference external" href="https://github.com/Vizgen/vpt-plugin-instanseg">vpt-plugin-instanseg repository</a>.</p>
+<p>Verify that VPT recognises the plugin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vpt<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Segmentation Specification<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<p>Create a file named <code class="docutils literal notranslate"><span class="pre">instanseg_u2os.json</span></code> with the following contents. InstanSeg
+is channel-invariant, so channel order does not matter. The <code class="docutils literal notranslate"><span class="pre">pixel_size</span></code> is set
+to 0.108 µm to match the U2OS dataset resolution:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;experiment_properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;all_z_indexes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;z_positions_um&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mf">7.5</span><span class="p">,</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.5</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;segmentation_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;task_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_family&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;InstanSeg&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;entity_types_detected&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;z_layers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fluorescence_nuclei_and_cells&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;model_dimensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2D&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;custom_weights&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;task_input_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DAPI&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PolyT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;image_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cellbound1&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;image_preprocessing&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLAHE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;clip_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filter_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]}}</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;segmentation_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;pixel_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.108</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;normalise&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all_outputs&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;rescale_output&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;polygon_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;simplification_tol&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;smoothing_radius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;minimum_final_area&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;segmentation_task_fusion&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;entity_fusion_strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;harmonize&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;fused_polygon_postprocessing_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;min_distance_between_entities&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;min_final_area&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;output_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;entity_types_output&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;run_on_tile_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;result_tiles/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mosaic_geometry_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;instanseg_mosaic_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;micron_geometry_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;instanseg_micron_space.parquet&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;cell_metadata_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;instanseg_cell_metadata.csv&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Run Segmentation<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vpt<span class="w"> </span>--verbose<span class="w"> </span>run-segmentation<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--segmentation-algorithm<span class="w"> </span>instanseg_u2os.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-images<span class="w"> </span><span class="s1">&#39;202305010900_U2OS_small_set_VMSC00000/region_0/images/mosaic_(?P&lt;stain&gt;[\w|-]+)_z(?P&lt;z&gt;[0-9]+).tif&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-micron-to-mosaic<span class="w"> </span>202305010900_U2OS_small_set_VMSC00000/region_0/images/micron_to_mosaic_pixel_transform.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>u2os_instanseg_output/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tile-size<span class="w"> </span><span class="m">2400</span><span class="w"> </span>--tile-overlap<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Expected Results<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<p>InstanSeg should detect approximately <strong>860 cells</strong> across 4 tiles. The output
+directory will contain:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">instanseg_micron_space.parquet</span></code> — cell boundary polygons in micron coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">instanseg_mosaic_space.parquet</span></code> — cell boundary polygons in mosaic pixel coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result_tiles/</span></code> — per-tile intermediate results</p></li>
+</ul>
+<p>These geometry tables store one row per entity per z-level, so count cells by unique <code class="docutils literal notranslate"><span class="pre">EntityID</span></code> rather than total parquet rows.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cell_metadata_file</span></code> entry in the segmentation specification reserves the
+downstream metadata filename. The metadata file itself is created later by
+<code class="docutils literal notranslate"><span class="pre">derive-entity-metadata</span></code>, not by <code class="docutils literal notranslate"><span class="pre">run-segmentation</span></code>.</p>
+<p>On a mid-range CUDA GPU this run completed in approximately <strong>23 seconds</strong>
+wall-clock time. For multi-tissue runtime comparisons, see
+<a class="reference internal" href="../segmentation_options/benchmarks.html"><span class="doc">Segmentation Benchmarks</span></a>.</p>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline"></a></h2>
+<p>After segmentation, the output parquet files can be used in the standard VPT
+workflow (partition transcripts, derive entity metadata, sum signals, update VZG)
+exactly as shown in the <a class="reference internal" href="segmentation_of_a_local_dataset.html"><span class="doc">Example: Segmenting a Small Dataset Saved on a Local Hard Drive</span></a> vignette.</p>
+<p>For a guide to retraining a Cellpose2 model with manual annotations, see the
+<a class="reference internal" href="segmentation_heart_dataset_cellpose2.html"><span class="doc">Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations</span></a> vignette.</p>
+<p>For detailed parameter reference pages, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../segmentation_options/cellposesam_segment.html"><span class="doc">CellposeSAM Options</span></a></p></li>
+<li><p><a class="reference internal" href="../segmentation_options/instanseg_segment.html"><span class="doc">InstanSeg Options</span></a></p></li>
+<li><p><a class="reference internal" href="../segmentation_options/cellpose2_segment.html"><span class="doc">Cellpose2 Options</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="segmentation_heart_dataset_cellpose2.html" class="btn btn-neutral float-left" title="Example: Re-segmenting a MERSCOPE Heart Dataset with a Machine Learning Model Customized with Manual Annotations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../experimental_features/index.html" class="btn btn-neutral float-right" title="Experimental Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vizgen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
