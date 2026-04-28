@@ -74,7 +74,7 @@ jobs:
           credentials_json: ${{ secrets.VZGPT_GCS_SERVICE_ACCOUNT_KEY }}
 
       - name: Configure AWS credentials for pytest
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.VZGPT_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.VZGPT_AWS_SECRET_ACCESS_KEY }}
