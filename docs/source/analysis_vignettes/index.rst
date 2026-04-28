@@ -6,4 +6,5 @@ Analysis Vignettes
 
    segmentation_of_a_local_dataset
    segmentation_heart_dataset_cellpose2
+   segmentation_u2os_new_plugins
 

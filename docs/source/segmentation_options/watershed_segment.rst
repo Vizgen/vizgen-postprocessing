@@ -5,6 +5,12 @@ The Watershed segmentation algorithm uses the 3-D watershed implementation in sc
 (``skimage.segmentation.watershed``). Watershed segmentation converts one or more images into seed 
 locations and a depth map and fills the depth map "basins" from the seed locations.
 
+.. note::
+    The Watershed plugin source is available in the
+    `vpt-plugin-watershed repository <https://github.com/Vizgen/vpt-plugin-watershed>`_. That repository README
+    includes additional plugin documentation and source-install guidance for users who want to work from a checkout
+    instead of the ``vpt[watershed]`` or ``vpt[all]`` extras.
+
 Input Data
 """"""""""""
 Seed channel

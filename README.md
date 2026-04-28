@@ -3,90 +3,151 @@
 
 # Vizgen Post-processing Tool
 
-The Vizgen Post-processing Tool (VPT) enables users to reprocess and refine the single-cell results of MERSCOPE experiments. 
-VPT is a command line tool that emphasizes scalable, reproducible analysis, and can be run on a workstation, a cluster, or 
-be deployed in a cloud computing environment.
+The Vizgen Post-processing Tool (VPT) is a command-line toolkit for reprocessing and refining the single-cell outputs of
+MERSCOPE experiments. VPT supports reproducible segmentation workflows, import of segmentation from external tools, and
+regeneration of downstream outputs on workstations, clusters, or cloud environments.
 
 
 ## Features
-- Perform cell segmentation
+- Cell segmentation
     - Reproduce standard Vizgen segmentation options
-    - Perform reproducible custom segmentation
-- Import cell segmentation from other tools
-    - Supports geojson and hdf5 formats
-- Regenerate single cell data with new segmentation
-    - Cell by gene matrix
+    - Run custom and reproducible segmentation workflows
+- Segmentation import
+    - Import boundaries produced by external tools
+    - Supports GeoJSON and HDF5 formats
+- Single-cell output regeneration
+    - Cell-by-gene matrix
     - Cell spatial metadata
-    - Image intensity in each cell
-    - Update MERSCOPE Vizualizer file (vzg)
-- Image format conversion
-    - Convert large tiff files to single or multi-channel Pyramidal OME-TIFF files
-- Nextflow compatible, example pipeline provided
+    - Per-cell image intensity
+    - Updated MERSCOPE Visualizer file (VZG)
+- Image conversion
+    - Convert large TIFF files to single- or multi-channel pyramidal OME-TIFF
+- Workflow integration
+    - Nextflow-compatible, with an example pipeline provided
 
 
 ## Installation
 
-Install the tool through your choice of 
-- [pip](https://pip.pypa.io/en/stable/getting-started/)
-- [Docker](https://docs.docker.com/desktop/extensions-sdk/quickstart/)
-- [poetry](https://python-poetry.org/)
+Install VPT with your preferred method:
 
-To access in-utility help documentation run the process below in the installed environment.
+### pip
 ```bash
-  vpt --help
+pip install vpt
 ```
-    
+
+### Docker
+```bash
+docker pull vzgdocker/vpt
+```
+
+### Poetry
+```bash
+git clone https://github.com/Vizgen/vizgen-postprocessing
+cd vizgen-postprocessing
+poetry install
+```
+
+To view command help in your installed environment:
+```bash
+vpt --help
+```
+
+## Plugins
+
+VPT supports plugin-based segmentation algorithms.
+
+Install all supported plugins at once:
+```sh
+pip install vpt[all]
+```
+if using poetry:
+```sh
+poetry install --all-extras
+```
+
+In most cases, installing only the plugins you need is recommended.
+
+Available plugins:
+
+### watershed
+Uses a watershed-based approach with Stardist-derived seeds.
+
+[Watershed Github repository](https://github.com/Vizgen/vpt-plugin-watershed)
+
+Install with:
+```sh
+pip install vpt-plugin-watershed
+```
+
+### cellpose
+Interface to Cellpose 1.0.2.
+
+[Cellpose GitHub repository](https://github.com/Vizgen/vpt-plugin-cellpose)
+
+Install with:
+```sh
+pip install vpt-plugin-cellpose
+```
+
+### cellpose2
+This plugin is an interface to Cellpose 2.x.
+
+[Cellpose2 GitHub repository](https://github.com/Vizgen/vpt-plugin-cellpose2)
+
+Install with:
+```sh
+pip install vpt-plugin-cellpose2
+```
+
+### cellposesam :star2: New, April 28th, 2026 :star2:
+Interface to Cellpose 4.x using the Cellpose-SAM architecture. A GPU is strongly recommended because the model is large and runs very slowly on CPU.
+
+[Cellpose-SAM GitHub repository](https://github.com/Vizgen/vpt-plugin-cellposesam)
+
+Install with:
+```sh
+pip install vpt-plugin-cellposesam
+```
+
+### instanseg :star2: New, April 28th, 2026 :star2:
+Interface to the Instanseg segmentation model. It runs on CPU or GPU and can use an arbitrary number of channels.
+
+[Instanseg GitHub repository](https://github.com/Vizgen/vpt-plugin-instanseg)
+
+Install with:
+```sh
+pip install vpt-plugin-instanseg
+```
+
 ## Usage
 
-VPT accepts two types of inputs to specify how to run segmentation:
-- Command line parameters
-    - relate to where to find the input data and are expected to vary with each experiment
-- Segmentation algorithm .json file parameters
-    - describes a series of steps to perform on the input data
+VPT uses two input types to define segmentation runs:
 
-Using the same segmentation algorithm on a series of experiments ensures that they are processed identically and reproducibly.
+- Command-line parameters
+    - Describe input locations and run-specific configuration
+- Segmentation algorithm JSON parameters
+    - Define the processing steps applied to the input data
 
-In addition to the user guide, several working segmentation algorithm .json files are provided that can serve either as a 
-robust segmentation definition or as a template for a custom workflow.
+Reusing the same segmentation algorithm across experiments helps ensure consistent, reproducible processing.
 
-## Quick start commands:
+In addition to the user guide, example segmentation algorithm JSON files are included and can be used directly or adapted
+as templates for custom workflows.
 
+## Quick start commands
 
-run-segmentation    ​
-- Top-level interface for vpt which invokes the segmentation functionality of the tool.​
+- `run-segmentation`: Top-level segmentation entrypoint.
+- `prepare-segmentation`: Generates a segmentation specification JSON file.
+- `run-segmentation-on-tile`: Runs a segmentation algorithm for a specific image tile.
+- `compile-tile-segmentation`: Combines per-tile outputs into one internally consistent parquet file.
+- `derive-entity-metadata`: Computes geometric attributes for each segmented entity.
+- `partition-transcripts`: Assigns each detected transcript to an entity when possible.
+- `sum-signals`: Computes image intensity values per entity.
+- `update-vzg`: Updates an existing VZG with new boundaries and expression matrix data.
+- `convert-geometry`: Converts external boundaries into VPT-compatible parquet format.
+- `convert-to-ome`: Converts large 16-bit mosaic TIFF images to pyramidal OME-TIFF.
+- `convert-to-rgb-ome`: Converts up to three flat TIFF images into RGB pyramidal OME-TIFF.
 
-prepare-segmentation​
- - Generates a segmentation specification json file to be used for cell segmentation tasks. ​
-
-run-segmentation-on-tile​
- - Executes the segmentation algorithm on a specific tile of the mosaic images.​
-
-compile-tile-segmentation​
-- Combines the per-tile segmentation outputs into a single, internally-consistent parquet file containing all of the 
-segmentation boundaries found in the experiment.​
-
-derive-entity-metadata​
-- Uses the segmentation boundaries to calculate the geometric attributes of each Entity​
-
-partition-transcripts​
-- Uses the segmentation boundaries to determine which Entity, if any, contains each detected transcript.​
-
-sum-signals​
-- Uses the segmentation boundaries to find the intensity of each mosaic image in each Entity.​
-
-update-vzg​
-- Updates an existing .vzg file with new segmentation boundaries and the corresponding expression matrix.​
-
-convert-geometry​
-- Converts Entity boundaries produced by a different tool into a vpt compatible parquet file.​
-
-convert-to-ome​
-- Transforms the large 16-bit mosaic tiff images produced by the MERSCOPE into a OME pyramidal tiff.​
-
-convert-to-rgb-ome​
-- Converts up to three flat tiff images into rgb OME-tiff pyramidal images.​
-
-For more detail on commands and arguments, please see the user guide.
+For full command usage and options, see the user guide.
 
 ## Documentation
 
@@ -94,19 +155,19 @@ For more detail on commands and arguments, please see the user guide.
 
 ## Feedback
 
-If you encounter issues or bugs, let us know by [submitting an issue!](https://github.com/Vizgen/vizgen-postprocessing/issues)
+If you encounter issues or bugs, please [submit an issue](https://github.com/Vizgen/vizgen-postprocessing/issues).
 Please include:
 
-- A quick issue summary
-- Steps that caused it to occur
-- The exception generated by the code, if applicable
-- Specific lines of code, if indicated in the error message
+- A short issue summary
+- Reproduction steps
+- The exception/error output, if applicable
+- Relevant code locations, if available
 
 
-If you have any other feedback or issues, please reach out to your regional Vizgen field application scientist and CC: Vizgen 
-Tech Support at techsupport@vizgen.com.
+For other feedback, contact your regional Vizgen field application scientist and CC Vizgen Tech Support at
+techsupport@vizgen.com.
 
-Please include VPT in your subject line along with the above information in the body.
+Please include "VPT" in the subject line.
 
 ## Contributing & Code of Conduct
 

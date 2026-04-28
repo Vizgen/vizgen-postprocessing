@@ -78,7 +78,12 @@ In this example workflow, all of the analysis output files will be saved to ``~/
 
 Step 1: Install vpt in a Virtual Environment
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+.. note::
+   ``pip install vpt[all]`` installs VPT together with the **legacy** Cellpose and Watershed
+   segmentation plugins. Newer plugin families (Cellpose2, CellposeSAM, InstanSeg) are
+   distributed as separate packages and must be installed individually. See :ref:`Installation`
+   for details, or follow the :doc:`segmentation_u2os_new_plugins` vignette for a worked
+   example with the newer plugins.
 **User Input**
 
 .. code-block:: console

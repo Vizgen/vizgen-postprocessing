@@ -160,6 +160,9 @@ The Cellpose2 plugin is available as a Python package and can be installed using
 
     pip install vpt-plugin-cellpose2
 
+Additional plugin documentation and source-install instructions are available in the
+`vpt-plugin-cellpose2 repository <https://github.com/Vizgen/vpt-plugin-cellpose2>`_.
+
 .. note::
     For the plugin to be recognized, it must be installed in the same environment as VPT
 
@@ -413,7 +416,8 @@ full MERSCOPE dataset to regenerate the cell by gene matrix to use for downstrea
 we use VPT to resegment the original images using the newly trained model.
 
 The segmentation algorithm for VPT is specified through an algorithm JSON file. Example algorithm JSON files for Cellpose2 
-can be found in the “example_analysis_algorithm” folder within the vpt-plugin-cellpose2 repository: https://github.com/Vizgen/vpt-plugin-cellpose2/tree/develop/example_analysis_algorithm. 
+can be found in the ``example_analysis_algorithm`` folder of the
+`vpt-plugin-cellpose2 repository <https://github.com/Vizgen/vpt-plugin-cellpose2>`_. 
 These can be used as a template for customizing to match the parameters specified within the Cellpose2 UI.
 
 1. Files with “custom” are examples using customs models and not built-in models.

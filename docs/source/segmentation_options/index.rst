@@ -10,3 +10,7 @@ Segmentation Options
    task_fusion_definition
    watershed_segment
    cellpose_segment
+   cellpose2_segment
+   cellposesam_segment
+   instanseg_segment
+   benchmarks
