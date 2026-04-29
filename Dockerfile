@@ -10,7 +10,7 @@ RUN apt-get update && \
     python3 \
     python3-pip \
     bzip2 \
-    default-jre \
+    openjdk-17-jre \
     curl \
     unzip \
     libgl1-mesa-glx \
