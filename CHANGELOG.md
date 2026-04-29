@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.2 (2026-04-29)
+
+### Fix
+
+* Install OpenJDK 17 for Nextflow compatibility ([`56336ab`](https://github.com/Vizgen/vizgen-postprocessing/commit/56336ab6e8a3369b1c9e93128787d32139326bf9))
+
 ## v1.3.1 (2026-04-28)
 
 ### Documentation
