@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.3 (2026-04-30)
+
+### Documentation
+
+* Update U2OS dataset download links to CloudFront ([`2157f43`](https://github.com/Vizgen/vizgen-postprocessing/commit/2157f43dd8fe3291e4ab44ff36afc2e4a77df2db))
+
 ## v1.3.2 (2026-04-29)
 
 ### Fix
