@@ -7,7 +7,7 @@ Before Beginning: System Set Up
 * Windows 10 laptop computer (i7-1185G7 processor, 16 GB RAM)
 * Using Ubuntu 20.04 through the Windows Subsystem for Linux 2 (wsl2)
 * Python, pip, and venv installed in Ubuntu
-* The data produced by the MERSCOPE™ Image Processing Software was downloaded to the wsl2 home directory `Download Data Files <https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip>`_
+* The data produced by the MERSCOPE™ Image Processing Software was downloaded to the wsl2 home directory `Download Data Files <https://d21zg11mb7aqva.cloudfront.net/202305010900_U2OS_small_set_VMSC00000.zip>`_
 * The example segmentation algorithm json files were downloaded from github to the wsl2 home directory `Download Algorithm Files <https://github.com/Vizgen/vizgen-postprocessing/tree/develop/example_analysis_algorithm>`_
 
 
