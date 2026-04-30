@@ -3,7 +3,7 @@ Example: Segmenting the U2OS Small Dataset with Newer Plugins
 =============================================================================
 
 This vignette demonstrates how to run cell segmentation on the publicly available
-`U2OS small dataset <https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip>`_
+`U2OS small dataset <https://d21zg11mb7aqva.cloudfront.net/202305010900_U2OS_small_set_VMSC00000.zip>`_
 using the **CellposeSAM** and **InstanSeg** segmentation plugins.
 
 The U2OS small dataset (3953 × 3960 px, 5 stains, 7 z-levels) is the same dataset
@@ -27,7 +27,7 @@ proceeding. In particular, CellposeSAM requires a CUDA-capable GPU.
 
 .. code-block:: bash
 
-   wget -q https://vzg-web-resources.s3.amazonaws.com/202305010900_U2OS_small_set_VMSC00000.zip
+   wget -q https://d21zg11mb7aqva.cloudfront.net/202305010900_U2OS_small_set_VMSC00000.zip
    unzip -q 202305010900_U2OS_small_set_VMSC00000.zip
 
 
