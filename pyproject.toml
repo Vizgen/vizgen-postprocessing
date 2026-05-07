@@ -19,8 +19,7 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Topic :: Scientific/Engineering :: Image Processing",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
 ]
 packages = [{ include = "vpt", from = "src" }]
 include = ["src/vpt/utils/seg_json_generator/templates/*"]
@@ -29,13 +28,13 @@ include = ["src/vpt/utils/seg_json_generator/templates/*"]
 vpt = "vpt.vizgen_postprocess:entry_point"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.12,<3.13"
 boto3 = ">=1.17"
 dask = ">=2023.2.0"
 distributed = ">=2023.2.0"
 fsspec = "2024.2.0"
 fastparquet = "2023.10.1"
-geopandas = ">=0.13.2, <=0.14.4"
+geopandas = ">=0.13.2"
 gcsfs = "2024.2.0"
 h5py = ">=3.7.0"
 ipykernel = "*"
@@ -46,37 +45,36 @@ kaleido = [
     { version = "0.1.0", platform = "darwin" },
 ]
 leidenalg = "^0.10.1"
-matplotlib = "<=3.7.0"
-numpy = ">=1.24.3"
+matplotlib = ">=3.8,<4"
+numpy = ">=1.24.3,<3"
 pandas = ">=2.0.3"
 plotly = "^5.17.0"
 pretty-html-table = "^0.9.16"
-pyarrow = ">=8.0.0 <14.0.0"
+pyarrow = ">=14.0.2"
 python-dotenv = ">=0.20.0"
 pyvips = ">=2.2.1"
-rasterio = ">=1.3.0, <1.3.6"
+rasterio = ">=1.4.4, <1.5.0"
 s3fs = "2024.2.0"
-scanpy = "1.9.3"
+scanpy = ">=1.9.3"
 scipy = ">=1.8.1"
 shapely = ">=2.0.0"
+setuptools = "<81"
 torch = ">=2.0.0, !=2.0.1, !=2.1.0"
-vpt_core = ">=1.2.0"
-vpt_plugin_cellpose = { version = ">=1.0.0", optional = true }
-vpt_plugin_watershed = { version = ">=1.0.0", optional = true }
-vpt-segmentation-packing = ">=1.0.0"
+vpt_core = { git = "https://github.com/bgruening/vpt-core", branch = "py312" }
+vpt_plugin_cellpose2 = { git = "https://github.com/bgruening/vpt-plugin-cellpose2", branch = "py312", optional = true }
+vpt-segmentation-packing = { path = "vendor/vpt-segmentation-packing" }
 wrapt_timeout_decorator = ">=1.5.1"
 
 [tool.poetry.extras]
-cellpose = ["vpt_plugin_cellpose"]
-watershed = ["vpt_plugin_watershed"]
-all = ["vpt_plugin_cellpose", "vpt_plugin_watershed"]
+cellpose2 = ["vpt_plugin_cellpose2"]
+all = ["vpt_plugin_cellpose2"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 flake8 = "^6.0.0"
 mypy = "^1.0.0"
-opencv-python-headless = "4.6.0.66"
+opencv-python-headless = ">=4.10.0.82"
 
 [tool.poetry.group.deploy.dependencies]
 python-semantic-release = "^7.32.2"

@@ -21,14 +21,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.10" ]
+        python-version: [ "3.12" ]
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -63,9 +63,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.10" ]
+        python-version: [ "3.12" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
@@ -86,7 +86,7 @@ jobs:
 
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -111,6 +111,16 @@ jobs:
       - name: Install project
         run: poetry install --no-interaction --all-extras
 
+      - name: Smoke test forked imports
+        run: |
+          poetry run python - <<'PY'
+          import vpt
+          import vpt_core
+          import vpt_plugin_cellpose2
+          import vpt_plugin_cellpose
+          import vpt_plugin_watershed
+          PY
+
       - name: Test with pytest
         run: poetry run pytest tests/ --cov=src/ --cov-report=lcov
 
@@ -134,11 +144,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.10" ]
+        python-version: [ "3.12" ]
     outputs:
       version: ${{ steps.python-semantic-release.outputs.VERSION }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -147,7 +157,7 @@ jobs:
         run: printenv
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -206,16 +216,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.10" ]
+        python-version: [ "3.12" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Print ENV Variables
       - name: print ENV variables
         run: printenv
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
